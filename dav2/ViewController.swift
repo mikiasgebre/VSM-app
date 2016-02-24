@@ -3,6 +3,8 @@ import UIKit
 class ViewController: UIViewController {
     var stickerDictionary = [String: UIView]()
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         makeButtonCreateSticker()
@@ -70,11 +72,10 @@ class ViewController: UIViewController {
         
         let imageView = UIImageView(image: UIImage(named: "stickynote")!)
         imageView.image = imageView.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        imageView.tintColor = UIColor.yellowColor()
+        imageView.contentMode = UIViewContentMode.ScaleAspectFit
         
-        //imageView.contentMode = UIViewContentMode.ScaleAspectFit
         
-        //let view = UIView()
-        //view.frame = CGRectMake(30, 50, 200, 120)
         imageView.frame = CGRectMake(30, 50, 300, 200 )
         // view.layer.cornerRadius = 6
         view.tag = stickerNumber
@@ -91,13 +92,11 @@ class ViewController: UIViewController {
         
         
         
-        func awakeFromNib()
-        {
-            let tap = UITapGestureRecognizer(target: self, action: ("doubleTapped:"))
-            tap.numberOfTapsRequired = 2
-            imageView.addGestureRecognizer(tap)
+        let tap = UITapGestureRecognizer(target: self, action: ("doubleTapped:"))
+        tap.numberOfTapsRequired = 2
+        imageView.addGestureRecognizer(tap)
             
-        }
+        
         
         
         let textLabel = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
@@ -110,10 +109,9 @@ class ViewController: UIViewController {
         textField.textAlignment = NSTextAlignment.Justified
         textField.textColor = UIColor.blackColor()
         textField.font = UIFont.boldSystemFontOfSize(15)
-        // textField.borderStyle = UITextBorderStyle.Line
         textField.autocapitalizationType = UITextAutocapitalizationType.Words
         textField.backgroundColor = UIColor.clearColor()
-        //textField.borderStyle = UITextBorderStyle.None
+       
         
         let buttonOrangeColor:UIButton! = UIButton(type: .System)
         buttonOrangeColor.frame = CGRectMake(50, 160, 40, 28.0)
@@ -126,7 +124,6 @@ class ViewController: UIViewController {
         buttonOrangeColor.setTitle("Orange", forState: UIControlState.Normal)
         buttonOrangeColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonOrangeColor.addTarget(self, action: "buttonOrangeColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
-        
         
         
         let buttonGreenColor:UIButton! = UIButton(type: .System)
@@ -180,11 +177,7 @@ class ViewController: UIViewController {
         imageView.addSubview(buttonDelete)
         
         
-        func doubleTapped(gesture : UITapGestureRecognizer)
-        {
-            print("Hello")
-            
-        }
+        
         /*
         view.addSubview(textLabel)
         view.addSubview(textField)
@@ -203,10 +196,13 @@ class ViewController: UIViewController {
         
     }
     
-    
-    
-    
-    
+    func doubleTapped(sender : UITapGestureRecognizer)
+    {
+        print("Hello")
+        //sender.view?.addSubview(buttonGreenColor)
+        
+    }
+
     
     func dragged(gesture: UIPanGestureRecognizer){
         let loc = gesture.locationInView(self.view)

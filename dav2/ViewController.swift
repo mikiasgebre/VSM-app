@@ -3,7 +3,7 @@ import UIKit
 class ViewController: UIViewController {
     var stickerDictionary = [String: UIView]()
     
-    
+    //Commit without tapGesture
     
     override func viewDidLoad() {
         super.viewDidLoad()

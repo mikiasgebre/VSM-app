@@ -1,20 +1,26 @@
 import UIKit
 
 class ViewController: UIViewController {
-    var stickerDictionary = [String: UIView]()
     
-    //Commit without tapGesture
+    
+    var xposition : CGFloat = 10.0
+    var yposition : CGFloat = 10.0
+    var stickerDictionary = [String: UIView]()
+    let buttonOrangeColor:UIButton! = UIButton(type: .System)
+    let buttonGreenColor:UIButton! = UIButton(type: .System)
+    let buttonRedColor:UIButton! = UIButton(type: .System)
+    let buttonDelete:UIButton! = UIButton(type: .System)
     
     override func viewDidLoad() {
         super.viewDidLoad()
         makeButtonCreateSticker()
-        // Do any additional setup after loading the view, typically from a nib.
+        
         
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
     }
     
     
@@ -38,21 +44,18 @@ class ViewController: UIViewController {
     
     func buttonOrangeColorPressed(sender: UIButton!){
         let sentView = sender.superview
-        //sentView?.backgroundColor = UIColor.orangeColor()
         sentView?.tintColor = UIColor.orangeColor()
     }
     
     
     func buttonGreenColorPressed(sender: UIButton!){
         let sentView = sender.superview
-        //sentView?.backgroundColor = UIColor.greenColor()
         sentView?.tintColor = UIColor.greenColor()
     }
     
     
     func buttonRedColorPressed(sender: UIButton!){
         let sentView = sender.superview
-        //sentView?.backgroundColor = UIColor.redColor()
         sentView?.tintColor = UIColor.redColor()
         
     }
@@ -73,29 +76,35 @@ class ViewController: UIViewController {
         let imageView = UIImageView(image: UIImage(named: "stickynote")!)
         imageView.image = imageView.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         imageView.tintColor = UIColor.yellowColor()
-        imageView.contentMode = UIViewContentMode.ScaleAspectFit
+       // imageView.contentMode = UIViewContentMode.ScaleAspectFit
         
         
-        imageView.frame = CGRectMake(30, 50, 300, 200 )
-        // view.layer.cornerRadius = 6
+        
+        xposition += 40.0
+        yposition += 40.0
+        
+        imageView.frame = CGRectMake(xposition, yposition, 300, 200 )
         view.tag = stickerNumber
         imageView.layer.cornerRadius = 6
         imageView.tag = stickerNumber
         view.addSubview(imageView)
         
+        let layer = imageView.layer
+        layer.shadowColor = UIColor.blackColor().CGColor
+        layer.shadowOffset = CGSize(width: 0, height: 10)
+        layer.shadowOpacity = 0.4
+        layer.shadowRadius = 5
+        
+        
         let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        //view.addGestureRecognizer(gesture)
         imageView.addGestureRecognizer(gesture)
         view.userInteractionEnabled = true
         imageView.userInteractionEnabled = true
         
         
-        
-        
         let tap = UITapGestureRecognizer(target: self, action: ("doubleTapped:"))
         tap.numberOfTapsRequired = 2
         imageView.addGestureRecognizer(tap)
-            
         
         
         
@@ -111,11 +120,10 @@ class ViewController: UIViewController {
         textField.font = UIFont.boldSystemFontOfSize(15)
         textField.autocapitalizationType = UITextAutocapitalizationType.Words
         textField.backgroundColor = UIColor.clearColor()
-       
         
-        let buttonOrangeColor:UIButton! = UIButton(type: .System)
+        
+        
         buttonOrangeColor.frame = CGRectMake(50, 160, 40, 28.0)
-        
         buttonOrangeColor.layer.cornerRadius = 3
         buttonOrangeColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonOrangeColor.layer.cornerRadius = 0.5 * buttonOrangeColor.bounds.size.width
@@ -126,7 +134,7 @@ class ViewController: UIViewController {
         buttonOrangeColor.addTarget(self, action: "buttonOrangeColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
         
         
-        let buttonGreenColor:UIButton! = UIButton(type: .System)
+        
         buttonGreenColor.frame = CGRectMake(110, 160, 40, 28.0)
         buttonGreenColor.layer.cornerRadius = 3
         buttonGreenColor.tag = 1
@@ -140,9 +148,6 @@ class ViewController: UIViewController {
         
         
         
-        
-        
-        let buttonRedColor:UIButton! = UIButton(type: .System)
         buttonRedColor.frame = CGRectMake(170, 160, 40, 28.0)
         buttonRedColor.layer.cornerRadius = 3
         buttonRedColor.backgroundColor = UIColor.redColor()
@@ -154,7 +159,7 @@ class ViewController: UIViewController {
         buttonRedColor.addTarget(self, action: "buttonRedColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
         
         
-        let buttonDelete:UIButton! = UIButton(type: .System)
+        
         buttonDelete.frame = CGRectMake(230, 160, 40, 28.0)
         buttonDelete.layer.cornerRadius = 3
         buttonDelete.backgroundColor = UIColor.brownColor()
@@ -169,28 +174,8 @@ class ViewController: UIViewController {
         imageView.addSubview(textLabel)
         imageView.addSubview(textField)
         
-        
-        
-        imageView.addSubview(buttonGreenColor)
-        imageView.addSubview(buttonOrangeColor)
-        imageView.addSubview(buttonRedColor)
-        imageView.addSubview(buttonDelete)
-        
-        
-        
-        /*
-        view.addSubview(textLabel)
-        view.addSubview(textField)
-        view.addSubview(buttonOrangeColor)
-        view.addSubview(buttonGreenColor)
-        view.addSubview(buttonBlueColor)
-        view.addSubview(buttonDelete)
-        */
-        
-        
         stickerDictionary[stickerLabel] = imageView
         
-        //self.view.addSubview(view)
         self.view.addSubview(imageView)
         
         
@@ -198,16 +183,16 @@ class ViewController: UIViewController {
     
     func doubleTapped(sender : UITapGestureRecognizer)
     {
-        print("Hello")
-        //sender.view?.addSubview(buttonGreenColor)
-        
+        sender.view?.addSubview(buttonGreenColor)
+        sender.view?.addSubview(buttonOrangeColor)
+        sender.view?.addSubview(buttonRedColor)
+        sender.view?.addSubview(buttonDelete)
     }
-
+    
     
     func dragged(gesture: UIPanGestureRecognizer){
         let loc = gesture.locationInView(self.view)
         let gesturedView = gesture.view
-        
         gesturedView!.center = loc
     }
     

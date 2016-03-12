@@ -10,7 +10,7 @@ class ViewController: UIViewController {
     let buttonRedColor:UIButton! = UIButton(type: .System)
     let buttonDelete:UIButton! = UIButton(type: .System)
     let screenSize = UIScreen.mainScreen().bounds
-    let scrollView = UIScrollView(frame: CGRectMake(0, 194, UIScreen.mainScreen().bounds.width, 1000))
+    let scrollView = UIScrollView(frame: CGRectMake(0, 194, UIScreen.mainScreen().bounds.width, 500))
     var StickerArray = [UIView]()
     
     
@@ -24,9 +24,9 @@ class ViewController: UIViewController {
         scrollView.scrollEnabled = true
         scrollView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
         scrollView.autoresizingMask =  UIViewAutoresizing.FlexibleHeight
-        self.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 300, count)
-        scrollView.contentSize = CGSizeMake(scrollView.contentSize.width,1)
-        scrollView.contentSize = CGSize(width: 100, height: 100)
+        self.scrollView.contentInset = UIEdgeInsetsMake(0, 100, 0, count)
+        //scrollView.contentSize = CGSizeMake(scrollView.contentSize.width,1)
+        //scrollView.contentSize = CGSize(width: 100, height: 100)
         view.addSubview(scrollView)
         
     }
@@ -90,13 +90,13 @@ class ViewController: UIViewController {
         let imageView = UIImageView(image: UIImage(named: "postit1")!)
         imageView.image = imageView.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
         
-        imageView.contentMode = UIViewContentMode.ScaleAspectFit
+        imageView.contentMode = UIViewContentMode.ScaleAspectFill
         imageView.tintColor = UIColor.greenColor()
         
         
         yposition += 40.0
         
-        imageView.frame = CGRectMake(100, 500, 200, 100 )
+        //imageView.frame = CGRectMake(0, 0, 200, 100 )
         xposition += 500.0
         view.tag = stickerNumber
         imageView.layer.cornerRadius = 6
@@ -267,22 +267,20 @@ class ViewController: UIViewController {
         
         
         stickerDictionary[stickerLabel] = imageView
-        
-        
-        
         StickerArray.append(imageView)
         
         let stackView = UIStackView(arrangedSubviews: StickerArray)
+        
         stackView.axis = .Horizontal
-        stackView.distribution = .FillEqually
-        stackView.alignment = .Fill
+        stackView.distribution = .Fill
+        stackView.alignment = .Center
         stackView.spacing = 10
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.backgroundColor = UIColor.yellowColor()
+        
         scrollView.addSubview(stackView)
+        imageView.heightAnchor.constraintEqualToConstant(400).active = true
+        imageView.widthAnchor.constraintEqualToConstant(400).active = true
         
-        
-        
+        stackView.translatesAutoresizingMaskIntoConstraints = false
         
     }
     

@@ -2,7 +2,6 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    
     var xposition : CGFloat = 10.0
     var yposition : CGFloat = 10.0
     var stickerDictionary = [String: UIView]()
@@ -10,11 +9,25 @@ class ViewController: UIViewController {
     let buttonGreenColor:UIButton! = UIButton(type: .System)
     let buttonRedColor:UIButton! = UIButton(type: .System)
     let buttonDelete:UIButton! = UIButton(type: .System)
+    let screenSize = UIScreen.mainScreen().bounds
+    let scrollView = UIScrollView(frame: CGRectMake(0, 194, UIScreen.mainScreen().bounds.width, 1000))
+    var StickerArray = [UIView]()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         makeButtonCreateSticker()
-        
+        var count = CGFloat(stickerDictionary.count+100)
+        count += 10000
+        scrollView.backgroundColor = UIColor.redColor()
+        //scrollView.contentSize = view.bounds.size
+        scrollView.scrollEnabled = true
+        scrollView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
+        scrollView.autoresizingMask =  UIViewAutoresizing.FlexibleHeight
+        self.scrollView.contentInset = UIEdgeInsetsMake(0, 0, 300, count)
+        scrollView.contentSize = CGSizeMake(scrollView.contentSize.width,1)
+        scrollView.contentSize = CGSize(width: 100, height: 100)
+        view.addSubview(scrollView)
         
     }
     
@@ -73,17 +86,18 @@ class ViewController: UIViewController {
     
     func makeSticker(stickerLabel: String, stickerNumber: Int){
         
-        let imageView = UIImageView(image: UIImage(named: "stickynote")!)
+        
+        let imageView = UIImageView(image: UIImage(named: "postit1")!)
         imageView.image = imageView.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
-        imageView.tintColor = UIColor.yellowColor()
-       // imageView.contentMode = UIViewContentMode.ScaleAspectFit
+        
+        imageView.contentMode = UIViewContentMode.ScaleAspectFit
+        imageView.tintColor = UIColor.greenColor()
         
         
-        
-        xposition += 40.0
         yposition += 40.0
         
-        imageView.frame = CGRectMake(xposition, yposition, 300, 200 )
+        imageView.frame = CGRectMake(100, 500, 200, 100 )
+        xposition += 500.0
         view.tag = stickerNumber
         imageView.layer.cornerRadius = 6
         imageView.tag = stickerNumber
@@ -91,7 +105,7 @@ class ViewController: UIViewController {
         
         let layer = imageView.layer
         layer.shadowColor = UIColor.blackColor().CGColor
-        layer.shadowOffset = CGSize(width: 0, height: 10)
+        layer.shadowOffset = CGSize(width: 0, height: -3)
         layer.shadowOpacity = 0.4
         layer.shadowRadius = 5
         
@@ -113,6 +127,82 @@ class ViewController: UIViewController {
         textLabel.font = UIFont.italicSystemFontOfSize(8)
         textLabel.textColor = UIColor.blackColor()
         textLabel.text = stickerLabel
+        
+        
+        
+        let SerialNumber = UITextView(frame: CGRectMake(90, 20, 80, 30))
+        SerialNumber.alpha = 0.4
+        let Serial = UILabel(frame: CGRectMake(30, 20, 50, 50))
+        Serial.text = "Serial Number"
+        Serial.font = Serial.font.fontWithSize(7)
+        SerialNumber.textAlignment = NSTextAlignment.Center
+        SerialNumber.font = UIFont.italicSystemFontOfSize(8)
+        SerialNumber.textColor = UIColor.blackColor()
+        imageView.addSubview(SerialNumber)
+        imageView.addSubview(Serial)
+        
+        
+        
+        let taskTitle = UITextView(frame: CGRectMake(90, 60, 80, 30))
+        taskTitle.alpha = 0.4
+        let task = UILabel(frame: CGRectMake(30, 50, 50, 50))
+        task.text = "Task Title"
+        task.font = Serial.font.fontWithSize(7)
+        taskTitle.textAlignment = NSTextAlignment.Center
+        taskTitle.font = UIFont.italicSystemFontOfSize(8)
+        taskTitle.textColor = UIColor.blackColor()
+        imageView.addSubview(taskTitle)
+        imageView.addSubview(task)
+        
+        
+        let duration = UITextView(frame: CGRectMake(90, 100, 80, 30))
+        duration.alpha = 0.4
+        let dur = UILabel(frame: CGRectMake(30, 90, 50, 50))
+        dur.text = "Duration"
+        dur.font = Serial.font.fontWithSize(7)
+        duration.textAlignment = NSTextAlignment.Center
+        duration.font = UIFont.italicSystemFontOfSize(8)
+        duration.textColor = UIColor.blackColor()
+        imageView.addSubview(duration)
+        imageView.addSubview(dur)
+        
+        
+        let productQuantity = UITextView(frame: CGRectMake(90, 140, 80, 30))
+        productQuantity.alpha = 0.4
+        let product = UILabel(frame: CGRectMake(30, 130, 50, 50))
+        product.text = "Product Quantity"
+        product.font = Serial.font.fontWithSize(7)
+        productQuantity.textAlignment = NSTextAlignment.Center
+        productQuantity.font = UIFont.italicSystemFontOfSize(8)
+        productQuantity.textColor = UIColor.blackColor()
+        imageView.addSubview(productQuantity)
+        imageView.addSubview(product)
+        
+        
+        
+        let distance = UITextView(frame: CGRectMake(90, 180, 80, 30))
+        distance.alpha = 0.4
+        let dis = UILabel(frame: CGRectMake(30, 170, 50, 50))
+        dis.text = "Distance"
+        dis.font = Serial.font.fontWithSize(7)
+        distance.textAlignment = NSTextAlignment.Center
+        distance.font = UIFont.italicSystemFontOfSize(8)
+        distance.textColor = UIColor.blackColor()
+        imageView.addSubview(distance)
+        imageView.addSubview(dis)
+        
+        
+        let SystemConnection = UITextView(frame: CGRectMake(90, 220, 80, 30))
+        SystemConnection.alpha = 0.4
+        let system = UILabel(frame: CGRectMake(30, 200, 50, 60))
+        system.text = "System Connection"
+        system.font = Serial.font.fontWithSize(7)
+        SystemConnection.textAlignment = NSTextAlignment.Center
+        SystemConnection.font = UIFont.italicSystemFontOfSize(8)
+        SystemConnection.textColor = UIColor.blackColor()
+        imageView.addSubview(SystemConnection)
+        imageView.addSubview(system)
+        
         
         let textField = UITextView(frame: CGRectMake(35.0, 19.0, 200.0, 160.0))
         textField.textAlignment = NSTextAlignment.Justified
@@ -171,12 +261,27 @@ class ViewController: UIViewController {
         buttonDelete.addTarget(self, action: "buttonDeletePressed:", forControlEvents: UIControlEvents.TouchUpInside)
         
         
+        
+        
         imageView.addSubview(textLabel)
-        imageView.addSubview(textField)
+        
         
         stickerDictionary[stickerLabel] = imageView
         
-        self.view.addSubview(imageView)
+        
+        
+        StickerArray.append(imageView)
+        
+        let stackView = UIStackView(arrangedSubviews: StickerArray)
+        stackView.axis = .Horizontal
+        stackView.distribution = .FillEqually
+        stackView.alignment = .Fill
+        stackView.spacing = 10
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.backgroundColor = UIColor.yellowColor()
+        scrollView.addSubview(stackView)
+        
+        
         
         
     }

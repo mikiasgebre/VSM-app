@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "dav2.1/ViewController.swift"
-            timestampString = "479676341.564635"
+            timestampString = "479682283.284004"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "356"
-            endingLineNumber = "356"
+            startingLineNumber = "400"
+            endingLineNumber = "400"
             landmarkName = "buttonDeletePressed(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "dav2.1/ViewController.swift"
-            timestampString = "479676341.564635"
+            timestampString = "479682283.284004"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1261"
-            endingLineNumber = "1261"
+            startingLineNumber = "1305"
+            endingLineNumber = "1305"
             landmarkName = "makeStickerFromFile(_:)"
             landmarkType = "5">
          </BreakpointContent>

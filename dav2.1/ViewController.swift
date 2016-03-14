@@ -56,7 +56,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         makeSaveButton()
         makeButtonCreateSticker()
         makeViewAllFilesButton()
-        
+        makeButtonRefreshStickers()
         
         // Do any additional setup after loading the view, typically from a nib.
         
@@ -280,6 +280,41 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
    
     }
     
+    
+    //Button that creates the post it sticker pieces
+    func makeButtonRefreshStickers(){
+        let buttonRefreshStickers:UIButton! = UIButton(type: .System)
+        buttonRefreshStickers.frame = CGRectMake(500, 30, 50, 30)
+        buttonRefreshStickers.layer.cornerRadius = 5
+        buttonRefreshStickers.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
+        buttonRefreshStickers.titleLabel?.numberOfLines = 0
+        buttonRefreshStickers.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        buttonRefreshStickers.backgroundColor = UIColor.greenColor()
+        buttonRefreshStickers.setTitle("Refresh Page", forState: UIControlState.Normal)
+        buttonRefreshStickers.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonRefreshStickers.addTarget(self, action: "buttonRefreshStickersPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(buttonRefreshStickers)
+        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
+        buttonRefreshStickers.addGestureRecognizer(gesture)
+        buttonRefreshStickers.userInteractionEnabled = true
+        buttonRefreshStickers.tag = 29
+        
+    }
+    
+    
+    
+    
+    //Button action method
+    func buttonRefreshStickersPressed(sender: UIButton!){
+        for view in timeLineView.arrangedSubviews{
+            view.removeFromSuperview()
+        }
+        //Add Stickers to timeline
+        for (index,sticker) in stickerDictionary.enumerate(){
+            timeLineView.insertArrangedSubview(sticker, atIndex: index)
+        }
+        
+    }
     
     
     func createScrollAndContainerView() {
@@ -862,7 +897,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
 
     func makeTableAppear(){
-        allFilesTableView.frame = CGRectMake(550, 20, 130, 130)
+        allFilesTableView.frame = CGRectMake(580, 20, 130, 130)
         allFilesTableView.backgroundColor = UIColor.greenColor()
         allFilesTableView.layer.cornerRadius = 6
         let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))

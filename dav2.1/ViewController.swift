@@ -42,13 +42,17 @@ class StickerFile: Object {
 
 
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     var stickerDictionary = [UIView]()
     let allFilesTableView = UITableView()
     var retrievedFileNames = [String]()
+    let timeLineView = UIStackView()
+    var scrollView:UIScrollView!
+    var containerView = UIView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        createScrollAndContainerView() //Contains some code for scroll view and stackview
         makeSaveButton()
         makeButtonCreateSticker()
         makeViewAllFilesButton()
@@ -58,6 +62,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
+    //For initializing the scroll view
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        scrollView.frame = CGRectMake(0,0,view.frame.width-0.2, view.frame.height-0.2)
+        scrollView.contentSize = CGSizeMake(timeLineView.frame.width, timeLineView.frame.height)
+        scrollView.scrollEnabled = true
+        scrollView.contentInset = UIEdgeInsetsMake(-250, 0, 0, 200)
+        scrollView.userInteractionEnabled = true
+        scrollView.alwaysBounceHorizontal = true
+    }
+    
+    //The table shows you a list of files that are currently saved
     func tableView(tableView:UITableView, numberOfRowsInSection section: Int)->Int{
         return self.retrievedFileNames.count
     }
@@ -131,8 +147,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     if (textField.tag == 2){
                         textField.text = "Sticker Number "+String(index+1)
                     }
-                    self.view.addSubview(sticker)
+                    //This the view id
+                    if (textField.tag == 9){
+                        textField.text = String(index+1)
+                    }
+                    
+                    //self.view.addSubview(sticker)
                 }
+            }
+            
+            //Add Stickers to timeline
+            for (index,sticker) in stickerDictionary.enumerate(){
+                timeLineView.insertArrangedSubview(sticker, atIndex: index)
             }
             
             //Update view all files pane
@@ -181,10 +207,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return headerView
     }
     
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     
     
     
@@ -221,6 +250,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
+    
+    
     //Button action method
     func buttonCreateStickerPressed(sender: UIButton!){
         let stickerName = "Sticker Number "+String(stickerDictionary.count+1)
@@ -232,10 +263,51 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 if (textField.tag == 2){
                     textField.text = "Sticker Number "+String(index+1)
                 }
-                self.view.addSubview(sticker)
+                
+                //This the view id
+                if (textField.tag == 9){
+                    textField.text = String(index+1)
+                }
+                
+                //self.view.addSubview(sticker)
             }
         }
+        
+       //Add Stickers to timeline
+        for (index,sticker) in stickerDictionary.enumerate(){
+            timeLineView.insertArrangedSubview(sticker, atIndex: index)
+        }
+   
     }
+    
+    
+    
+    func createScrollAndContainerView() {
+        scrollView = UIScrollView()
+        //scrollView.backgroundColor = UIColor.brownColor()
+        
+        //Timeline is basically a stackview
+        timeLineView.userInteractionEnabled = true
+        timeLineView.axis = UILayoutConstraintAxis.Horizontal
+        timeLineView.distribution = .Fill
+        timeLineView.alignment = UIStackViewAlignment.Center
+        timeLineView.spacing = 20
+        timeLineView.tag = 60
+        timeLineView.backgroundColor = UIColor.redColor()
+        timeLineView.layoutMarginsRelativeArrangement = true
+        timeLineView.translatesAutoresizingMaskIntoConstraints = false
+        timeLineView.heightAnchor.constraintEqualToConstant(self.view.frame.height-20).active = true
+        //timeLineView.widthAnchor.constraintEqualToConstant(self.view.frame.size.width-20).active = true
+        
+        scrollView.addSubview(timeLineView)
+        view.addSubview(scrollView)
+        
+        //timeLineView.centerXAnchor.constraintEqualToAnchor(self.view.centerXAnchor).active = true
+        //timeLineView.centerYAnchor.constraintEqualToAnchor(self.view.centerYAnchor).active = true
+        
+        
+    }
+
     
     
     func buttonOrangeColorPressed(sender: UIButton!){
@@ -335,7 +407,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             self.stickerDictionary.removeAll()
             
-            
+            //self.makeTableAppear()
         }))
         
         newFileAlert.addAction(UIAlertAction(title: "CANCEL", style: .Default, handler: {(action: UIAlertAction!) in
@@ -738,10 +810,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     if (textField.tag == 2){
                         textField.text = "Sticker Number "+String(index+1)
                     }
-                    self.view.addSubview(sticker)
+                    
+                    //This the view id
+                    if (textField.tag == 9){
+                        textField.text = String(index+1)
+                    }
+                    //self.view.addSubview(sticker)
                 }
             }
-
+            
+            
+            //Add Stickers to timeline
+            for (index,sticker) in stickerDictionary.enumerate(){
+                timeLineView.insertArrangedSubview(sticker, atIndex: index)
+            }
+            
+            
             
             for case let textField as UITextField in (sentView?.subviews)!{
                 if (textField.tag == 5){
@@ -766,7 +850,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
 
     func buttonViewAllFilesPressed(sender: UIButton!){
-        allFilesTableView.frame = CGRectMake(500, 30, 130, 300)
+        makeTableAppear()
+        
+    }
+    
+    
+    func buttonHideAllFilesPressed(sender: UIButton!){
+        makeTableDisappear()
+        
+    }
+    
+
+    func makeTableAppear(){
+        allFilesTableView.frame = CGRectMake(550, 20, 130, 130)
         allFilesTableView.backgroundColor = UIColor.greenColor()
         allFilesTableView.layer.cornerRadius = 6
         let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
@@ -813,13 +909,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
         
-        
     }
-    
-    
-    
-    
-    func buttonHideAllFilesPressed(sender: UIButton!){
+
+
+    func makeTableDisappear(){
         allFilesTableView.hidden = true
         for view in self.view.subviews{
             if (view.tag == 5){
@@ -834,16 +927,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
         
-        
     }
     
 
-
-
-
-
     func makeViewAllFilesButton(){
-        
         var currentFileName = ""
         for view in self.view.subviews{
             if (view.tag == 4){
@@ -943,7 +1030,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         view.frame = CGRectMake(30, 50, 200, 120)
         view.backgroundColor = UIColor.greenColor()
         view.layer.cornerRadius = 6
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
+        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged2:"))
         view.addGestureRecognizer(gesture)
         view.userInteractionEnabled = true
         view.tag = 1
@@ -954,6 +1041,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textTitle.font = UIFont.italicSystemFontOfSize(8)
         textTitle.textColor = UIColor.blackColor()
         textTitle.tag = 2
+        textTitle.hidden = true
+        
+        
+        let textViewId = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
+        textViewId.textAlignment = NSTextAlignment.Center
+        textViewId.font = UIFont.italicSystemFontOfSize(8)
+        textViewId.textColor = UIColor.blackColor()
+        textViewId.tag = 9
+        textViewId.hidden = true
+        
         
         let textCurrentColor = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
         textCurrentColor.textAlignment = NSTextAlignment.Center
@@ -963,7 +1060,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textCurrentColor.hidden = true
         textCurrentColor.text = "green"
         
-        let textCurrentName = UITextField(frame: CGRectMake(2.0, 10.0, 200.0, 8.0))
+        let textCurrentName = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 16.0))
         textCurrentName.textAlignment = NSTextAlignment.Center
         textCurrentName.font = UIFont.italicSystemFontOfSize(8)
         textCurrentName.textColor = UIColor.blackColor()
@@ -1029,9 +1126,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         view.addSubview(buttonGreenColor)
         view.addSubview(buttonBlueColor)
         view.addSubview(buttonDelete)
+        view.addSubview(textViewId)
         
         stickerDictionary.append(view)
         view.addSubview(textTitle)
+        view.heightAnchor.constraintEqualToConstant(125).active = true
+        view.widthAnchor.constraintEqualToConstant(205).active = true
         
     }
     
@@ -1050,7 +1150,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             view.backgroundColor = UIColor.greenColor()
         }
         view.layer.cornerRadius = 6
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
+        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged2:"))
         view.addGestureRecognizer(gesture)
         view.userInteractionEnabled = true
         view.tag = 6
@@ -1062,6 +1162,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textTitle.textColor = UIColor.blackColor()
         textTitle.tag = 2
         textTitle.text = sticker.stickerId
+        textTitle.hidden = true
+        
+        let textViewId = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
+        textViewId.textAlignment = NSTextAlignment.Center
+        textViewId.font = UIFont.italicSystemFontOfSize(8)
+        textViewId.textColor = UIColor.blackColor()
+        textViewId.tag = 9
+        textViewId.hidden = true
+        
         
         let textCurrentColor = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
         textCurrentColor.textAlignment = NSTextAlignment.Center
@@ -1071,7 +1180,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textCurrentColor.hidden = true
         textCurrentColor.text = "green"
         
-        let textCurrentName = UITextField(frame: CGRectMake(2.0, 10.0, 200.0, 8.0))
+        let textCurrentName = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 16.0))
         textCurrentName.textAlignment = NSTextAlignment.Center
         textCurrentName.font = UIFont.italicSystemFontOfSize(8)
         textCurrentName.textColor = UIColor.blackColor()
@@ -1138,9 +1247,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         view.addSubview(buttonGreenColor)
         view.addSubview(buttonBlueColor)
         view.addSubview(buttonDelete)
+        view.addSubview(textViewId)
+        
         
         stickerDictionary.append(view)
         view.addSubview(textTitle)
+        
+        view.heightAnchor.constraintEqualToConstant(125).active = true
+        view.widthAnchor.constraintEqualToConstant(205).active = true
         
         //Add something to the save view
         for view in self.view.subviews{
@@ -1163,5 +1277,85 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         gesturedView!.center = loc
     }
     
+    
+    func dragged2(gesture: UIPanGestureRecognizer){
+        if(gesture.state == UIGestureRecognizerState.Began){
+            //We do not do anything in the touches began method yet
+        }
+        if(gesture.state == UIGestureRecognizerState.Changed){
+            let gesturedView = gesture.view!
+            
+            var center = gesturedView.center
+            let translation = gesture.translationInView(gesturedView)
+            center = CGPointMake(center.x + translation.x, center.y + translation.y)
+            gesturedView.center = center
+            gesture.setTranslation(CGPointZero, inView: gesturedView)
+            
+        }
+        
+        if(gesture.state == UIGestureRecognizerState.Ended){
+            for view in timeLineView.arrangedSubviews{
+                if(gesture.view!.frame.intersects(view.frame)){
+                    let gesturedView = gesture.view
+                    let destinationView = view
+                    var gesturedViewId = 1
+                    var destinationViewId = 1
+                    //Text field tagged 9 stores a secret id for the related view
+                    //Because you cannot guarantee that the index you give the view 
+                    //When putting it on the stack view will actually be preserved throught out
+                    //The lifecycle of the app
+                    //So we always check against the dictionary of our views in the array
+                    for case let textField as UITextField in gesturedView!.subviews{
+                        if (textField.tag == 9){
+                            gesturedViewId = Int(textField.text!)!-1
+                        }
+                    }
+                    
+                    for case let textField as UITextField in destinationView.subviews{
+                        if (textField.tag == 9){
+                            destinationViewId = Int(textField.text!)!-1
+                        }
+                    }
+                    
+                    for case let textField as UITextField in gesturedView!.subviews{
+                        if (textField.tag == 9){
+                            textField.text = String(destinationViewId)
+                        }
+                    }
+                    
+                    for case let textField as UITextField in destinationView.subviews{
+                        if (textField.tag == 9){
+                            textField.text = String(gesturedViewId)
+                        }
+                    }
+                    
+                    stickerDictionary.removeAtIndex(gesturedViewId)
+                    stickerDictionary.insert(destinationView, atIndex: gesturedViewId)
+                    stickerDictionary.removeAtIndex(destinationViewId)
+                    stickerDictionary.insert(gesturedView!, atIndex: destinationViewId)
+                    
+                    
+                    //Add Stickers to timeline
+                    for (index,sticker) in stickerDictionary.enumerate(){
+                        for case let textField as UITextField in sticker.subviews{
+                            if (textField.tag == 2){
+                                textField.text = "Sticker Number "+String(index+1)
+                            }
+                            
+                            if (textField.tag == 9){
+                                textField.text = String(index+1)
+                            }
+                            
+                        }
+                        timeLineView.insertArrangedSubview(sticker, atIndex: index)
+                    }
+                    
+                }
+                
+            }
+        
+    }
+        
 }
 
+}

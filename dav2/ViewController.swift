@@ -12,6 +12,10 @@ class ViewController: UIViewController {
     let screenSize = UIScreen.mainScreen().bounds
     let scrollView = UIScrollView(frame: CGRectMake(0, 194, UIScreen.mainScreen().bounds.width, 500))
     var StickerArray = [UIView]()
+    var StickerArray1 = [UIView]()
+    
+    let scrollImage = UIScrollView()
+    let scrollView1 = UIScrollView(frame: CGRectMake(0, 700, UIScreen.mainScreen().bounds.width, 300))
     
     
     override func viewDidLoad() {
@@ -19,15 +23,30 @@ class ViewController: UIViewController {
         makeButtonCreateSticker()
         var count = CGFloat(stickerDictionary.count+100)
         count += 10000
-        scrollView.backgroundColor = UIColor.redColor()
+        //scrollView.backgroundColor = UIColor.redColor()
         //scrollView.contentSize = view.bounds.size
         scrollView.scrollEnabled = true
         scrollView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
         scrollView.autoresizingMask =  UIViewAutoresizing.FlexibleHeight
         self.scrollView.contentInset = UIEdgeInsetsMake(0, 100, 0, count)
-        //scrollView.contentSize = CGSizeMake(scrollView.contentSize.width,1)
-        //scrollView.contentSize = CGSize(width: 100, height: 100)
+        scrollView.contentSize = CGSizeMake(scrollView.contentSize.width,1)
+        scrollView.contentSize = CGSize(width: 100, height: 100)
+        
+        scrollView1.scrollEnabled = true
+        scrollView1.autoresizingMask = UIViewAutoresizing.FlexibleWidth
+        scrollView1.autoresizingMask =  UIViewAutoresizing.FlexibleHeight
+        self.scrollView1.contentInset = UIEdgeInsetsMake(0, 100, 0, count)
+        scrollView1.contentSize = CGSizeMake(scrollView.contentSize.width,1)
+        scrollView1.contentSize = CGSize(width: 100, height: 100)
+        
+        
+        scrollView1.backgroundColor = UIColor.yellowColor()
+        scrollView.backgroundColor = UIColor.redColor()
         view.addSubview(scrollView)
+        view.addSubview(scrollView1)
+        
+        
+        
         
     }
     
@@ -37,6 +56,8 @@ class ViewController: UIViewController {
     }
     
     
+    
+    
     func makeButtonCreateSticker(){
         let buttonCreateSticker:UIButton! = UIButton(type: .System)
         buttonCreateSticker.frame = CGRectMake(20, 30, 110, 30)
@@ -44,7 +65,7 @@ class ViewController: UIViewController {
         buttonCreateSticker.backgroundColor = UIColor.greenColor()
         buttonCreateSticker.setTitle("Create Sticker", forState: UIControlState.Normal)
         buttonCreateSticker.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonCreateSticker.addTarget(self, action: "buttonCreateStickerPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonCreateSticker.addTarget(self, action: #selector(ViewController.buttonCreateStickerPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(buttonCreateSticker)
     }
     
@@ -82,10 +103,7 @@ class ViewController: UIViewController {
     }
     
     
-    
-    
     func makeSticker(stickerLabel: String, stickerNumber: Int){
-        
         
         let imageView = UIImageView(image: UIImage(named: "postit1")!)
         imageView.image = imageView.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
@@ -96,7 +114,7 @@ class ViewController: UIViewController {
         
         yposition += 40.0
         
-        //imageView.frame = CGRectMake(0, 0, 200, 100 )
+        imageView.frame = CGRectMake(0, 0, 200, 100 )
         xposition += 500.0
         view.tag = stickerNumber
         imageView.layer.cornerRadius = 6
@@ -110,15 +128,20 @@ class ViewController: UIViewController {
         layer.shadowRadius = 5
         
         
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(ViewController.dragged(_:)))
         imageView.addGestureRecognizer(gesture)
         view.userInteractionEnabled = true
         imageView.userInteractionEnabled = true
         
         
-        let tap = UITapGestureRecognizer(target: self, action: ("doubleTapped:"))
+        let tap = UITapGestureRecognizer(target: self, action: (#selector(ViewController.doubleTapped(_:))))
         tap.numberOfTapsRequired = 2
         imageView.addGestureRecognizer(tap)
+        
+        let tapone = UITapGestureRecognizer(target: self, action: (#selector(ViewController.singleTapped(_:))))
+        tapone.numberOfTapsRequired = 1
+        imageView.addGestureRecognizer(tapone)
+        
         
         
         
@@ -221,7 +244,7 @@ class ViewController: UIViewController {
         buttonOrangeColor.backgroundColor = UIColor.orangeColor()
         buttonOrangeColor.setTitle("Orange", forState: UIControlState.Normal)
         buttonOrangeColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonOrangeColor.addTarget(self, action: "buttonOrangeColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonOrangeColor.addTarget(self, action: #selector(ViewController.buttonOrangeColorPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         
         
         
@@ -234,8 +257,7 @@ class ViewController: UIViewController {
         buttonGreenColor.titleLabel?.textAlignment = NSTextAlignment.Center
         buttonGreenColor.setTitle("Green", forState: UIControlState.Normal)
         buttonGreenColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonGreenColor.addTarget(self, action: "buttonGreenColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
-        
+        buttonGreenColor.addTarget(self, action: #selector(ViewController.buttonGreenColorPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         
         
         buttonRedColor.frame = CGRectMake(170, 160, 40, 28.0)
@@ -246,8 +268,7 @@ class ViewController: UIViewController {
         buttonRedColor.titleLabel?.textAlignment = NSTextAlignment.Center
         buttonRedColor.setTitle("Red", forState: UIControlState.Normal)
         buttonRedColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonRedColor.addTarget(self, action: "buttonRedColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
-        
+        buttonRedColor.addTarget(self, action: #selector(ViewController.buttonRedColorPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         
         
         buttonDelete.frame = CGRectMake(230, 160, 40, 28.0)
@@ -258,16 +279,25 @@ class ViewController: UIViewController {
         buttonDelete.titleLabel?.textAlignment = NSTextAlignment.Center
         buttonDelete.setTitle("Delete", forState: UIControlState.Normal)
         buttonDelete.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonDelete.addTarget(self, action: "buttonDeletePressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonDelete.addTarget(self, action: #selector(ViewController.buttonDeletePressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         
         
         
         
         imageView.addSubview(textLabel)
         
+        scrollImage.contentSize = imageView.bounds.size
+        scrollImage.addSubview(imageView)
+        
+        
+        
         
         stickerDictionary[stickerLabel] = imageView
         StickerArray.append(imageView)
+        StickerArray1.append(imageView)
+        
+        
+        
         
         let stackView = UIStackView(arrangedSubviews: StickerArray)
         
@@ -275,21 +305,51 @@ class ViewController: UIViewController {
         stackView.distribution = .Fill
         stackView.alignment = .Center
         stackView.spacing = 10
+        //stackView.addGestureRecognizer(tap)
+        //stackView.userInteractionEnabled = true
         
+        
+        
+        
+        scrollView1.addSubview(stackView)
         scrollView.addSubview(stackView)
+        
+        
         imageView.heightAnchor.constraintEqualToConstant(400).active = true
         imageView.widthAnchor.constraintEqualToConstant(400).active = true
-        
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
     }
     
+    var doubleTap : Bool = true
+    func singleTapped(sender: UITapGestureRecognizer)
+    {
+        
+         if (doubleTap)
+         {
+        
+        sender.view!.contentMode = UIViewContentMode.ScaleAspectFill
+        sender.view?.transform = CGAffineTransformMakeScale(2, 2)
+        doubleTap = false
+         }
+         else
+         {
+            sender.view?.transform = CGAffineTransformMakeScale(1, 1)
+            doubleTap = true
+        }
+    }
+    
+    
+    
     func doubleTapped(sender : UITapGestureRecognizer)
     {
+        
         sender.view?.addSubview(buttonGreenColor)
         sender.view?.addSubview(buttonOrangeColor)
         sender.view?.addSubview(buttonRedColor)
         sender.view?.addSubview(buttonDelete)
+        
+        
     }
     
     

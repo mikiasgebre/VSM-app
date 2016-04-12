@@ -1,21 +1,31 @@
 import UIKit
 
-class ViewController: UIViewController {
+
+class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource,UITextViewDelegate,UITableViewDelegate, UITableViewDataSource{
     
     var xposition : CGFloat = 10.0
     var yposition : CGFloat = 10.0
     var stickerDictionary = [String: UIView]()
-    let buttonOrangeColor:UIButton! = UIButton(type: .System)
-    let buttonGreenColor:UIButton! = UIButton(type: .System)
-    let buttonRedColor:UIButton! = UIButton(type: .System)
-    let buttonDelete:UIButton! = UIButton(type: .System)
-    let screenSize = UIScreen.mainScreen().bounds
-    let scrollView = UIScrollView(frame: CGRectMake(0, 194, UIScreen.mainScreen().bounds.width, 500))
-    var StickerArray = [UIView]()
-    var StickerArray1 = [UIView]()
     
-    let scrollImage = UIScrollView()
-    let scrollView1 = UIScrollView(frame: CGRectMake(0, 700, UIScreen.mainScreen().bounds.width, 300))
+    let buttonDelete:UIButton! = UIButton(type: .System)
+    var doubleTap : Bool = true
+    var secondView : UIView!
+    var sentView : UIView!
+    let screenSize = UIScreen.mainScreen().bounds
+    let scrollView = UIScrollView(frame: CGRectMake(0, 100, 1000, 500))
+    var StickerArray = [UIView]()
+    var stackView : UIStackView!
+    var pickerView: UIPickerView = UIPickerView()
+    var textField : UITextField = UITextField()
+    var FontFamilyName = [String]()
+    var myLabel: UILabel!
+    var TextView = UITextView(frame: CGRectMake(30, 30, 300, 270))
+    var TextViewArray = [UITextView]()
+    var TableView = UITableView()
+    
+    
+    
+    let scrollView1 = UIScrollView(frame: CGRectMake(0, 700, 300, 300))
     
     
     override func viewDidLoad() {
@@ -40,11 +50,10 @@ class ViewController: UIViewController {
         scrollView1.contentSize = CGSize(width: 100, height: 100)
         
         
-        scrollView1.backgroundColor = UIColor.yellowColor()
-        scrollView.backgroundColor = UIColor.redColor()
-        view.addSubview(scrollView)
-        view.addSubview(scrollView1)
         
+        scrollView1.backgroundColor = UIColor.yellowColor()
+        // scrollView.backgroundColor = UIColor.redColor()
+        view.addSubview(scrollView)
         
         
         
@@ -76,23 +85,8 @@ class ViewController: UIViewController {
         makeSticker(stickerName, stickerNumber: stickerNumber)
     }
     
-    func buttonOrangeColorPressed(sender: UIButton!){
-        let sentView = sender.superview
-        sentView?.tintColor = UIColor.orangeColor()
-    }
     
     
-    func buttonGreenColorPressed(sender: UIButton!){
-        let sentView = sender.superview
-        sentView?.tintColor = UIColor.greenColor()
-    }
-    
-    
-    func buttonRedColorPressed(sender: UIButton!){
-        let sentView = sender.superview
-        sentView?.tintColor = UIColor.redColor()
-        
-    }
     
     func buttonDeletePressed(sender: UIButton!){
         let sentView = sender.superview
@@ -107,15 +101,16 @@ class ViewController: UIViewController {
         
         let imageView = UIImageView(image: UIImage(named: "postit1")!)
         imageView.image = imageView.image!.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+        // let buttonFlip:UIButton! = UIButton(type: .System)
         
-        imageView.contentMode = UIViewContentMode.ScaleAspectFill
         imageView.tintColor = UIColor.greenColor()
         
         
-        yposition += 40.0
+        let buttonFlip: UIButton! =  UIButton(type: .System)
         
-        imageView.frame = CGRectMake(0, 0, 200, 100 )
-        xposition += 500.0
+        
+        // imageView.frame = CGRectMake(0, 0, 200, 100 )
+        
         view.tag = stickerNumber
         imageView.layer.cornerRadius = 6
         imageView.tag = stickerNumber
@@ -132,16 +127,6 @@ class ViewController: UIViewController {
         imageView.addGestureRecognizer(gesture)
         view.userInteractionEnabled = true
         imageView.userInteractionEnabled = true
-        
-        
-        let tap = UITapGestureRecognizer(target: self, action: (#selector(ViewController.doubleTapped(_:))))
-        tap.numberOfTapsRequired = 2
-        imageView.addGestureRecognizer(tap)
-        
-        let tapone = UITapGestureRecognizer(target: self, action: (#selector(ViewController.singleTapped(_:))))
-        tapone.numberOfTapsRequired = 1
-        imageView.addGestureRecognizer(tapone)
-        
         
         
         
@@ -161,115 +146,23 @@ class ViewController: UIViewController {
         SerialNumber.textAlignment = NSTextAlignment.Center
         SerialNumber.font = UIFont.italicSystemFontOfSize(8)
         SerialNumber.textColor = UIColor.blackColor()
-        imageView.addSubview(SerialNumber)
-        imageView.addSubview(Serial)
+        //imageView.addSubview(SerialNumber)
+        // imageView.addSubview(Serial)
         
         
+        let TextView = UITextView(frame: CGRectMake(30, 30, 300, 270))
+        TextView.textColor = UIColor.blackColor()
         
-        let taskTitle = UITextView(frame: CGRectMake(90, 60, 80, 30))
-        taskTitle.alpha = 0.4
-        let task = UILabel(frame: CGRectMake(30, 50, 50, 50))
-        task.text = "Task Title"
-        task.font = Serial.font.fontWithSize(7)
-        taskTitle.textAlignment = NSTextAlignment.Center
-        taskTitle.font = UIFont.italicSystemFontOfSize(8)
-        taskTitle.textColor = UIColor.blackColor()
-        imageView.addSubview(taskTitle)
-        imageView.addSubview(task)
+        //TextView.alpha = 0.4
         
         
-        let duration = UITextView(frame: CGRectMake(90, 100, 80, 30))
-        duration.alpha = 0.4
-        let dur = UILabel(frame: CGRectMake(30, 90, 50, 50))
-        dur.text = "Duration"
-        dur.font = Serial.font.fontWithSize(7)
-        duration.textAlignment = NSTextAlignment.Center
-        duration.font = UIFont.italicSystemFontOfSize(8)
-        duration.textColor = UIColor.blackColor()
-        imageView.addSubview(duration)
-        imageView.addSubview(dur)
+        TextView.delegate = self
+        TextView.tag = stickerNumber
+        TextView.backgroundColor = UIColor.clearColor()
         
-        
-        let productQuantity = UITextView(frame: CGRectMake(90, 140, 80, 30))
-        productQuantity.alpha = 0.4
-        let product = UILabel(frame: CGRectMake(30, 130, 50, 50))
-        product.text = "Product Quantity"
-        product.font = Serial.font.fontWithSize(7)
-        productQuantity.textAlignment = NSTextAlignment.Center
-        productQuantity.font = UIFont.italicSystemFontOfSize(8)
-        productQuantity.textColor = UIColor.blackColor()
-        imageView.addSubview(productQuantity)
-        imageView.addSubview(product)
-        
-        
-        
-        let distance = UITextView(frame: CGRectMake(90, 180, 80, 30))
-        distance.alpha = 0.4
-        let dis = UILabel(frame: CGRectMake(30, 170, 50, 50))
-        dis.text = "Distance"
-        dis.font = Serial.font.fontWithSize(7)
-        distance.textAlignment = NSTextAlignment.Center
-        distance.font = UIFont.italicSystemFontOfSize(8)
-        distance.textColor = UIColor.blackColor()
-        imageView.addSubview(distance)
-        imageView.addSubview(dis)
-        
-        
-        let SystemConnection = UITextView(frame: CGRectMake(90, 220, 80, 30))
-        SystemConnection.alpha = 0.4
-        let system = UILabel(frame: CGRectMake(30, 200, 50, 60))
-        system.text = "System Connection"
-        system.font = Serial.font.fontWithSize(7)
-        SystemConnection.textAlignment = NSTextAlignment.Center
-        SystemConnection.font = UIFont.italicSystemFontOfSize(8)
-        SystemConnection.textColor = UIColor.blackColor()
-        imageView.addSubview(SystemConnection)
-        imageView.addSubview(system)
-        
-        
-        let textField = UITextView(frame: CGRectMake(35.0, 19.0, 200.0, 160.0))
-        textField.textAlignment = NSTextAlignment.Justified
-        textField.textColor = UIColor.blackColor()
-        textField.font = UIFont.boldSystemFontOfSize(15)
-        textField.autocapitalizationType = UITextAutocapitalizationType.Words
-        textField.backgroundColor = UIColor.clearColor()
-        
-        
-        
-        buttonOrangeColor.frame = CGRectMake(50, 160, 40, 28.0)
-        buttonOrangeColor.layer.cornerRadius = 3
-        buttonOrangeColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
-        buttonOrangeColor.layer.cornerRadius = 0.5 * buttonOrangeColor.bounds.size.width
-        buttonOrangeColor.titleLabel?.textAlignment = NSTextAlignment.Center
-        buttonOrangeColor.backgroundColor = UIColor.orangeColor()
-        buttonOrangeColor.setTitle("Orange", forState: UIControlState.Normal)
-        buttonOrangeColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonOrangeColor.addTarget(self, action: #selector(ViewController.buttonOrangeColorPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        
-        
-        buttonGreenColor.frame = CGRectMake(110, 160, 40, 28.0)
-        buttonGreenColor.layer.cornerRadius = 3
-        buttonGreenColor.tag = 1
-        buttonGreenColor.backgroundColor = UIColor.greenColor()
-        buttonGreenColor.layer.cornerRadius = 0.5 * buttonGreenColor.bounds.size.width
-        buttonGreenColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
-        buttonGreenColor.titleLabel?.textAlignment = NSTextAlignment.Center
-        buttonGreenColor.setTitle("Green", forState: UIControlState.Normal)
-        buttonGreenColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonGreenColor.addTarget(self, action: #selector(ViewController.buttonGreenColorPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        
-        buttonRedColor.frame = CGRectMake(170, 160, 40, 28.0)
-        buttonRedColor.layer.cornerRadius = 3
-        buttonRedColor.backgroundColor = UIColor.redColor()
-        buttonRedColor.layer.cornerRadius = 0.5 * buttonRedColor.bounds.size.width
-        buttonRedColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
-        buttonRedColor.titleLabel?.textAlignment = NSTextAlignment.Center
-        buttonRedColor.setTitle("Red", forState: UIControlState.Normal)
-        buttonRedColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonRedColor.addTarget(self, action: #selector(ViewController.buttonRedColorPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
-        
+        TextViewArray.append(TextView)
+        TextView.textColor = UIColor.blackColor()
+        imageView.addSubview(TextView)
         
         buttonDelete.frame = CGRectMake(230, 160, 40, 28.0)
         buttonDelete.layer.cornerRadius = 3
@@ -281,59 +174,366 @@ class ViewController: UIViewController {
         buttonDelete.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonDelete.addTarget(self, action: #selector(ViewController.buttonDeletePressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         
+        buttonFlip.frame = CGRectMake(300, 300, 80, 40)
+        buttonFlip.layer.cornerRadius = 3
+        buttonFlip.backgroundColor = UIColor.brownColor()
+        buttonFlip.layer.cornerRadius = 0.5 * buttonFlip.bounds.size.width
+        buttonFlip.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonFlip.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonFlip.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlip.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonFlip.addTarget(self, action: #selector(ViewController.buttonFlip(_:)), forControlEvents: UIControlEvents.TouchUpInside)
         
-        
+        imageView.addSubview(buttonFlip)
         
         imageView.addSubview(textLabel)
-        
-        scrollImage.contentSize = imageView.bounds.size
-        scrollImage.addSubview(imageView)
-        
-        
-        
+        imageView.addSubview(buttonFlip)
         
         stickerDictionary[stickerLabel] = imageView
         StickerArray.append(imageView)
-        StickerArray1.append(imageView)
         
         
+        stackView = UIStackView(arrangedSubviews: StickerArray)
         
-        
-        let stackView = UIStackView(arrangedSubviews: StickerArray)
+        stackView.tag = 1
         
         stackView.axis = .Horizontal
         stackView.distribution = .Fill
         stackView.alignment = .Center
         stackView.spacing = 10
-        //stackView.addGestureRecognizer(tap)
-        //stackView.userInteractionEnabled = true
-        
-        
-        
-        
-        scrollView1.addSubview(stackView)
         scrollView.addSubview(stackView)
+        
         
         
         imageView.heightAnchor.constraintEqualToConstant(400).active = true
         imageView.widthAnchor.constraintEqualToConstant(400).active = true
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
+        
+        
     }
     
-    var doubleTap : Bool = true
+    
+    
+    func buttonFlip(sender: UIButton)
+    {
+        
+        let buttonOrangeColor:UIButton! = UIButton(type: .System)
+        let buttonGreenColor:UIButton! = UIButton(type: .System)
+        let buttonRedColor:UIButton! = UIButton(type: .System)
+        
+        
+        
+        
+        buttonOrangeColor.frame = CGRectMake(50, 300, 40, 28.0)
+        buttonOrangeColor.layer.cornerRadius = 3
+        buttonOrangeColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonOrangeColor.layer.cornerRadius = 0.5 * buttonOrangeColor.bounds.size.width
+        buttonOrangeColor.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonOrangeColor.backgroundColor = UIColor.orangeColor()
+        buttonOrangeColor.setTitle("Orange", forState: UIControlState.Normal)
+        buttonOrangeColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonOrangeColor.addTarget(self, action: #selector(ViewController.buttonOrangeColorPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        
+        buttonGreenColor.frame = CGRectMake(110, 300, 40, 28.0)
+        buttonGreenColor.layer.cornerRadius = 3
+        buttonGreenColor.tag = 1
+        buttonGreenColor.backgroundColor = UIColor.greenColor()
+        buttonGreenColor.layer.cornerRadius = 0.5 * buttonGreenColor.bounds.size.width
+        buttonGreenColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonGreenColor.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonGreenColor.setTitle("Green", forState: UIControlState.Normal)
+        buttonGreenColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonGreenColor.addTarget(self, action: #selector(ViewController.buttonGreenColorPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        
+        buttonRedColor.frame = CGRectMake(170, 300, 40, 28.0)
+        buttonRedColor.layer.cornerRadius = 3
+        buttonRedColor.backgroundColor = UIColor.redColor()
+        buttonRedColor.layer.cornerRadius = 0.5 * buttonRedColor.bounds.size.width
+        buttonRedColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonRedColor.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonRedColor.setTitle("Red", forState: UIControlState.Normal)
+        buttonRedColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonRedColor.addTarget(self, action: #selector(ViewController.buttonRedColorPressed(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        
+        
+        
+        
+        
+        let buttonFlip1: UIButton! =  UIButton(type: .System)
+        buttonFlip1.frame = CGRectMake(300, 300, 80, 40)
+        buttonFlip1.layer.cornerRadius = 3
+        buttonFlip1.backgroundColor = UIColor.brownColor()
+        buttonFlip1.layer.cornerRadius = 0.5 * buttonFlip1.bounds.size.width
+        buttonFlip1.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonFlip1.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonFlip1.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlip1.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonFlip1.addTarget(self, action: #selector(ViewController.flipSecond(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        
+        sentView = sender.superview
+        secondView = UIView()
+        
+        secondView.frame  = sentView!.frame
+        //secondView.backgroundColor = UIColor.greenColor()
+        
+        
+        let layer = secondView.layer
+        layer.shadowColor = UIColor.blackColor().CGColor
+        layer.shadowOffset = CGSize(width: 0, height: -3)
+        layer.shadowOpacity = 0.4
+        layer.shadowRadius = 5
+        
+        
+        let fontFamilyNames = UIFont.familyNames()
+        for familyName in fontFamilyNames {
+            FontFamilyName.append(familyName)
+            FontFamilyName.sortInPlace()
+            
+        }
+        
+        
+        scrollView.addSubview(secondView)
+        secondView.addSubview(buttonRedColor)
+        secondView.addSubview(buttonGreenColor)
+        secondView.addSubview(buttonOrangeColor)
+        secondView.addSubview(buttonFlip1)
+        
+        let TableLabel: UILabel = UILabel()
+        TableLabel.frame = CGRect(x: 130, y: 80, width: 100, height: 30)
+        TableLabel.text = "Font Style"
+        secondView.addSubview(TableLabel)
+        
+        
+        let TableView: UITableView  =   UITableView()
+        TableView.frame = CGRect(x: 130, y: 100, width: 150, height: 150)
+        TableView.delegate      =   self
+        TableView.dataSource    =   self
+        TableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        TableView.backgroundColor = UIColor.clearColor()
+        
+        
+        pickerView = UIPickerView()
+        myLabel = UILabel()
+        myLabel.frame = CGRectMake(300, 10, 300, 100)
+        self.pickerView.delegate = self
+        self.pickerView.dataSource = self
+        pickerView.backgroundColor = UIColor.clearColor()
+        self.textField.inputView = pickerView
+        pickerView.frame = CGRectMake(20, 100, 300, 100)
+        
+        
+        secondView.addSubview(TableView)
+        // secondView.addSubview(pickerView)
+        secondView.addSubview(myLabel)
+        
+        
+        
+        
+        let customStepper = UIStepper(frame:CGRectMake(200, 50, 0, 0))
+        customStepper.wraps = true
+        customStepper.autorepeat = true
+        customStepper.maximumValue = 50
+        customStepper.minimumValue = 10
+        customStepper.addTarget(self, action: #selector(ViewController.stepperValueChanged(_:)), forControlEvents: .ValueChanged)
+        customStepper.backgroundColor = UIColor.clearColor()
+        secondView.addSubview(customStepper)
+        
+        
+        
+        performSelector(#selector(ViewController.flip), withObject: nil, afterDelay: 0)
+        // secondView.hidden = true
+        
+        
+        if(doubleTap)
+        {
+            TextViewArray[sentView.tag-1].hidden = true
+            //doubleTap = false
+        }
+        
+        
+        if((sentView.hidden) == true)
+        {
+            performSelector(#selector(ViewController.flipSecond(_:)), withObject: nil, afterDelay: 0)
+        }
+        
+        
+        
+    }
+    
+    
+    
+    
+    func buttonOrangeColorPressed(sender: UIButton!){
+        //let sentView = sender.superview
+        sentView?.tintColor = UIColor.orangeColor()
+        //secondView.backgroundColor = UIColor.orangeColor()
+        
+        
+    }
+    
+    
+    func buttonRedColorPressed(sender: UIButton!){
+        //let sentView = sender.superview
+        sentView?.tintColor = UIColor.redColor()
+        //secondView.backgroundColor = UIColor.redColor()
+        
+    }
+    
+    func buttonGreenColorPressed(sender: UIButton!){
+        // let sentView = sender.superview
+        sentView?.tintColor = UIColor.greenColor()
+        // secondView.backgroundColor = UIColor.greenColor()
+        
+    }
+    
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
+        cell.textLabel?.text = FontFamilyName[indexPath.row]
+        cell.backgroundColor = UIColor.clearColor()
+        return cell
+    }
+    
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return FontFamilyName.count
+    }
+    
+    
+    func stepperValueChanged(sender:UIStepper!)
+    {
+        // println("It Works, Value is --&gt;\(Int(sender.value).description)")
+        let currentValue = Int(sender.value)
+        myLabel.text =  String(currentValue)
+        
+        
+        if(TextViewArray.count == 1)
+        {
+            TextViewArray[0].font = TextViewArray[0].font?.fontWithSize(CGFloat(currentValue))
+            
+        }
+        else
+        {
+            TextViewArray[sentView.tag-1].font =  TextViewArray[sentView.tag-1].font?.fontWithSize(CGFloat(currentValue))
+        }
+        
+        
+    }
+    
+    
+    func numberOfComponentsInPickerView(colorPicker: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return FontFamilyName.count
+    }
+    
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
+    {
+        
+        
+        return FontFamilyName[row]
+        
+    }
+    
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        // myLabel.text = FontFamilyName[row]
+        
+        
+        if(TextViewArray.count == 1)
+        {
+            TextViewArray[0].font = UIFont(name: FontFamilyName[row],size: 20)
+            
+        }
+        else
+        {
+            TextViewArray[sentView.tag-1].font =  UIFont(name: FontFamilyName[row],size: 20)
+        }
+        
+        
+        
+        
+        //   TextView.font = UIFont (name: myLabel.text!, size: 30)
+        
+        
+        
+    }
+    
+    
+    
+    func flip() {
+        
+        
+        
+        let transitionOptions: UIViewAnimationOptions = [.TransitionFlipFromRight, .ShowHideTransitionViews]
+        
+        
+        
+        UIView.transitionWithView(secondView, duration: 1.0, options: transitionOptions, animations: {
+            self.secondView.hidden = false
+            }, completion: nil)
+        
+        UIView.transitionWithView(sentView!, duration: 1.0, options: transitionOptions, animations: {
+            // self.sentView!.hidden = true
+            self.sentView.backgroundColor = UIColor.clearColor()
+            self.sentView.opaque = false
+            
+            }, completion: nil)
+        
+        
+        
+        
+        
+    }
+    
+    
+    func flipSecond(sender:UIButton) {
+        
+        
+        
+        let transitionOptions: UIViewAnimationOptions = [.TransitionFlipFromLeft, .ShowHideTransitionViews]
+        
+        
+        UIView.transitionWithView(self.secondView, duration: 1.0, options: transitionOptions, animations: {
+            self.secondView.hidden = true
+            
+            }, completion: nil)
+        
+        
+        
+        UIView.transitionWithView(sentView!, duration: 1.0, options: transitionOptions, animations: {
+            self.sentView!.hidden = false
+            }, completion: nil)
+        
+        
+        
+        TextViewArray[sentView.tag-1].hidden = false
+        
+    }
+    
+    
+    
+    
+    
     func singleTapped(sender: UITapGestureRecognizer)
     {
         
-         if (doubleTap)
-         {
-        
-        sender.view!.contentMode = UIViewContentMode.ScaleAspectFill
-        sender.view?.transform = CGAffineTransformMakeScale(2, 2)
-        doubleTap = false
-         }
-         else
-         {
+        if (doubleTap)
+        {
+            
+            
+            sender.view?.transform = CGAffineTransformMakeScale(1.5, 1.5)
+            sender.view!.contentMode = UIViewContentMode.ScaleAspectFit
+            doubleTap = false
+        }
+        else
+        {
             sender.view?.transform = CGAffineTransformMakeScale(1, 1)
             doubleTap = true
         }
@@ -341,16 +541,6 @@ class ViewController: UIViewController {
     
     
     
-    func doubleTapped(sender : UITapGestureRecognizer)
-    {
-        
-        sender.view?.addSubview(buttonGreenColor)
-        sender.view?.addSubview(buttonOrangeColor)
-        sender.view?.addSubview(buttonRedColor)
-        sender.view?.addSubview(buttonDelete)
-        
-        
-    }
     
     
     func dragged(gesture: UIPanGestureRecognizer){

@@ -14,6 +14,7 @@
 		A9F20CEB1C5286D700E05B31 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9F20CE91C5286D700E05B31 /* LaunchScreen.storyboard */; };
 		A9F20CF61C5286D700E05B31 /* dav2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F20CF51C5286D700E05B31 /* dav2Tests.swift */; };
 		A9F20D011C5286D700E05B31 /* dav2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F20D001C5286D700E05B31 /* dav2UITests.swift */; };
+		C070DC7A1CAC0759001CC9B3 /* IGLDropdown in Resources */ = {isa = PBXBuildFile; fileRef = C070DC791CAC0759001CC9B3 /* IGLDropdown */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		A9F20CFC1C5286D700E05B31 /* dav2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = dav2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9F20D001C5286D700E05B31 /* dav2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = dav2UITests.swift; sourceTree = "<group>"; };
 		A9F20D021C5286D700E05B31 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C070DC791CAC0759001CC9B3 /* IGLDropdown */ = {isa = PBXFileReference; lastKnownFileType = folder; path = IGLDropdown; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +105,7 @@
 				A9F20CE71C5286D700E05B31 /* Assets.xcassets */,
 				A9F20CE91C5286D700E05B31 /* LaunchScreen.storyboard */,
 				A9F20CEC1C5286D700E05B31 /* Info.plist */,
+				C070DC791CAC0759001CC9B3 /* IGLDropdown */,
 			);
 			path = dav2;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C070DC7A1CAC0759001CC9B3 /* IGLDropdown in Resources */,
 				A9F20CEB1C5286D700E05B31 /* LaunchScreen.storyboard in Resources */,
 				A9F20CE81C5286D700E05B31 /* Assets.xcassets in Resources */,
 				A9F20CE61C5286D700E05B31 /* Main.storyboard in Resources */,

@@ -515,7 +515,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
-    //Button action method
+    //Non Button action method
     func refreshStickers(){
         for view in timeLineView.arrangedSubviews{
             view.removeFromSuperview()
@@ -526,6 +526,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
     }
+    
+    
+    //Non Button action method
+    func refreshStickersIcon(){
+        for view in timeLineViewIcon.arrangedSubviews{
+            view.removeFromSuperview()
+        }
+        //Add Stickers to timeline
+        for (index,sticker) in stickerDictionaryIcon.enumerate(){
+            timeLineViewIcon.insertArrangedSubview(sticker, atIndex: index)
+        }
+        
+    }
+
     
     
     
@@ -835,8 +849,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func buttonDeletePressed(sender: UIButton!){
         let sentView = sender.superview?.superview
         let tag: Int! = sentView?.tag
-        stickerDictionary.removeAtIndex(tag)
         sentView?.removeFromSuperview()
+        stickerDictionary.removeAtIndex(tag)
+        
+        
         for (index,sticker) in stickerDictionary.enumerate(){
             sticker.tag = index
             for case let textField as UITextField in sticker.subviews{
@@ -844,14 +860,79 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     textField.text = "Sticker Number "+String(index+1)
                 }
             }
+            
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 8){
+                    textField.text = "Name This Sticker "+String(index+1)
+                }
+            }
+            
+            
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 9){
+                    textField.text = String(index+1)
+                }
+            }
+            
         }
         
+        refreshStickers()
+        
+        
+        //Create Icons
         for view in timeLineViewIcon.arrangedSubviews{
-            if (view.tag == sentView?.tag){
-                view.removeFromSuperview()
-                stickerDictionaryIcon.removeAtIndex(view.tag)
-            }
+            view.removeFromSuperview()
         }
+        stickerDictionaryIcon.removeAll()
+        for sticker in stickerDictionary{
+            let iconView = UIView()
+            iconView.frame = CGRectMake(0,0,200, 130)
+            iconView.layer.cornerRadius = 5
+            iconView.tag = sticker.tag
+            //iconView.backgroundColor = UIColor.redColor()
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 7){
+                    switch(textField.text!){
+                    case "orange":
+                        iconView.backgroundColor = UIColor.orangeColor()
+                    case "red":
+                        iconView.backgroundColor = UIColor.redColor()
+                    case "green":
+                        iconView.backgroundColor = UIColor.greenColor()
+                    default:
+                        iconView.backgroundColor = UIColor.greenColor()
+                    }
+                    
+                }
+                
+            }
+            
+            
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 8){
+                    let textCurrentName = UITextView(frame: CGRectMake(2.0, 1.0, 50.0, 30.0))
+                    textCurrentName.font = UIFont.italicSystemFontOfSize(8)
+                    textCurrentName.textColor = UIColor.blackColor()
+                    textCurrentName.backgroundColor = UIColor.clearColor()
+                    textCurrentName.tag = 8
+                    textCurrentName.text = textField.text!
+                    textCurrentName.editable = false
+                    iconView.addSubview(textCurrentName)
+                }
+                
+            }
+            
+            iconView.heightAnchor.constraintEqualToConstant(35).active = true
+            iconView.widthAnchor.constraintEqualToConstant(55).active = true
+            stickerDictionaryIcon.append(iconView)
+            
+        }
+        
+        //Add Stickers icons to timeline
+        for (index,sticker) in stickerDictionaryIcon.enumerate(){
+            timeLineViewIcon.insertArrangedSubview(sticker, atIndex: index)
+        }
+        
     }
     
     
@@ -1721,7 +1802,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         viewControl.frame = CGRectMake(2, 2, 200, 120)
         viewControl.backgroundColor = UIColor.clearColor()
         viewControl.layer.cornerRadius = 6
-        viewControl.addGestureRecognizer(gesture)
         viewControl.userInteractionEnabled = true
         viewControl.tag = 19
         viewControl.hidden = true
@@ -1907,7 +1987,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         viewControl.frame = CGRectMake(2, 2, 200, 120)
         viewControl.backgroundColor = UIColor.clearColor()
         viewControl.layer.cornerRadius = 6
-        viewControl.addGestureRecognizer(gesture)
         viewControl.userInteractionEnabled = true
         viewControl.tag = 19
         viewControl.hidden = true
@@ -2101,6 +2180,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     let destinationView = view
                     var gesturedViewId = 1
                     var destinationViewId = 1
+                    
+                    
                     //Text field tagged 9 stores a secret id for the related view
                     //Because you cannot guarantee that the index you give the view 
                     //When putting it on the stack view will actually be preserved throught out
@@ -2155,6 +2236,65 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     }
                     
                     refreshStickers()
+                    
+                    
+                    
+                    //Create Icons
+                    for view in timeLineViewIcon.arrangedSubviews{
+                        view.removeFromSuperview()
+                    }
+                    stickerDictionaryIcon.removeAll()
+                    for sticker in stickerDictionary{
+                        let iconView = UIView()
+                        iconView.frame = CGRectMake(0,0,200, 130)
+                        iconView.layer.cornerRadius = 5
+                        iconView.tag = sticker.tag
+                        //iconView.backgroundColor = UIColor.redColor()
+                        for case let textField as UITextField in sticker.subviews{
+                            if (textField.tag == 7){
+                                switch(textField.text!){
+                                case "orange":
+                                    iconView.backgroundColor = UIColor.orangeColor()
+                                case "red":
+                                    iconView.backgroundColor = UIColor.redColor()
+                                case "green":
+                                    iconView.backgroundColor = UIColor.greenColor()
+                                default:
+                                    iconView.backgroundColor = UIColor.greenColor()
+                                }
+                                
+                            }
+                            
+                        }
+                        
+                        
+                        for case let textField as UITextField in sticker.subviews{
+                            if (textField.tag == 8){
+                                let textCurrentName = UITextView(frame: CGRectMake(2.0, 1.0, 50.0, 30.0))
+                                textCurrentName.font = UIFont.italicSystemFontOfSize(8)
+                                textCurrentName.textColor = UIColor.blackColor()
+                                textCurrentName.backgroundColor = UIColor.clearColor()
+                                textCurrentName.tag = 8
+                                textCurrentName.text = textField.text!
+                                textCurrentName.editable = false
+                                iconView.addSubview(textCurrentName)
+                            }
+                            
+                        }
+                        
+                        iconView.heightAnchor.constraintEqualToConstant(35).active = true
+                        iconView.widthAnchor.constraintEqualToConstant(55).active = true
+                        stickerDictionaryIcon.append(iconView)
+                        
+                    }
+                    
+                    //Add Stickers icons to timeline
+                    for (index,sticker) in stickerDictionaryIcon.enumerate(){
+                        timeLineViewIcon.insertArrangedSubview(sticker, atIndex: index)
+                    }
+                    
+                    
+                    
                 }
                 
             }

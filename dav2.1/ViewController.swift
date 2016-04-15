@@ -9,10 +9,12 @@
 
 import UIKit
 import RealmSwift
+import MessageUI
 
 class Sticker: Object {
     dynamic var stickerId = ""
     dynamic var stickerName = ""
+    dynamic var stickerStatus = ""
     dynamic var backgroundColor = ""
     dynamic var xPosition: Float = 0.0
     dynamic var yPosition: Float = 0.0
@@ -44,10 +46,13 @@ class StickerFile: Object {
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     var stickerDictionary = [UIView]()
+    var stickerDictionaryIcon = [UIView]()
     let allFilesTableView = UITableView()
     var retrievedFileNames = [String]()
     let timeLineView = UIStackView()
+    let timeLineViewIcon = UIStackView()
     var scrollView:UIScrollView!
+    var scrollViewIcon:UIScrollView!
     var containerView = UIView()
     
     override func viewDidLoad() {
@@ -57,20 +62,36 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         makeButtonCreateSticker()
         makeViewAllFilesButton()
         makeButtonRefreshStickers()
-        
+        makeButtonFileAsPdf()
         // Do any additional setup after loading the view, typically from a nib.
+        
         
     }
     
     //For initializing the scroll view
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        scrollView.frame = CGRectMake(0,0,view.frame.width-0.2, view.frame.height-0.2)
-        scrollView.contentSize = CGSizeMake(timeLineView.frame.width, timeLineView.frame.height)
+        scrollView.frame = CGRectMake(0,0,view.frame.width-0.2, 350)
+        scrollView.contentSize = CGSizeMake(timeLineView.frame.width, 350)
         scrollView.scrollEnabled = true
-        scrollView.contentInset = UIEdgeInsetsMake(-250, 0, 0, 200)
+        scrollView.contentInset = UIEdgeInsetsMake(0, 274, 0, 274)
         scrollView.userInteractionEnabled = true
         scrollView.alwaysBounceHorizontal = true
+        scrollView.delegate = self
+        //scrollView.pagingEnabled = true
+        //scrollView.backgroundColor = UIColor.brownColor()
+        //scrollView.autoresizingMask = UIViewAutoresizing.FlexibleWidth||UIViewAutoresizing.FlexibleHeight
+        
+        
+        scrollViewIcon.frame = CGRectMake(0,350,view.frame.width-0.2, 55)
+        scrollViewIcon.contentSize = CGSizeMake(timeLineViewIcon.frame.width, 55)
+        scrollViewIcon.scrollEnabled = true
+        scrollViewIcon.contentInset = UIEdgeInsetsMake(0, 20, 0, 10)
+        scrollViewIcon.userInteractionEnabled = true
+        scrollViewIcon.alwaysBounceHorizontal = true
+        //scrollViewIcon.delegate = self
+        //scrollViewIcon.backgroundColor = UIColor.blueColor()
+        
     }
     
     //The table shows you a list of files that are currently saved
@@ -185,15 +206,73 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             
             //Update Button text
-                    for case let button as UIButton in self.view.subviews{
-                        if (button.tag == 20){
-                            let currentButtonState = "Add Stickers to The Current File:"+"("+newFile!+")"
-                            button.setTitle(currentButtonState, forState: UIControlState.Normal)
+            for case let button as UIButton in self.view.subviews{
+                if (button.tag == 20){
+                        let currentButtonState = "Add Stickers to The Current File:"+"("+newFile!+")"
+                        button.setTitle(currentButtonState, forState: UIControlState.Normal)
                             
-                        }
-                    }
+                }
+            }
             
         }
+        
+        
+        //Create Icons
+        for view in timeLineViewIcon.arrangedSubviews{
+            view.removeFromSuperview()
+        }
+        stickerDictionaryIcon.removeAll()
+        for sticker in stickerDictionary{
+            let iconView = UIView()
+            iconView.frame = CGRectMake(0,0,200, 130)
+            iconView.layer.cornerRadius = 5
+            iconView.tag = sticker.tag
+            //iconView.backgroundColor = UIColor.redColor()
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 7){
+                    switch(textField.text!){
+                    case "orange":
+                        iconView.backgroundColor = UIColor.orangeColor()
+                    case "red":
+                        iconView.backgroundColor = UIColor.redColor()
+                    case "green":
+                        iconView.backgroundColor = UIColor.greenColor()
+                    default:
+                        iconView.backgroundColor = UIColor.greenColor()
+                    }
+                    
+                }
+                
+            }
+            
+            
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 8){
+                    let textCurrentName = UITextView(frame: CGRectMake(2.0, 1.0, 50.0, 30.0))
+                    textCurrentName.textAlignment = NSTextAlignment.Center
+                    textCurrentName.font = UIFont.italicSystemFontOfSize(8)
+                    textCurrentName.textColor = UIColor.blackColor()
+                    textCurrentName.backgroundColor = UIColor.clearColor()
+                    textCurrentName.tag = 8
+                    textCurrentName.text = textField.text!
+                    textCurrentName.editable = false
+                    iconView.addSubview(textCurrentName)
+                }
+                
+            }
+            
+            iconView.heightAnchor.constraintEqualToConstant(35).active = true
+            iconView.widthAnchor.constraintEqualToConstant(55).active = true
+            stickerDictionaryIcon.append(iconView)
+            
+        }
+        
+        //Add Stickers to timeline
+        for (index,sticker) in stickerDictionaryIcon.enumerate(){
+            timeLineViewIcon.insertArrangedSubview(sticker, atIndex: index)
+        }
+        
+        
         
     }
     
@@ -269,16 +348,142 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     textField.text = String(index+1)
                 }
                 
-                //self.view.addSubview(sticker)
             }
         }
         
        //Add Stickers to timeline
         for (index,sticker) in stickerDictionary.enumerate(){
             timeLineView.insertArrangedSubview(sticker, atIndex: index)
+            //timeLineViewIcon.insertArrangedSubview(sticker, atIndex: index)
         }
-   
+        
+        let iconView = UIView()
+        iconView.frame = CGRectMake(0,0,200, 130)
+        iconView.layer.cornerRadius = 5
+        iconView.tag = stickerDictionary[stickerDictionary.count-1].tag
+        for case let textField as UITextField in stickerDictionary[stickerDictionary.count-1].subviews{
+            if (textField.tag == 7){
+                switch(textField.text!){
+                case "orange":
+                    iconView.backgroundColor = UIColor.orangeColor()
+                case "red":
+                    iconView.backgroundColor = UIColor.redColor()
+                case "green":
+                    iconView.backgroundColor = UIColor.greenColor()
+                default:
+                    iconView.backgroundColor = UIColor.greenColor()
+                }
+                
+            }
+            
+        }
+        
+        
+        for case let textField as UITextField in stickerDictionary[stickerDictionary.count-1].subviews{
+            if (textField.tag == 8){
+                let textCurrentName = UITextView(frame: CGRectMake(2.0, 1.0, 50.0, 30.0))
+                textCurrentName.textAlignment = NSTextAlignment.Center
+                textCurrentName.font = UIFont.italicSystemFontOfSize(8)
+                textCurrentName.textColor = UIColor.blackColor()
+                textCurrentName.backgroundColor = UIColor.clearColor()
+                textCurrentName.tag = 8
+                textCurrentName.text = textField.text!
+                textCurrentName.editable = false
+                iconView.addSubview(textCurrentName)
+            }
+            
+        }
+        iconView.heightAnchor.constraintEqualToConstant(35).active = true
+        iconView.widthAnchor.constraintEqualToConstant(55).active = true
+        stickerDictionaryIcon.append(iconView)
+        
+        //Add icons to timeline
+        for (index,icon) in stickerDictionaryIcon.enumerate(){
+            timeLineViewIcon.insertArrangedSubview(icon, atIndex: index)
+        }
+        
+        scrollView.setContentOffset(CGPoint(x: timeLineView.arrangedSubviews.count*548, y: 0), animated: false)
+        //scrollView.contentOffset = CGPoint(x: timeLineView.frame.width, y: 0)
+        scrollViewIcon.setContentOffset(CGPoint(x: timeLineViewIcon.arrangedSubviews.count*548, y: 0), animated: false)
+        
     }
+    
+    
+    
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        var zoomedView = UIView()
+            for view in timeLineView.arrangedSubviews{
+                if(view.frame.width>205){
+                    view.transform = CGAffineTransformMakeScale(1, 1)
+                    zoomedView = view
+                }
+            }
+        for view in timeLineViewIcon.arrangedSubviews{
+            if (view.tag == zoomedView.tag){
+                view.transform = CGAffineTransformMakeScale(1, 1)
+            }
+        }
+        
+    }
+    
+    
+    
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        print(scrollView.contentOffset)
+        
+        let offset = scrollView.contentOffset.x
+        let remainder = offset%scrollView.frame.width
+        let patch = 567.8 - remainder
+        let fullOffset = offset+patch
+        
+        let itemFullOffset = offset-remainder
+        var itemNumber = Int(itemFullOffset/scrollView.frame.width)
+        //timeLineView.arrangedSubviews[itemNumber].backgroundColor = UIColor.blackColor()
+        
+        if(scrollView.contentOffset.x == -274.0){
+            let item = 0
+            scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: 0), animated: false)
+            for views in timeLineView.arrangedSubviews{
+                if(views.tag == item){
+                        views.transform = CGAffineTransformMakeScale(1.6, 1.6)
+                }
+            }
+            
+            for view in timeLineViewIcon.arrangedSubviews{
+                if (view.tag == item){
+                    view.transform = CGAffineTransformMakeScale(1.6, 1.6)
+                }
+            }
+            
+            
+        }else{
+            scrollView.setContentOffset(CGPoint(x: fullOffset, y: 0), animated: false)
+            if(itemNumber>=timeLineView.arrangedSubviews.count){
+                itemNumber = timeLineView.arrangedSubviews.count-2
+            }
+            for view in timeLineView.arrangedSubviews{
+                if(view.tag == itemNumber+1){
+                        view.transform = CGAffineTransformMakeScale(1.6, 1.6)
+                }
+            }
+            
+            for view in timeLineViewIcon.arrangedSubviews{
+                if (view.tag == itemNumber+1){
+                    view.transform = CGAffineTransformMakeScale(1.6, 1.6)
+                }
+            }
+            //timeLineView.arrangedSubviews[itemNumber].transform = CGAffineTransformMakeScale(2, 2)
+        }
+        
+        
+        //let itemNumber = (Int(fullOffset/scrollView.frame.width)+1)
+        
+        //stickerDictionary[itemNumber+1].backgroundColor = UIColor.blackColor()
+        //stickerDictionary[itemNumber].transform = CGAffineTransformMakeScale(2, 2)
+        print("Item Number")
+        print(stickerDictionary.count)
+    }
+    
     
     
     //Button that creates the post it sticker pieces
@@ -306,6 +511,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Button action method
     func buttonRefreshStickersPressed(sender: UIButton!){
+        refreshStickers()
+    }
+    
+    
+    //Button action method
+    func refreshStickers(){
         for view in timeLineView.arrangedSubviews{
             view.removeFromSuperview()
         }
@@ -317,25 +528,246 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
+    
+    //Button that creates the post it sticker pieces
+    func makeButtonFileAsPdf(){
+        let buttonFileAsPdf:UIButton! = UIButton(type: .System)
+        buttonFileAsPdf.frame = CGRectMake(610, 30, 50, 30)
+        buttonFileAsPdf.layer.cornerRadius = 5
+        buttonFileAsPdf.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
+        buttonFileAsPdf.titleLabel?.numberOfLines = 0
+        buttonFileAsPdf.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        buttonFileAsPdf.backgroundColor = UIColor.greenColor()
+        buttonFileAsPdf.setTitle("Pdf", forState: UIControlState.Normal)
+        buttonFileAsPdf.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonFileAsPdf.addTarget(self, action: "buttonFileAsPdfPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(buttonFileAsPdf)
+        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
+        buttonFileAsPdf.addGestureRecognizer(gesture)
+        buttonFileAsPdf.userInteractionEnabled = true
+        buttonFileAsPdf.tag = 42
+        
+    }
+    
+    //Button action method
+    func buttonFileAsPdfPressed(sender: UIButton!){
+        fileAsPdf()
+    }
+    
+    
+    
+    //Button that creates the post it sticker pieces
+    func makeButtonFileAsPdfRemove(){
+        let buttonFileAsPdf:UIButton! = UIButton(type: .System)
+        buttonFileAsPdf.frame = CGRectMake(200, 30, 50, 30)
+        buttonFileAsPdf.layer.cornerRadius = 5
+        buttonFileAsPdf.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
+        buttonFileAsPdf.titleLabel?.numberOfLines = 0
+        buttonFileAsPdf.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        buttonFileAsPdf.backgroundColor = UIColor.greenColor()
+        buttonFileAsPdf.setTitle("Pdf", forState: UIControlState.Normal)
+        buttonFileAsPdf.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonFileAsPdf.addTarget(self, action: "buttonFileAsPdfRemovePressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(buttonFileAsPdf)
+        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
+        buttonFileAsPdf.addGestureRecognizer(gesture)
+        buttonFileAsPdf.userInteractionEnabled = true
+        buttonFileAsPdf.tag = 45
+        
+    }
+    
+    
+    
+    
+    //Button action method
+    func buttonFileAsPdfRemovePressed(sender: UIButton!){
+        for case let webView as UIWebView in sender.superview!.subviews{
+            if (webView.tag == 72){
+                webView.removeFromSuperview()
+            }
+            
+        }
+        sender.superview?.removeFromSuperview()
+        sender.removeFromSuperview()
+    }
+    
+    //Button action method
+    func fileAsPdf(){
+        
+        /*let renderer = UIPrintPageRenderer()
+        let paper = CGRect(x: 0, y: 0, width: 592.2, height: 841.8)
+        let printablePaper = CGRectInset(paper, 0, 0)
+        renderer.setValue(NSValue(CGRect: paper), forKey: "paperArea")
+        renderer.setValue(NSValue(CGRect: printablePaper), forKey: "printableArea")
+        UIGraphicsBeginPDFPage()
+        let pdfContext = UIGraphicsGetCurrentContext()
+        for sticker in stickerDictionary{
+            renderer.drawLayer(sticker.layer, inContext: pdfContext!)
+        }
+        UIGraphicsEndPDFContext()*/
+        
+        let webViewContainer = UIWebView()
+        webViewContainer.frame = CGRectMake(5, 5, 635, 845.8)
+        
+        
+        
+        
+        let webView = UIWebView()
+        webView.frame = CGRectMake(10, 50, 630, 841.8)
+        webView.tag = 72
+        
+        
+        var startIndex = 0
+        var endIndex = 0
+        let stickerCount = stickerDictionary.count
+        var groupCount = 0
+        let remainder = stickerDictionary.count%3
+        if(stickerDictionary.count%3 == 0){
+            groupCount = (stickerDictionary.count/3)
+        }
+        if(stickerDictionary.count%3 != 0){
+            groupCount = (stickerDictionary.count/3)+1
+        }
+        
+        
+        for (var group = 0; group < groupCount; group++){
+            if(startIndex+3 <= stickerCount){
+                endIndex = startIndex+3
+            }
+            if(startIndex+3 > stickerCount){
+                startIndex = stickerCount - remainder
+                endIndex = stickerCount
+            }
+            var count = 0  //This is needed to increase the x component
+            for (var index = startIndex; index < endIndex; index++){
+                UIGraphicsBeginImageContextWithOptions(CGRectMake(0, 0, 200, 130).size, false, 0)
+                stickerDictionary[index].drawViewHierarchyInRect(CGRectMake(0, 0, 200, 130), afterScreenUpdates: true)
+                let image = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                let imageView = UIImageView(image: image)
+                imageView.frame = CGRectMake(CGFloat(count*210), CGFloat(140*group), 200, 130)
+                count++
+                webView.addSubview(imageView)
+            }
+            startIndex+=3
+        }
+        
+        /*for (var index=0; index < stickerDictionary.count; index++){
+            //for (indexY, sticker) in stickerDictionary.enumerate(){
+            UIGraphicsBeginImageContextWithOptions(CGRectMake(0, 0, 200, 130).size, false, 0)
+            stickerDictionary[index].drawViewHierarchyInRect(CGRectMake(0, 0, 200, 130), afterScreenUpdates: true)
+            //sticker.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            let imageView = UIImageView(image: image)
+                imageView.frame = CGRectMake(CGFloat(index*210), 20, 200, 130)
+            
+            webView.addSubview(imageView)
+            //}
+         }*/
+        
+        let buttonFileAsPdf:UIButton! = UIButton(type: .System)
+        buttonFileAsPdf.frame = CGRectMake(220, 10, 50, 30)
+        buttonFileAsPdf.layer.cornerRadius = 5
+        buttonFileAsPdf.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
+        buttonFileAsPdf.titleLabel?.numberOfLines = 0
+        buttonFileAsPdf.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        buttonFileAsPdf.backgroundColor = UIColor.greenColor()
+        buttonFileAsPdf.setTitle("Pdf", forState: UIControlState.Normal)
+        buttonFileAsPdf.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonFileAsPdf.addTarget(self, action: "buttonFileAsPdfRemovePressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(buttonFileAsPdf)
+        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
+        buttonFileAsPdf.addGestureRecognizer(gesture)
+        buttonFileAsPdf.userInteractionEnabled = true
+        buttonFileAsPdf.tag = 45
+        
+        
+        webViewContainer.addSubview(buttonFileAsPdf)
+        //webViewContainer.addSubview(webView)
+        //self.view.addSubview(webViewContainer)
+        
+        let pdfStickers = NSMutableData()
+        UIGraphicsBeginPDFContextToData(pdfStickers, webViewContainer.bounds, nil)
+        let pdfContext = UIGraphicsGetCurrentContext()
+        UIGraphicsBeginPDFPage()
+        //webViewContainer.frame = CGRectMake(webViewContainer.frame)
+        webView.layer.renderInContext(pdfContext!)
+        UIGraphicsEndPDFContext()
+        
+        
+        var count = 0
+        let docDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+            let fileName = docDirectory+"/"+"pdfFile"+String(count)
+            pdfStickers.writeToFile(fileName, atomically: true)
+            count+=1
+        let webViewPdf = UIWebView()
+        webViewPdf.frame = webView.frame
+        webViewPdf.loadData(pdfStickers, MIMEType: "application/pdf", textEncodingName: "UTF-8", baseURL: NSURL())
+        webViewContainer.addSubview(webViewPdf)
+        self.view.addSubview(webViewContainer)
+    }
+
+    
+    
+    
     func createScrollAndContainerView() {
         scrollView = UIScrollView()
+        scrollView.maximumZoomScale = 2
+        scrollView.minimumZoomScale = 1
         //scrollView.backgroundColor = UIColor.brownColor()
+        
+        scrollViewIcon = UIScrollView()
+        //scrollViewIcon.delegate = self
+        scrollViewIcon.maximumZoomScale = 2
+        scrollViewIcon.minimumZoomScale = 1
+        
+        
+        containerView = UIView()
+        //containerView.frame = CGRectMake(40, 40, 400, 400)
+        containerView.backgroundColor = UIColor.blueColor()
+        containerView.bounds = CGRectInset(view.frame, 20.0, 20.0)
+        containerView.layer.cornerRadius = 6
+        containerView.tag = 4
+        //let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
+        //containerView.addGestureRecognizer(gesture)
+        //containerView.userInteractionEnabled = true
+        
+        
         
         //Timeline is basically a stackview
         timeLineView.userInteractionEnabled = true
         timeLineView.axis = UILayoutConstraintAxis.Horizontal
         timeLineView.distribution = .Fill
         timeLineView.alignment = UIStackViewAlignment.Center
-        timeLineView.spacing = 20
+        timeLineView.spacing = 567.8
         timeLineView.tag = 60
         timeLineView.backgroundColor = UIColor.redColor()
         timeLineView.layoutMarginsRelativeArrangement = true
         timeLineView.translatesAutoresizingMaskIntoConstraints = false
-        timeLineView.heightAnchor.constraintEqualToConstant(self.view.frame.height-20).active = true
+        timeLineView.heightAnchor.constraintEqualToConstant(350).active = true
         //timeLineView.widthAnchor.constraintEqualToConstant(self.view.frame.size.width-20).active = true
         
+        
+        //Timeline is basically a stackview
+        timeLineViewIcon.userInteractionEnabled = true
+        timeLineViewIcon.axis = UILayoutConstraintAxis.Horizontal
+        timeLineViewIcon.distribution = .Fill
+        timeLineViewIcon.alignment = UIStackViewAlignment.Center
+        timeLineViewIcon.spacing = 30
+        timeLineViewIcon.tag = 60
+        timeLineViewIcon.backgroundColor = UIColor.redColor()
+        timeLineViewIcon.layoutMarginsRelativeArrangement = true
+        timeLineViewIcon.translatesAutoresizingMaskIntoConstraints = false
+        timeLineViewIcon.heightAnchor.constraintEqualToConstant(750).active = true
+        
+        
+        //containerView.addSubview(timeLineView)
+        scrollViewIcon.addSubview(timeLineViewIcon)
         scrollView.addSubview(timeLineView)
+        //scrollView.addSubview(scrollViewIcon)
         view.addSubview(scrollView)
+        view.addSubview(scrollViewIcon)
         
         //timeLineView.centerXAnchor.constraintEqualToAnchor(self.view.centerXAnchor).active = true
         //timeLineView.centerYAnchor.constraintEqualToAnchor(self.view.centerYAnchor).active = true
@@ -344,9 +776,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
 
     
-    
     func buttonOrangeColorPressed(sender: UIButton!){
-        let sentView = sender.superview
+        let sentView = sender.superview?.superview
         sentView?.backgroundColor = UIColor.orangeColor()
         // Hidden text field to keep track of current color as a string
         for case let textField as UITextField in sentView!.subviews{
@@ -354,12 +785,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 textField.text = "orange"
             }
         }
+        
+        for view in timeLineViewIcon.arrangedSubviews{
+            if (view.tag == sentView?.tag){
+                view.backgroundColor = UIColor.orangeColor()
+            }
+        }
 
     }
     
     
     func buttonGreenColorPressed(sender: UIButton!){
-        let sentView = sender.superview
+        let sentView = sender.superview?.superview
         sentView?.backgroundColor = UIColor.greenColor()
         // Hidden text field to keep track of current color as a string
         for case let textField as UITextField in sentView!.subviews{
@@ -367,11 +804,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 textField.text = "green"
             }
         }
+        
+        for view in timeLineViewIcon.arrangedSubviews{
+            if (view.tag == sentView?.tag){
+                view.backgroundColor = UIColor.greenColor()
+            }
+        }
     }
     
     
     func buttonRedColorPressed(sender: UIButton!){
-        let sentView = sender.superview
+        let sentView = sender.superview?.superview
         sentView?.backgroundColor = UIColor.redColor()
         // Hidden text field to keep track of current color as a string
         for case let textField as UITextField in sentView!.subviews{
@@ -380,11 +823,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
         
+        for view in timeLineViewIcon.arrangedSubviews{
+            if (view.tag == sentView?.tag){
+                view.backgroundColor = UIColor.redColor()
+            }
+        }
+        
     }
     
     
     func buttonDeletePressed(sender: UIButton!){
-        let sentView = sender.superview
+        let sentView = sender.superview?.superview
         let tag: Int! = sentView?.tag
         stickerDictionary.removeAtIndex(tag)
         sentView?.removeFromSuperview()
@@ -396,10 +845,132 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
             }
         }
+        
+        for view in timeLineViewIcon.arrangedSubviews{
+            if (view.tag == sentView?.tag){
+                view.removeFromSuperview()
+                stickerDictionaryIcon.removeAtIndex(view.tag)
+            }
+        }
+    }
+    
+    
+    //Button action method
+    func buttonFlipPressed(sender: UIButton!){
+        CATransaction.begin()
+        CATransaction.setCompletionBlock({
+            //sender.superview!.transform = CGAffineTransformMakeScale(1.6, 1.6)
+            for textField in sender.superview!.subviews{
+                if (textField.tag == 19){//This is the view for the controls at the back
+                        textField.hidden = false
+                }
+            }
+        })
+        let fromValue = 0
+        let toValue = M_PI
+        CATransaction.setDisableActions(true)
+        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.y")
+        rotationAnimation.fromValue = fromValue
+        rotationAnimation.toValue = toValue
+        rotationAnimation.duration = 1
+        sender.superview?.layer.addAnimation(rotationAnimation, forKey: "rotation")
+        var transform = CATransform3DIdentity
+        transform.m34 = 1.0/500.0
+        sender.superview?.layer.transform = transform
+        
+        for view in timeLineViewIcon.arrangedSubviews{
+            if (view.tag == sender.superview?.tag){
+                view.layer.addAnimation(rotationAnimation, forKey: "rotation")
+                view.layer.transform = transform
+            }
+        }
+        
+        CATransaction.commit()
+    }
+    
+    
+    //Button action method
+    func buttonFlipBackPressed(sender: UIButton!){
+        CATransaction.begin()
+        CATransaction.setCompletionBlock({
+            //sender.superview!.transform = CGAffineTransformMakeScale(2, 2)
+            for textField in sender.superview!.superview!.subviews{
+                if (textField.tag == 19){//This is the view for the controls
+                    textField.hidden = true
+                }
+            }
+        })
+        let fromValue = 0
+        let toValue = M_PI
+        CATransaction.setDisableActions(true)
+        let rotationAnimation = CABasicAnimation(keyPath: "transform.rotation.y")
+        rotationAnimation.fromValue = fromValue
+        rotationAnimation.toValue = toValue
+        rotationAnimation.duration = 1
+        sender.superview?.superview!.layer.addAnimation(rotationAnimation, forKey: "rotation")
+        var transform = CATransform3DIdentity
+        transform.m34 = 1.0/500.0
+        sender.superview?.superview!.layer.transform = transform
+        
+        for view in timeLineViewIcon.arrangedSubviews{
+            if (view.tag == sender.superview?.superview!.tag){
+                view.layer.addAnimation(rotationAnimation, forKey: "rotation")
+                view.layer.transform = transform
+            }
+        }
+        
+        
+        CATransaction.commit()
+    }
+
+
+    
+    
+    func buttonArchivePressed(sender: UIButton!){
+        let sentView = sender.superview
+        // Hidden text field to keep track of current state as a string
+        for case let textField as UITextField in sentView!.subviews{
+            if (textField.tag == 20){
+                    textField.text = "archived"
+                
+            }
+        }
+        //Hide the archive button
+        sender.hidden = true
+        
+        //Make visible the extract button
+        for case let button as UIButton in sentView!.subviews{
+            if (button.tag == 88){
+                button.hidden = false
+            }
+        }
+    }
+    
+    
+    func buttonExtractPressed(sender: UIButton!){
+        let sentView = sender.superview
+        // Hidden text field to keep track of current state as a string
+        for case let textField as UITextField in sentView!.subviews{
+            if (textField.tag == 20){
+                    textField.text = "current"
+                
+            }
+        }
+        //Hide the extract button
+        sender.hidden = true
+        
+        //Make visible the archive button
+        for case let button as UIButton in sentView!.subviews{
+            if (button.tag == 89){
+                button.hidden = false
+            }
+        }
+        
     }
     
     
 
+    //This may be required to open as another thread in a future release
     func buttonCreateNewFilePressed(sender: UIButton!){
         let sentView = sender.superview
         //Check if you have any views on screen
@@ -435,12 +1006,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
             }
             
+            if(self.stickerDictionaryIcon.count != 0){
+                for view in self.timeLineViewIcon.arrangedSubviews{
+                    view.removeFromSuperview()
+                }
+                self.stickerDictionaryIcon.removeAll()
+            }
             
             
             for view in self.stickerDictionary{
                 view.removeFromSuperview()
             }
             self.stickerDictionary.removeAll()
+            
             
             //self.makeTableAppear()
         }))
@@ -515,7 +1093,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 stickerView.yPosition = Float(sticker.frame.origin.y)
                 stickerView.width = Float(sticker.frame.size.width)
                 stickerView.height = Float(sticker.frame.size.height)
-                for case let textField as UITextField in (sticker.subviews){
+                for case let textField as UITextView in (sticker.subviews){
                     if (textField.tag == 3){
                         stickerView.text = textField.text!
                     }
@@ -529,6 +1107,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 for case let textField as UITextField in (sticker.subviews){
                     if (textField.tag == 2){
                         stickerView.stickerId = textField.text!
+                    }
+                }
+                for case let textField as UITextField in (sticker.subviews){
+                    if (textField.tag == 20){
+                        stickerView.stickerStatus = textField.text!
                     }
                 }
                 
@@ -704,7 +1287,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 stickerView.yPosition = Float(sticker.frame.origin.y)
                 stickerView.width = Float(sticker.frame.size.width)
                 stickerView.height = Float(sticker.frame.size.height)
-                for case let textField as UITextField in (sticker.subviews){
+                for case let textField as UITextView in (sticker.subviews){
                     if (textField.tag == 3){
                         stickerView.text = textField.text!
                     }
@@ -718,6 +1301,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 for case let textField as UITextField in (sticker.subviews){
                     if (textField.tag == 2){
                         stickerView.stickerId = textField.text!
+                    }
+                }
+                for case let textField as UITextField in (sticker.subviews){
+                    if (textField.tag == 20){
+                        stickerView.stickerStatus = textField.text!
                     }
                 }
                 
@@ -877,8 +1465,65 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                             
                         }
                     }
-        
+            
         }
+        
+        
+        //Create Icons
+        for view in timeLineViewIcon.arrangedSubviews{
+            view.removeFromSuperview()
+        }
+        stickerDictionaryIcon.removeAll()
+        for sticker in stickerDictionary{
+            let iconView = UIView()
+            iconView.frame = CGRectMake(0,0,200, 130)
+            iconView.layer.cornerRadius = 5
+            iconView.tag = sticker.tag
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 7){
+                    switch(textField.text!){
+                    case "orange":
+                        iconView.backgroundColor = UIColor.orangeColor()
+                    case "red":
+                        iconView.backgroundColor = UIColor.redColor()
+                    case "green":
+                        iconView.backgroundColor = UIColor.greenColor()
+                    default:
+                        iconView.backgroundColor = UIColor.greenColor()
+                    }
+                    
+                }
+                
+            }
+            
+            
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 8){
+                    let textCurrentName = UITextView(frame: CGRectMake(2.0, 1.0, 50.0, 30.0))
+                    textCurrentName.textAlignment = NSTextAlignment.Center
+                    textCurrentName.font = UIFont.italicSystemFontOfSize(8)
+                    textCurrentName.textColor = UIColor.blackColor()
+                    textCurrentName.backgroundColor = UIColor.clearColor()
+                    textCurrentName.tag = 8
+                    textCurrentName.textAlignment = NSTextAlignment.Justified
+                    textCurrentName.text = textField.text!
+                    textCurrentName.editable = false
+                    iconView.addSubview(textCurrentName)
+                }
+                
+            }
+            
+            iconView.heightAnchor.constraintEqualToConstant(35).active = true
+            iconView.widthAnchor.constraintEqualToConstant(55).active = true
+            stickerDictionaryIcon.append(iconView)
+            
+        }
+        
+        //Add Stickers to timeline
+        for (index,sticker) in stickerDictionaryIcon.enumerate(){
+            timeLineViewIcon.insertArrangedSubview(sticker, atIndex: index)
+        }
+        
     
     }
 
@@ -1069,6 +1714,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         view.addGestureRecognizer(gesture)
         view.userInteractionEnabled = true
         view.tag = 1
+        view.hidden = false
+        
+        
+        let viewControl = UIView()
+        viewControl.frame = CGRectMake(2, 2, 200, 120)
+        viewControl.backgroundColor = UIColor.clearColor()
+        viewControl.layer.cornerRadius = 6
+        viewControl.addGestureRecognizer(gesture)
+        viewControl.userInteractionEnabled = true
+        viewControl.tag = 19
+        viewControl.hidden = true
         
         
         let textTitle = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
@@ -1077,6 +1733,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textTitle.textColor = UIColor.blackColor()
         textTitle.tag = 2
         textTitle.hidden = true
+        
+        let textTitleStatus = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
+        textTitleStatus.textAlignment = NSTextAlignment.Center
+        textTitleStatus.font = UIFont.italicSystemFontOfSize(8)
+        textTitleStatus.textColor = UIColor.blackColor()
+        textTitleStatus.tag = 20
+        textTitleStatus.hidden = true
+        textTitleStatus.text = "current"
         
         
         let textViewId = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
@@ -1095,12 +1759,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textCurrentColor.hidden = true
         textCurrentColor.text = "green"
         
+        
+        
         let textCurrentName = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 16.0))
         textCurrentName.textAlignment = NSTextAlignment.Center
         textCurrentName.font = UIFont.italicSystemFontOfSize(8)
         textCurrentName.textColor = UIColor.blackColor()
         textCurrentName.tag = 8
-        textCurrentName.text = "Name this Sticker"
+        textCurrentName.text = "Name this Sticker "+String(stickerNumber)
+        textCurrentName.addTarget(self, action: "nameChanged:", forControlEvents: UIControlEvents.EditingChanged)
+        
         
         
         let textField = UITextView(frame: CGRectMake(0.0, 19.0, 200.0, 93.0))
@@ -1113,7 +1781,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         let buttonOrangeColor:UIButton! = UIButton(type: .System)
-        buttonOrangeColor.frame = CGRectMake(3, 112, 30, 8.0)
+        buttonOrangeColor.frame = CGRectMake(50, 95, 30, 8.0)
         buttonOrangeColor.layer.cornerRadius = 3
         buttonOrangeColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonOrangeColor.titleLabel?.textAlignment = NSTextAlignment.Center
@@ -1132,19 +1800,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonGreenColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonGreenColor.addTarget(self, action: "buttonGreenColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
         
-        let buttonBlueColor:UIButton! = UIButton(type: .System)
-        buttonBlueColor.frame = CGRectMake(73, 112, 30, 8.0)
-        buttonBlueColor.layer.cornerRadius = 3
-        buttonBlueColor.backgroundColor = UIColor.redColor()
-        buttonBlueColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
-        buttonBlueColor.titleLabel?.textAlignment = NSTextAlignment.Center
-        buttonBlueColor.setTitle("Red", forState: UIControlState.Normal)
-        buttonBlueColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonBlueColor.addTarget(self, action: "buttonRedColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        let buttonRedColor:UIButton! = UIButton(type: .System)
+        buttonRedColor.frame = CGRectMake(73, 112, 30, 8.0)
+        buttonRedColor.layer.cornerRadius = 3
+        buttonRedColor.backgroundColor = UIColor.redColor()
+        buttonRedColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonRedColor.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonRedColor.setTitle("Red", forState: UIControlState.Normal)
+        buttonRedColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonRedColor.addTarget(self, action: "buttonRedColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        
         
         
         let buttonDelete:UIButton! = UIButton(type: .System)
-        buttonDelete.frame = CGRectMake(106, 112, 30, 8.0)
+        buttonDelete.frame = CGRectMake(140, 112, 30, 8.0)
         buttonDelete.layer.cornerRadius = 3
         buttonDelete.backgroundColor = UIColor.brownColor()
         buttonDelete.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
@@ -1152,43 +1821,96 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonDelete.setTitle("Delete", forState: UIControlState.Normal)
         buttonDelete.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonDelete.addTarget(self, action: "buttonDeletePressed:", forControlEvents: UIControlEvents.TouchUpInside)
-
+        
+        
+        
+        let buttonFlip:UIButton! = UIButton(type: .System)
+        buttonFlip.frame = CGRectMake(150, 100, 20, 8.0)
+        buttonFlip.layer.cornerRadius = 3
+        buttonFlip.backgroundColor = UIColor.brownColor()
+        buttonFlip.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonFlip.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonFlip.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlip.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonFlip.addTarget(self, action: "buttonFlipPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        
+        let buttonFlipBack:UIButton! = UIButton(type: .System)
+        buttonFlipBack.frame = CGRectMake(148, 98, 20, 8.0)
+        buttonFlipBack.layer.cornerRadius = 3
+        buttonFlipBack.backgroundColor = UIColor.brownColor()
+        buttonFlipBack.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonFlipBack.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonFlipBack.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlipBack.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonFlipBack.addTarget(self, action: "buttonFlipBackPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        
         
         view.addSubview(textField)
+        view.addSubview(textTitleStatus)
         view.addSubview(textCurrentColor)
         view.addSubview(textCurrentName)
-        view.addSubview(buttonOrangeColor)
-        view.addSubview(buttonGreenColor)
-        view.addSubview(buttonBlueColor)
-        view.addSubview(buttonDelete)
+        viewControl.addSubview(buttonOrangeColor)
+        viewControl.addSubview(buttonGreenColor)
+        viewControl.addSubview(buttonRedColor)
+        viewControl.addSubview(buttonDelete)
+        view.addSubview(buttonFlip)
         view.addSubview(textViewId)
+        view.addSubview(viewControl)
+        viewControl.addSubview(buttonFlipBack)
         
         stickerDictionary.append(view)
         view.addSubview(textTitle)
         view.heightAnchor.constraintEqualToConstant(125).active = true
         view.widthAnchor.constraintEqualToConstant(205).active = true
         
+        
     }
     
     
     func makeStickerFromFile(sticker: Sticker){
+        //Declared First because we need to switch the background color
+        let textCurrentColor = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
+        textCurrentColor.textAlignment = NSTextAlignment.Center
+        textCurrentColor.font = UIFont.italicSystemFontOfSize(8)
+        textCurrentColor.textColor = UIColor.blackColor()
+        textCurrentColor.tag = 7
+        textCurrentColor.hidden = true
+        
+        
+        
         let view = UIView()
         view.frame = CGRectMake(CGFloat(sticker.xPosition), CGFloat(sticker.yPosition), CGFloat(sticker.width), CGFloat(sticker.height))
         switch(sticker.backgroundColor){
         case "orange":
             view.backgroundColor = UIColor.orangeColor()
+            textCurrentColor.text = "orange"
         case "red":
             view.backgroundColor = UIColor.redColor()
+            textCurrentColor.text = "red"
         case "green":
             view.backgroundColor = UIColor.greenColor()
+            textCurrentColor.text = "green"
         default:
             view.backgroundColor = UIColor.greenColor()
+            textCurrentColor.text = "green"
         }
         view.layer.cornerRadius = 6
         let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged2:"))
         view.addGestureRecognizer(gesture)
         view.userInteractionEnabled = true
         view.tag = 6
+        
+        
+        let viewControl = UIView()
+        viewControl.frame = CGRectMake(2, 2, 200, 120)
+        viewControl.backgroundColor = UIColor.clearColor()
+        viewControl.layer.cornerRadius = 6
+        viewControl.addGestureRecognizer(gesture)
+        viewControl.userInteractionEnabled = true
+        viewControl.tag = 19
+        viewControl.hidden = true
         
         
         let textTitle = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
@@ -1199,6 +1921,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textTitle.text = sticker.stickerId
         textTitle.hidden = true
         
+        
+        let textZoomStatus = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
+        textZoomStatus.textAlignment = NSTextAlignment.Center
+        textZoomStatus.font = UIFont.italicSystemFontOfSize(8)
+        textZoomStatus.textColor = UIColor.blackColor()
+        textZoomStatus.tag = 24
+        textZoomStatus.text = "false"
+        textZoomStatus.hidden = true
+        
+        
+        let textTitleStatus = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
+        textTitleStatus.textAlignment = NSTextAlignment.Center
+        textTitleStatus.font = UIFont.italicSystemFontOfSize(8)
+        textTitleStatus.textColor = UIColor.blackColor()
+        textTitleStatus.tag = 20
+        textTitleStatus.hidden = true
+        textTitleStatus.text = sticker.stickerStatus
+        
+        
         let textViewId = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
         textViewId.textAlignment = NSTextAlignment.Center
         textViewId.font = UIFont.italicSystemFontOfSize(8)
@@ -1207,13 +1948,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textViewId.hidden = true
         
         
-        let textCurrentColor = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 8.0))
-        textCurrentColor.textAlignment = NSTextAlignment.Center
-        textCurrentColor.font = UIFont.italicSystemFontOfSize(8)
-        textCurrentColor.textColor = UIColor.blackColor()
-        textCurrentColor.tag = 7
-        textCurrentColor.hidden = true
-        textCurrentColor.text = "green"
         
         let textCurrentName = UITextField(frame: CGRectMake(2.0, 1.0, 200.0, 16.0))
         textCurrentName.textAlignment = NSTextAlignment.Center
@@ -1221,6 +1955,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textCurrentName.textColor = UIColor.blackColor()
         textCurrentName.tag = 8
         textCurrentName.text = sticker.stickerName
+        textCurrentName.addTarget(self, action: "nameChanged:", forControlEvents: UIControlEvents.EditingChanged)
         
         
         let textField = UITextView(frame: CGRectMake(0.0, 19.0, 200.0, 93.0))
@@ -1234,7 +1969,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         let buttonOrangeColor:UIButton! = UIButton(type: .System)
-        buttonOrangeColor.frame = CGRectMake(3, 112, 30, 8.0)
+        buttonOrangeColor.frame = CGRectMake(50, 95, 30, 8.0)
         buttonOrangeColor.layer.cornerRadius = 3
         buttonOrangeColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonOrangeColor.titleLabel?.textAlignment = NSTextAlignment.Center
@@ -1253,19 +1988,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonGreenColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonGreenColor.addTarget(self, action: "buttonGreenColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
         
-        let buttonBlueColor:UIButton! = UIButton(type: .System)
-        buttonBlueColor.frame = CGRectMake(73, 112, 30, 8.0)
-        buttonBlueColor.layer.cornerRadius = 3
-        buttonBlueColor.backgroundColor = UIColor.redColor()
-        buttonBlueColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
-        buttonBlueColor.titleLabel?.textAlignment = NSTextAlignment.Center
-        buttonBlueColor.setTitle("Red", forState: UIControlState.Normal)
-        buttonBlueColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonBlueColor.addTarget(self, action: "buttonRedColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        let buttonRedColor:UIButton! = UIButton(type: .System)
+        buttonRedColor.frame = CGRectMake(73, 112, 30, 8.0)
+        buttonRedColor.layer.cornerRadius = 3
+        buttonRedColor.backgroundColor = UIColor.redColor()
+        buttonRedColor.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonRedColor.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonRedColor.setTitle("Red", forState: UIControlState.Normal)
+        buttonRedColor.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonRedColor.addTarget(self, action: "buttonRedColorPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        
         
         
         let buttonDelete:UIButton! = UIButton(type: .System)
-        buttonDelete.frame = CGRectMake(106, 112, 30, 8.0)
+        buttonDelete.frame = CGRectMake(140, 112, 30, 8.0)
         buttonDelete.layer.cornerRadius = 3
         buttonDelete.backgroundColor = UIColor.brownColor()
         buttonDelete.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
@@ -1275,14 +2011,42 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonDelete.addTarget(self, action: "buttonDeletePressed:", forControlEvents: UIControlEvents.TouchUpInside)
         
         
+        
+        let buttonFlip:UIButton! = UIButton(type: .System)
+        buttonFlip.frame = CGRectMake(150, 100, 20, 8.0)
+        buttonFlip.layer.cornerRadius = 3
+        buttonFlip.backgroundColor = UIColor.brownColor()
+        buttonFlip.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonFlip.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonFlip.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlip.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonFlip.addTarget(self, action: "buttonFlipPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        
+        let buttonFlipBack:UIButton! = UIButton(type: .System)
+        buttonFlipBack.frame = CGRectMake(148, 98, 20, 8.0)
+        buttonFlipBack.layer.cornerRadius = 3
+        buttonFlipBack.backgroundColor = UIColor.brownColor()
+        buttonFlipBack.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
+        buttonFlipBack.titleLabel?.textAlignment = NSTextAlignment.Center
+        buttonFlipBack.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlipBack.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonFlipBack.addTarget(self, action: "buttonFlipBackPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        
+        
+        
         view.addSubview(textField)
+        view.addSubview(textTitleStatus)
         view.addSubview(textCurrentColor)
         view.addSubview(textCurrentName)
-        view.addSubview(buttonOrangeColor)
-        view.addSubview(buttonGreenColor)
-        view.addSubview(buttonBlueColor)
-        view.addSubview(buttonDelete)
+        viewControl.addSubview(buttonOrangeColor)
+        viewControl.addSubview(buttonGreenColor)
+        viewControl.addSubview(buttonRedColor)
+        viewControl.addSubview(buttonDelete)
+        view.addSubview(buttonFlip)
         view.addSubview(textViewId)
+        view.addSubview(viewControl)
+        viewControl.addSubview(buttonFlipBack)
         
         
         stickerDictionary.append(view)
@@ -1311,6 +2075,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let gesturedView = gesture.view
         gesturedView!.center = loc
     }
+    
+    
     
     
     func dragged2(gesture: UIPanGestureRecognizer){
@@ -1361,12 +2127,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     for case let textField as UITextField in destinationView.subviews{
                         if (textField.tag == 9){
                             textField.text = String(gesturedViewId)
+                            
                         }
                     }
                     
                     stickerDictionary.removeAtIndex(gesturedViewId)
+                    destinationView.tag = gesturedViewId
                     stickerDictionary.insert(destinationView, atIndex: gesturedViewId)
                     stickerDictionary.removeAtIndex(destinationViewId)
+                    gesturedView!.tag = destinationViewId
                     stickerDictionary.insert(gesturedView!, atIndex: destinationViewId)
                     
                     
@@ -1385,6 +2154,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                         timeLineView.insertArrangedSubview(sticker, atIndex: index)
                     }
                     
+                    refreshStickers()
                 }
                 
             }
@@ -1392,5 +2162,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
         
 }
+    
+    func nameChanged(textField: UITextField){
+        for view in timeLineViewIcon.arrangedSubviews{
+            if (view.tag == textField.superview?.tag){
+                for case let textFieldName as UITextView in view.subviews{
+                    if (textFieldName.tag == 8){
+                        textFieldName.text = textField.text!
+                    }
+                    
+                }
+            }
+        }
+    }
 
 }

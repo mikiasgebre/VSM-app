@@ -18,9 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         let config = Realm.Configuration(
-            schemaVersion: 3,
+            schemaVersion: 4,
             migrationBlock: {migration, oldSchemaVersion in
-                if (oldSchemaVersion < 3) {
+                if (oldSchemaVersion < 4) {
                     
                 }
                 
@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         Realm.Configuration.defaultConfiguration = Realm.Configuration(
-            schemaVersion: 3,
+            schemaVersion: 4,
             migrationBlock: { migration, oldSchemaVersion in
                 if(oldSchemaVersion < 1){
                     migration.enumerate(Sticker.className()){ oldObject, newObject in
@@ -41,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         oldObject!["width"] as! Float
                         oldObject!["height"] as! Float
                         newObject!["dateUpdated"] as! NSDate
+                        newObject!["stickerStatus"] = ""
                         
                     }
                     

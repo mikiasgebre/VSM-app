@@ -227,6 +227,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             iconView.frame = CGRectMake(0,0,200, 130)
             iconView.layer.cornerRadius = 5
             iconView.tag = sticker.tag
+            let gesture = UITapGestureRecognizer(target: self, action: Selector("iconTapped:"))
+            iconView.addGestureRecognizer(gesture)
             //iconView.backgroundColor = UIColor.redColor()
             for case let textField as UITextField in sticker.subviews{
                 if (textField.tag == 7){
@@ -343,6 +345,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     textField.text = "Sticker Number "+String(index+1)
                 }
                 
+                if (textField.tag == 8){
+                    textField.text = "Sticker Number "+String(index+1)
+                }
+
+                
                 //This the view id
                 if (textField.tag == 9){
                     textField.text = String(index+1)
@@ -361,6 +368,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         iconView.frame = CGRectMake(0,0,200, 130)
         iconView.layer.cornerRadius = 5
         iconView.tag = stickerDictionary[stickerDictionary.count-1].tag
+        let gesture = UITapGestureRecognizer(target: self, action: Selector("iconTapped:"))
+        iconView.addGestureRecognizer(gesture)
         for case let textField as UITextField in stickerDictionary[stickerDictionary.count-1].subviews{
             if (textField.tag == 7){
                 switch(textField.text!){
@@ -517,13 +526,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Non Button action method
     func refreshStickers(){
-        for view in timeLineView.arrangedSubviews{
-            view.removeFromSuperview()
-        }
-        //Add Stickers to timeline
-        for (index,sticker) in stickerDictionary.enumerate(){
-            timeLineView.insertArrangedSubview(sticker, atIndex: index)
-        }
+        //The original approach as the one for the icons was failing when there were two stickers
+        let refreshView = UIView()
+        timeLineView.addSubview(refreshView)
+        timeLineView.removeArrangedSubview(refreshView)
         
     }
     
@@ -889,6 +895,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             iconView.frame = CGRectMake(0,0,200, 130)
             iconView.layer.cornerRadius = 5
             iconView.tag = sticker.tag
+            let gesture = UITapGestureRecognizer(target: self, action: Selector("iconTapped:"))
+            iconView.addGestureRecognizer(gesture)
             //iconView.backgroundColor = UIColor.redColor()
             for case let textField as UITextField in sticker.subviews{
                 if (textField.tag == 7){
@@ -1560,6 +1568,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             iconView.frame = CGRectMake(0,0,200, 130)
             iconView.layer.cornerRadius = 5
             iconView.tag = sticker.tag
+            let gesture = UITapGestureRecognizer(target: self, action: Selector("iconTapped:"))
+            iconView.addGestureRecognizer(gesture)
             for case let textField as UITextField in sticker.subviews{
                 if (textField.tag == 7){
                     switch(textField.text!){
@@ -2157,6 +2167,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     
+    func iconTapped(gesture: UITapGestureRecognizer){
+        scrollView.setContentOffset(CGPoint(x: stickerDictionary.count*548-gesture.view!.tag*548, y: 0), animated: false)
+        
+    }
+
+    
+    
     
     func dragged2(gesture: UIPanGestureRecognizer){
         if(gesture.state == UIGestureRecognizerState.Began){
@@ -2164,7 +2181,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         if(gesture.state == UIGestureRecognizerState.Changed){
             let gesturedView = gesture.view!
-            
             var center = gesturedView.center
             let translation = gesture.translationInView(gesturedView)
             center = CGPointMake(center.x + translation.x, center.y + translation.y)
@@ -2172,14 +2188,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             gesture.setTranslation(CGPointZero, inView: gesturedView)
             
         }
-        
+       
         if(gesture.state == UIGestureRecognizerState.Ended){
             for view in timeLineView.arrangedSubviews{
                 if(gesture.view!.frame.intersects(view.frame)){
                     let gesturedView = gesture.view
                     let destinationView = view
-                    var gesturedViewId = 1
-                    var destinationViewId = 1
+                    var gesturedViewId = -1
+                    var destinationViewId = -1
                     
                     
                     //Text field tagged 9 stores a secret id for the related view
@@ -2212,12 +2228,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                         }
                     }
                     
-                    stickerDictionary.removeAtIndex(gesturedViewId)
-                    destinationView.tag = gesturedViewId
-                    stickerDictionary.insert(destinationView, atIndex: gesturedViewId)
-                    stickerDictionary.removeAtIndex(destinationViewId)
-                    gesturedView!.tag = destinationViewId
-                    stickerDictionary.insert(gesturedView!, atIndex: destinationViewId)
+                        stickerDictionary.removeAtIndex(gesturedViewId)
+                        destinationView.tag = gesturedViewId
+                        stickerDictionary.insert(destinationView, atIndex: gesturedViewId)
+                        stickerDictionary.removeAtIndex(destinationViewId)
+                        gesturedView!.tag = destinationViewId
+                        stickerDictionary.insert(gesturedView!, atIndex: destinationViewId)
+                    
                     
                     
                     //Add Stickers to timeline
@@ -2229,6 +2246,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                             
                             if (textField.tag == 9){
                                 textField.text = String(index+1)
+                            }
+                            
+                            if (textField.tag == 8){
+                                textField.text = "Sticker Number "+String(index+1)
                             }
                             
                         }
@@ -2249,6 +2270,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                         iconView.frame = CGRectMake(0,0,200, 130)
                         iconView.layer.cornerRadius = 5
                         iconView.tag = sticker.tag
+                        let gesture = UITapGestureRecognizer(target: self, action: Selector("iconTapped:"))
+                        iconView.addGestureRecognizer(gesture)
                         //iconView.backgroundColor = UIColor.redColor()
                         for case let textField as UITextField in sticker.subviews{
                             if (textField.tag == 7){

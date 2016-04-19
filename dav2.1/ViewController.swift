@@ -47,13 +47,17 @@ class StickerFile: Object {
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
     var stickerDictionary = [UIView]()
     var stickerDictionaryIcon = [UIView]()
+    var stickerDictionaryTrash = [UIView]()
+    var stickerDictionaryArchive = [UIView]()
     let allFilesTableView = UITableView()
     var retrievedFileNames = [String]()
     let timeLineView = UIStackView()
     let timeLineViewIcon = UIStackView()
     var scrollView:UIScrollView!
     var scrollViewIcon:UIScrollView!
-    var containerView = UIView()
+    let trashView = UITextView()
+    let archiveView = UITextView()
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -743,15 +747,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         scrollViewIcon.minimumZoomScale = 1
         
         
-        containerView = UIView()
-        //containerView.frame = CGRectMake(40, 40, 400, 400)
-        containerView.backgroundColor = UIColor.blueColor()
-        containerView.bounds = CGRectInset(view.frame, 20.0, 20.0)
-        containerView.layer.cornerRadius = 6
-        containerView.tag = 4
-        //let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        //containerView.addGestureRecognizer(gesture)
-        //containerView.userInteractionEnabled = true
+        //let trashView = UITextView()
+        trashView.frame = CGRectMake(70, 290, 43, 53)
+        trashView.backgroundColor = UIColor.blueColor()
+        trashView.layer.cornerRadius = 6
+        trashView.text = "Trash"
+        trashView.textAlignment = NSTextAlignment.Center
+        trashView.font = UIFont.italicSystemFontOfSize(8)
+        trashView.textColor = UIColor.blackColor()
+        trashView.tag = 4
+        self.view.addSubview(trashView)
+        
+        
+        
+        //let archiveView = UITextView()
+        archiveView.frame = CGRectMake(650, 290, 43, 53)
+        archiveView.backgroundColor = UIColor.blueColor()
+        archiveView.layer.cornerRadius = 6
+        archiveView.text = "Archive"
+        archiveView.textAlignment = NSTextAlignment.Center
+        archiveView.font = UIFont.italicSystemFontOfSize(8)
+        archiveView.textColor = UIColor.blackColor()
+        archiveView.tag = 14
+        self.view.addSubview(archiveView)
         
         
         
@@ -2186,10 +2204,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             center = CGPointMake(center.x + translation.x, center.y + translation.y)
             gesturedView.center = center
             gesture.setTranslation(CGPointZero, inView: gesturedView)
+            print(gesturedView.convertPoint(gesturedView.frame.origin, fromView: self.view))
             
         }
        
         if(gesture.state == UIGestureRecognizerState.Ended){
+            let gesturedViews = gesture.view
             for view in timeLineView.arrangedSubviews{
                 if(gesture.view!.frame.intersects(view.frame)){
                     let gesturedView = gesture.view
@@ -2321,7 +2341,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
                 
             }
-        
+            print(gesturedViews?.convertPoint((gesturedViews?.frame.origin)!, toView: timeLineView))
     }
         
 }

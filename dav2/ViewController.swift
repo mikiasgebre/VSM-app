@@ -1,7 +1,9 @@
 import UIKit
 
 
-class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource,UITextViewDelegate,UITableViewDelegate, UITableViewDataSource{
+
+
+class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSource,UITextViewDelegate,UITableViewDelegate, UITableViewDataSource,UICollisionBehaviorDelegate, UIGestureRecognizerDelegate{
     
     var xposition : CGFloat = 10.0
     var yposition : CGFloat = 10.0
@@ -20,42 +22,44 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     var FontFamilyName = [String]()
     var myLabel: UILabel!
     var TextView = UITextView(frame: CGRectMake(30, 30, 300, 270))
+    var Fontsize = [Int]()
     var TextViewArray = [UITextView]()
     var TableView = UITableView()
-    
-    
-    
-    let scrollView1 = UIScrollView(frame: CGRectMake(0, 700, 300, 300))
-    
+    var TableViewsize = UITableView()
+    let deleteIcon = UIImageView(image: UIImage(named: "Delete")!)
+    var arraynumber = [Int]()
+    var myTextField : UITextField!
+    let fontsize : [String] = ["8","9","10","11","12","14","16","18","20","22","24","26","28","36","48","72"]
+    let dropdownicon = UIImageView(image: UIImage(named: "dropdownarrow2")!)
+    let dropdownicon1 = UIImageView(image: UIImage(named: "dropdownarrow2")!)
+    let TableLabel: UILabel = UILabel()
+    let TableLabel1: UILabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         makeButtonCreateSticker()
+        deleteIcon.frame = CGRectMake(39, 800, 50, 50)
+        
+        
+        
+        
         var count = CGFloat(stickerDictionary.count+100)
         count += 10000
-        //scrollView.backgroundColor = UIColor.redColor()
-        //scrollView.contentSize = view.bounds.size
         scrollView.scrollEnabled = true
         scrollView.autoresizingMask = UIViewAutoresizing.FlexibleWidth
         scrollView.autoresizingMask =  UIViewAutoresizing.FlexibleHeight
         self.scrollView.contentInset = UIEdgeInsetsMake(0, 100, 0, count)
         scrollView.contentSize = CGSizeMake(scrollView.contentSize.width,1)
         scrollView.contentSize = CGSize(width: 100, height: 100)
+        scrollView.delegate = self
         
-        scrollView1.scrollEnabled = true
-        scrollView1.autoresizingMask = UIViewAutoresizing.FlexibleWidth
-        scrollView1.autoresizingMask =  UIViewAutoresizing.FlexibleHeight
-        self.scrollView1.contentInset = UIEdgeInsetsMake(0, 100, 0, count)
-        scrollView1.contentSize = CGSizeMake(scrollView.contentSize.width,1)
-        scrollView1.contentSize = CGSize(width: 100, height: 100)
+        //self.view.addSubview(deleteIcon)
         
         
-        
-        scrollView1.backgroundColor = UIColor.yellowColor()
-        // scrollView.backgroundColor = UIColor.redColor()
         view.addSubview(scrollView)
         
         
+        scrollView.addSubview(deleteIcon)
         
     }
     
@@ -65,7 +69,26 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     }
     
     
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        
+        
+        //deleteIcon.frame.origin.y = 20 + scrollView.contentOffset.y
+        //deleteIcon.frame.origin.x = 600 + scrollView.contentOffset.x
+        //let xposition = 600 + scrollView.contentOffset.x
+        //deleteIcon.frame = CGRectMake(xposition, 400, 50, 50)
+        deleteIcon.frame.origin.x = max(scrollView.contentOffset.x + 90,scrollView.contentOffset.x - 90)
+        
+    }
     
+    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        
+        //deleteIcon.frame.origin.x = 600 + scrollView.contentOffset.x
+        deleteIcon.frame.origin.x = max(scrollView.contentOffset.x + 100,scrollView.contentOffset.x - 100)
+        // deleteIcon.frame.origin.x = min(scrollView.contentOffset.x + 300,scrollView.contentOffset.x)
+        // deleteIcon.frame = CGRectMake(xposition, 400, 50, 50)
+        
+    }
     
     func makeButtonCreateSticker(){
         let buttonCreateSticker:UIButton! = UIButton(type: .System)
@@ -203,11 +226,44 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         stackView.spacing = 10
         scrollView.addSubview(stackView)
         
+        let animator = UIDynamicAnimator(referenceView : self.scrollView)
+        
+        let boundaries = UICollisionBehavior(items: [imageView,deleteIcon])
+        boundaries.translatesReferenceBoundsIntoBoundary = true
+        animator.addBehavior(boundaries)
+        
+        
+        if (CGRectIntersectsRect(deleteIcon.frame, stackView.frame))
+        {
+            
+            
+            imageView.hidden = true
+            //stackView.hidden = true
+            //stackView.backgroundColor = UIColor.redColor()
+            
+        }
+        
+        
+        
+        
+        if (CGRectIntersectsRect(deleteIcon.frame, StickerArray[stickerNumber-1].frame))
+        {
+            
+            // print("yes")
+            //stackView.hidden = true
+            //stackView.backgroundColor = UIColor.redColor()
+            
+        }
+        
+        
+        
+        
         
         
         imageView.heightAnchor.constraintEqualToConstant(400).active = true
         imageView.widthAnchor.constraintEqualToConstant(400).active = true
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        
         
         
         
@@ -222,7 +278,7 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         let buttonGreenColor:UIButton! = UIButton(type: .System)
         let buttonRedColor:UIButton! = UIButton(type: .System)
         
-        
+        performSelector(#selector(ViewController.flip), withObject: nil, afterDelay: 0)
         
         
         buttonOrangeColor.frame = CGRectMake(50, 300, 40, 28.0)
@@ -297,40 +353,99 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         }
         
         
+        
+        
+        
+        // Fontsize.append([8,9,10,11,12,14,16,18,20,22,24,26,28,36,48,72])
+        
+        
         scrollView.addSubview(secondView)
         secondView.addSubview(buttonRedColor)
         secondView.addSubview(buttonGreenColor)
         secondView.addSubview(buttonOrangeColor)
         secondView.addSubview(buttonFlip1)
         
-        let TableLabel: UILabel = UILabel()
-        TableLabel.frame = CGRect(x: 130, y: 80, width: 100, height: 30)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(ViewController.singleTap(_:)))
+        tap.numberOfTapsRequired = 1
+        
+        let tap1 = UITapGestureRecognizer(target: self, action: #selector(ViewController.singleTap1(_:)))
+        tap1.numberOfTapsRequired = 1
+        
+        TableLabel.frame = CGRect(x: 130, y: 40, width: 100, height: 20)
         TableLabel.text = "Font Style"
-        secondView.addSubview(TableLabel)
+        TableLabel.backgroundColor = UIColor.whiteColor()
+        TableLabel.addGestureRecognizer(tap)
+        tap.delegate = self
+        TableLabel.userInteractionEnabled = true
+        TableLabel.adjustsFontSizeToFitWidth = true
+        //let dropdownicon = UIImageView(image: UIImage(named: "dropdownarrow2")!)
+        dropdownicon.frame = CGRectMake(90, 10, 10, 10)
+        TableLabel.addSubview(dropdownicon)
+        
+        TableLabel1.frame = CGRect(x: 40, y: 100, width: 90, height: 20)
+        TableLabel1.text = "Font size"
+        TableLabel1.backgroundColor = UIColor.whiteColor()
+        TableLabel1.addGestureRecognizer(tap1)
+        tap1.delegate = self
+        TableLabel1.userInteractionEnabled = true
+        TableLabel1.adjustsFontSizeToFitWidth = true
+        
+        dropdownicon1.frame = CGRectMake(80, 10, 10, 10)
+        TableLabel1.addSubview(dropdownicon1)
         
         
-        let TableView: UITableView  =   UITableView()
-        TableView.frame = CGRect(x: 130, y: 100, width: 150, height: 150)
+        
+        
+        // secondView.addSubview(TableLabel)
+        
+        
+        //TableView: UITableView  =   UITableView()
+        TableView.frame = CGRect(x: 130, y: 65, width: 100, height: 50)
         TableView.delegate      =   self
         TableView.dataSource    =   self
         TableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         TableView.backgroundColor = UIColor.clearColor()
+        TableView.hidden = true
+        
+        
+        
+        TableViewsize.frame = CGRect(x: 40, y: 120, width: 100, height: 50)
+        TableViewsize.delegate      =   self
+        TableViewsize.dataSource    =   self
+        TableViewsize.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        TableViewsize.backgroundColor = UIColor.clearColor()
+        TableViewsize.hidden = true
+        
         
         
         pickerView = UIPickerView()
         myLabel = UILabel()
+        
+        myTextField = UITextField()
         myLabel.frame = CGRectMake(300, 10, 300, 100)
-        self.pickerView.delegate = self
-        self.pickerView.dataSource = self
+        myTextField.frame = CGRectMake(50, 100, 250, 30)
+        //let myTextField = UITextField(frame: CGRectMake(50.0, 70.0, 300.0, 50.0))
+        //myTextField.textAlignment = NSTextAlignment.Center
+        myTextField.font = UIFont.italicSystemFontOfSize(8)
+        myTextField.textColor = UIColor.blackColor()
+        myTextField.backgroundColor = UIColor.redColor()
+        
+        pickerView.delegate = self
+        pickerView.dataSource = self
+        
+        
+        
         pickerView.backgroundColor = UIColor.clearColor()
-        self.textField.inputView = pickerView
+        //self.textField.inputView = pickerView
         pickerView.frame = CGRectMake(20, 100, 300, 100)
         
-        
+        secondView.addSubview(TableLabel1)
+        secondView.addSubview(TableLabel)
         secondView.addSubview(TableView)
+        secondView.addSubview(TableViewsize)
         // secondView.addSubview(pickerView)
         secondView.addSubview(myLabel)
-        
+        // secondView.addSubview(myTextField)
         
         
         
@@ -341,14 +456,10 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         customStepper.minimumValue = 10
         customStepper.addTarget(self, action: #selector(ViewController.stepperValueChanged(_:)), forControlEvents: .ValueChanged)
         customStepper.backgroundColor = UIColor.clearColor()
-        secondView.addSubview(customStepper)
+        //secondView.addSubview(customStepper)
         
         
-        
-        performSelector(#selector(ViewController.flip), withObject: nil, afterDelay: 0)
         // secondView.hidden = true
-        
-        
         if(doubleTap)
         {
             TextViewArray[sentView.tag-1].hidden = true
@@ -356,16 +467,47 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         }
         
         
-        if((sentView.hidden) == true)
+    }
+    
+    func singleTap(sender: UITapGestureRecognizer)
+    {
+        
+        if(doubleTap)
         {
-            performSelector(#selector(ViewController.flipSecond(_:)), withObject: nil, afterDelay: 0)
+            TableView.hidden = false
+            //dropdownicon.transform = CGAffineTransformMakeScale(-1, 1)
+            dropdownicon.transform =  CGAffineTransformMakeRotation((180.0 * CGFloat(M_PI)) / 180.0)
+            doubleTap = false
         }
-        
-        
+        else
+        {
+            TableView.hidden = true
+            dropdownicon.transform =  CGAffineTransformMakeRotation((180.0 * CGFloat(M_PI)))
+            doubleTap = true
+            
+        }
         
     }
     
-    
+    func singleTap1 (sender: UITapGestureRecognizer)
+    {
+        
+        if(doubleTap)
+        {
+            TableViewsize.hidden = false
+            dropdownicon1.transform =  CGAffineTransformMakeRotation((180.0 * CGFloat(M_PI)) / 180.0)
+            doubleTap = false
+        }
+        else
+        {
+            TableViewsize.hidden = true
+             dropdownicon1.transform =  CGAffineTransformMakeRotation((180.0 * CGFloat(M_PI)))
+            doubleTap = true
+            
+        }
+        
+        
+    }
     
     
     func buttonOrangeColorPressed(sender: UIButton!){
@@ -393,16 +535,60 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
-        cell.textLabel?.text = FontFamilyName[indexPath.row]
-        cell.backgroundColor = UIColor.clearColor()
-        return cell
+        
+        var cell:UITableViewCell?
+        if(tableView == self.TableView)
+        {
+            cell = tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
+            cell!.textLabel?.text = FontFamilyName[indexPath.row]
+            cell!.backgroundColor = UIColor.clearColor()
+            cell!.textLabel?.adjustsFontSizeToFitWidth = true
+        }
+        
+        if(tableView == self.TableViewsize)
+        {
+            cell = tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
+            cell!.textLabel?.text = fontsize[indexPath.row]
+            cell!.backgroundColor = UIColor.clearColor()
+            cell!.textLabel?.adjustsFontSizeToFitWidth = true
+        }
+        return cell!
     }
     
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return FontFamilyName.count
+        
+        var count:Int?
+        if(tableView == self.TableView)
+        {
+            count = FontFamilyName.count
+        }
+        if(tableView == self.TableViewsize)
+        {
+            count = fontsize.count
+        }
+        
+        return  count!
+        
     }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if(tableView == self.TableView)
+        {
+        let indexPath = tableView.indexPathForSelectedRow
+        let currentCell = tableView.cellForRowAtIndexPath(indexPath!)! as UITableViewCell
+        TableLabel.text = currentCell.textLabel!.text
+        }
+        if(tableView == self.TableViewsize)
+        {
+            let indexPath = tableView.indexPathForSelectedRow
+            let currentCell = tableView.cellForRowAtIndexPath(indexPath!)! as UITableViewCell
+            TableLabel1.text = currentCell.textLabel!.text
+        
+        }
+    }
+    
     
     
     func stepperValueChanged(sender:UIStepper!)
@@ -442,10 +628,13 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         
     }
     
+    
+    
+    
     func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         // myLabel.text = FontFamilyName[row]
         
-        
+        myTextField.text = FontFamilyName[row]
         if(TextViewArray.count == 1)
         {
             TextViewArray[0].font = UIFont(name: FontFamilyName[row],size: 20)
@@ -464,6 +653,8 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         
         
     }
+    
+    
     
     
     
@@ -518,9 +709,6 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     }
     
     
-    
-    
-    
     func singleTapped(sender: UITapGestureRecognizer)
     {
         
@@ -534,19 +722,41 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         }
         else
         {
-            sender.view?.transform = CGAffineTransformMakeScale(1, 1)
+            sender.view?.transform = CGAffineTransformMakeScale(1,1)
             doubleTap = true
         }
     }
-    
-    
-    
     
     
     func dragged(gesture: UIPanGestureRecognizer){
         let loc = gesture.locationInView(self.view)
         let gesturedView = gesture.view
         gesturedView!.center = loc
+        
+        
+        switch gesture.state {
+            
+        case .Ended :
+            for i in 1...StickerArray.count {
+                
+                if (CGRectIntersectsRect(deleteIcon.frame, StickerArray[i-1].frame))
+                {
+                    
+                    StickerArray[i-1].hidden = true
+                    //stackView.hidden = true
+                    //stackView.backgroundColor = UIColor.redColor()
+                    
+                }
+            }
+            
+        default: break
+            
+        }
+        
+        
     }
     
+    
 }
+
+

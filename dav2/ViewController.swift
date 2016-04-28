@@ -8,7 +8,6 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
     var xposition : CGFloat = 10.0
     var yposition : CGFloat = 10.0
     var stickerDictionary = [String: UIView]()
-    
     let buttonDelete:UIButton! = UIButton(type: .System)
     var doubleTap : Bool = true
     var secondView : UIView!
@@ -467,6 +466,35 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         }
         
         
+        /*
+        if(TextViewArray.count == 1)
+        {
+            TextViewArray[0].font = TextViewArray[0].font?.fontWithSize(CGFloat(TableLabel.text))
+            
+        }
+        else
+        {
+            TextViewArray[sentView.tag-1].font =  TextViewArray[sentView.tag-1].font?.fontWithSize(CGFloat(TableLabel1.text))
+        }
+
+       */
+        
+        if(TextViewArray.count == 1)
+        {
+            TextViewArray[0].font = UIFont(name: TableLabel.text!,size: 20)
+            
+        }
+        else
+        {
+            TextViewArray[sentView.tag-1].font =  UIFont(name: TableLabel.text!,size: 20)
+        }
+
+        
+        
+        
+        
+        
+        
     }
     
     func singleTap(sender: UITapGestureRecognizer)
@@ -541,8 +569,9 @@ class ViewController: UIViewController,UIPickerViewDelegate,UIPickerViewDataSour
         {
             cell = tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
             cell!.textLabel?.text = FontFamilyName[indexPath.row]
-            cell!.backgroundColor = UIColor.clearColor()
+            cell!.backgroundColor = UIColor.whiteColor()
             cell!.textLabel?.adjustsFontSizeToFitWidth = true
+            cell?.layer.borderWidth = 1.0
         }
         
         if(tableView == self.TableViewsize)

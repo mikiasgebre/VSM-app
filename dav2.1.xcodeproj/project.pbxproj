@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A9E851A61CCCEAF20096DBE3 /* Backgrounds.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A9E851A51CCCEAF20096DBE3 /* Backgrounds.xcassets */; };
 		A9F20E471C7C47EE00E05B31 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F20E461C7C47EE00E05B31 /* AppDelegate.swift */; };
 		A9F20E491C7C47EE00E05B31 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9F20E481C7C47EE00E05B31 /* ViewController.swift */; };
 		A9F20E4C1C7C47EE00E05B31 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A9F20E4A1C7C47EE00E05B31 /* Main.storyboard */; };
@@ -56,6 +57,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A9E851A51CCCEAF20096DBE3 /* Backgrounds.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Backgrounds.xcassets; sourceTree = "<group>"; };
 		A9F20E431C7C47EE00E05B31 /* dav2.1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dav2.1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9F20E461C7C47EE00E05B31 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A9F20E481C7C47EE00E05B31 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 		A9F20E3A1C7C47ED00E05B31 = {
 			isa = PBXGroup;
 			children = (
+				A9E851A51CCCEAF20096DBE3 /* Backgrounds.xcassets */,
 				A9F20E781C7C4E3B00E05B31 /* RealmSwift.framework */,
 				A9F20E741C7C4E1A00E05B31 /* Realm.framework */,
 				A9F20E451C7C47EE00E05B31 /* dav2.1 */,
@@ -265,6 +268,7 @@
 				A9F20E511C7C47EE00E05B31 /* LaunchScreen.storyboard in Resources */,
 				A9F20E4E1C7C47EE00E05B31 /* Assets.xcassets in Resources */,
 				A9F20E4C1C7C47EE00E05B31 /* Main.storyboard in Resources */,
+				A9E851A61CCCEAF20096DBE3 /* Backgrounds.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  d
 //
-//  Created by AMK on 09/01/16.
+//  Created by Kawalya Davis on 09/01/16.
 //  Copyright © 2016 AMK. All rights reserved.
 //
 //test
@@ -68,7 +68,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         createScrollAndContainerView() //Contains some code for scroll view and stackview
         makeSaveButton()
         makeViewAllFilesButton()
-        //makeButtonRefreshStickers()
         makeButtonFileAsPdf()
         makeHeaderButtons()
         makeButtonCreateSticker()
@@ -444,41 +443,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    
-    
-    //Button that creates the post it sticker pieces
-    func makeButtonRefreshStickers(){
-        let buttonRefreshStickers:UIButton! = UIButton(type: .System)
-        buttonRefreshStickers.frame = CGRectMake(700, 60, 25, 20)
-        buttonRefreshStickers.layer.cornerRadius = 9
-        buttonRefreshStickers.titleLabel?.font = UIFont.boldSystemFontOfSize(12)
-        buttonRefreshStickers.titleLabel?.numberOfLines = 0
-        buttonRefreshStickers.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
-        buttonRefreshStickers.backgroundColor = UIColor.brownColor()
-        buttonRefreshStickers.setTitle("R", forState: UIControlState.Normal)
-        buttonRefreshStickers.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        buttonRefreshStickers.addTarget(self, action: "buttonRefreshStickersPressed:", forControlEvents: UIControlEvents.TouchUpInside)
-        self.view.addSubview(buttonRefreshStickers)
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        buttonRefreshStickers.addGestureRecognizer(gesture)
-        buttonRefreshStickers.userInteractionEnabled = true
-        buttonRefreshStickers.tag = 29
-        
-    }
-    
-    
-    //Non Button action method
-    func refreshStickersIcon(){
-        for view in timeLineViewIcon.arrangedSubviews{
-            view.removeFromSuperview()
-        }
-        //Add Stickers to timeline
-        for (index,sticker) in stickerDictionaryIcon.enumerate(){
-            timeLineViewIcon.insertArrangedSubview(sticker, atIndex: index)
-        }
-        
-    }
-
     
     //Button that creates the post it sticker pieces
     func makeButtonFileAsPdf(){

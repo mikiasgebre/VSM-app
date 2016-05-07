@@ -52,7 +52,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var stickerDictionaryTemp = [UIView]()
     let allFilesTableView = UITableView()
     var retrievedFileNames = [String]()
-    let timeLineViewIcon = UIStackView()
+    //let timeLineViewIcon = UIStackView()
     var scrollView:UIScrollView!
     var scrollViewIcon:UIScrollView!
     var containerTable:UIView!
@@ -80,7 +80,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //For initializing the scroll view
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        scrollView.frame = CGRectMake(0,0,view.frame.width-0.2, 1000)
+        scrollView.frame = CGRectMake(0,0,767.8-0.2, 1000)
         scrollView.contentSize = CGSizeMake(CGFloat(stickerDictionary.count*243), 1000)
         scrollView.scrollEnabled = true
         scrollView.contentInset = UIEdgeInsetsMake(0, 370.6, 0, 226.6)
@@ -88,15 +88,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         scrollView.alwaysBounceHorizontal = true
         scrollView.delegate = self
         scrollView.tag = 220
+        scrollView.center = self.view.center
         
         
-        scrollViewIcon.frame = CGRectMake(0,895,view.frame.width-0.2, 95)
-        scrollViewIcon.contentSize = CGSizeMake(timeLineViewIcon.frame.width, 95)
+        scrollViewIcon.frame = CGRectMake(0,650,767.8-0.2, 95)
+        scrollViewIcon.contentSize = CGSizeMake(CGFloat(stickerDictionary.count*75), 95)
         scrollViewIcon.scrollEnabled = true
         scrollViewIcon.contentInset = UIEdgeInsetsMake(0, 60, 0, 10)
         scrollViewIcon.userInteractionEnabled = true
         scrollViewIcon.alwaysBounceHorizontal = true
         scrollViewIcon.tag = 221
+        scrollViewIcon.center.x = self.view.center.x
     }
     
     //The table shows you a list of files that are currently saved
@@ -330,7 +332,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         createIcons(stickerDictionary)
         scrollView.setContentOffset(CGPoint(x: CGFloat(stickerDictionary.count)*242.6, y: 0), animated: false)
-        scrollViewIcon.setContentOffset(CGPoint(x: timeLineViewIcon.arrangedSubviews.count*548, y: 0), animated: false)
+        scrollViewIcon.setContentOffset(CGPoint(x: stickerDictionaryIcon.count*548, y: 0), animated: false)
         
         if(stickerDictionary.count>1){
             stickerDictionary[stickerDictionary.count-2].transform = CGAffineTransformMakeScale(1.6, 1.6)
@@ -361,7 +363,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     zoomedView = view
                 }
             }
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             if (view.tag == zoomedView.tag){
                 view.transform = CGAffineTransformMakeScale(1, 1)
             }
@@ -392,7 +394,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
             }
             
-            for view in timeLineViewIcon.arrangedSubviews{
+            for view in stickerDictionaryIcon{
                 if (view.tag == item){
                     view.transform = CGAffineTransformMakeScale(1.4, 1.4)
                 }
@@ -416,7 +418,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             
             
-            for view in timeLineViewIcon.arrangedSubviews{
+            for view in stickerDictionaryIcon{
                 if (view.tag == itemNumber+1){
                     view.transform = CGAffineTransformMakeScale(1.4, 1.4)
                 }
@@ -447,7 +449,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Button that creates the post it sticker pieces
     func makeButtonFileAsPdf(){
         let buttonPdfImage = UIImageView()
-        buttonPdfImage.frame = CGRectMake(700, 20, 30, 30)
+        buttonPdfImage.frame = CGRectMake(view.frame.width-67.8, 20, 30, 30)
         buttonPdfImage.image = UIImage(named: "Save.png")
         buttonPdfImage.userInteractionEnabled = true
         
@@ -659,7 +661,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         viewImage.image = UIImage(named: "Delete.png")
         
         
-        trashView.frame = CGRectMake(trashViewOffset, 780, 500, 35)
+        trashView.frame = CGRectMake(trashViewOffset, 600, 500, 35)
         trashView.backgroundColor = UIColor.clearColor()
         trashView.layer.cornerRadius = 6
         trashView.tag = 4
@@ -682,7 +684,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         viewImage.image = UIImage(named: "Archive.png")
         
         
-        archiveView.frame = CGRectMake(trashViewOffset+150, 780, 500, 35)
+        archiveView.frame = CGRectMake(trashViewOffset+150, 600, 500, 35)
         archiveView.backgroundColor = UIColor.clearColor()
         archiveView.layer.cornerRadius = 6
         archiveView.tag = 4
@@ -734,26 +736,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         containerTable = UIView()
-        containerTable.frame = CGRectMake(380, 80, 250, 250)
+        containerTable.frame = CGRectMake(380, 80, 300, 250)
         containerTable.userInteractionEnabled = true
         containerTable.backgroundColor = UIColor.clearColor()
         self.view.addSubview(containerTable)
         
-        
-        //Timeline is basically a stackview
-        timeLineViewIcon.userInteractionEnabled = true
-        timeLineViewIcon.axis = UILayoutConstraintAxis.Horizontal
-        timeLineViewIcon.distribution = .Fill
-        timeLineViewIcon.alignment = UIStackViewAlignment.Center
-        timeLineViewIcon.spacing = 30
-        timeLineViewIcon.tag = 60
-        timeLineViewIcon.backgroundColor = UIColor.redColor()
-        timeLineViewIcon.layoutMarginsRelativeArrangement = true
-        timeLineViewIcon.translatesAutoresizingMaskIntoConstraints = false
-        timeLineViewIcon.heightAnchor.constraintEqualToConstant(1880).active = true
-        
-        
-        scrollViewIcon.addSubview(timeLineViewIcon)
         view.addSubview(scrollView)
         view.addSubview(scrollViewIcon)
         
@@ -776,7 +763,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
         
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             if (view.tag == sentView?.tag){
                 for views in view.subviews{
                     if(views.tag == 5){
@@ -817,7 +804,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             if (view.tag == sentView?.tag){
                 for views in view.subviews{
                     if(views.tag == 5){
@@ -856,7 +843,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
         }
         
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             if (view.tag == sentView?.tag){
                 for views in view.subviews{
                     if(views.tag == 5){
@@ -943,7 +930,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func createIcons(stickerDictionary: [UIView]){
         //Remove the existing icons off the timeline
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             view.removeFromSuperview()
         }
         //Remove all the icons from the icon dictionary
@@ -951,31 +938,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     for sticker in stickerDictionary{
         //This is the main icon view which has an icon and a mirror of the icon
         let iconViewMain = UIView()
-        iconViewMain.frame = CGRectMake(0,0,200, 270)
+        iconViewMain.frame = CGRectMake(0,20,45, 45)
         iconViewMain.layer.cornerRadius = 5
         iconViewMain.tag = sticker.tag
         
         
-        //This is the mirror image of the icon
-        let bottomIcon = UIView()
-        bottomIcon.frame = CGRectMake(0, 50, 35, 35)
-        bottomIcon.layer.cornerRadius = 5
-        bottomIcon.transform = CGAffineTransformMakeScale(-1.0, -1.0)
-        bottomIcon.tag = 6
-        
-        
         //This is the image of the real icon
         let iconImage = UIImageView()
-        iconImage.frame = CGRectMake(-5, -5, 45, 45)
+        iconImage.frame = CGRectMake(-5, -7, 50, 50)
         iconImage.tag = 113
         iconImage.image = UIImage(named: "Sticker_green.png")
         
-        
-        //This is the image of the bottom icon
-        let bottomIconImage = UIImageView()
-        bottomIconImage.frame = CGRectMake(-5, -5, 45, 45)
-        bottomIconImage.tag = 115
-        bottomIconImage.image = UIImage(named: "Sticker_green.png")
         
         //This is the icon view
         let iconView = UIView()
@@ -988,31 +961,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if (textField.tag == 7){
                 switch(textField.text!){
                     case "orange":
-                        //iconView.backgroundColor = UIColor.orangeColor()
+                        iconView.backgroundColor = UIColor.orangeColor()
                         iconImage.image = UIImage(named: "Sticker_orange.png")
-                        //bottomIcon.backgroundColor = UIColor.orangeColor()
-                        bottomIconImage.image = UIImage(named: "Sticker_orange.png")
                     case "red":
-                        //iconView.backgroundColor = UIColor.redColor()
+                        iconView.backgroundColor = UIColor.redColor()
                         iconImage.image = UIImage(named: "Sticker_red.png")
-                        //bottomIcon.backgroundColor = UIColor.redColor()
-                        bottomIconImage.image = UIImage(named: "Sticker_red.png")
                     case "green":
-                        //iconView.backgroundColor = UIColor.greenColor()
+                        iconView.backgroundColor = UIColor.greenColor()
                         iconImage.image = UIImage(named: "Sticker_green.png")
-                        //bottomIcon.backgroundColor = UIColor.greenColor()
-                        bottomIconImage.image = UIImage(named: "Sticker_green.png")
                     default:
-                        //iconView.backgroundColor = UIColor.greenColor()
+                        iconView.backgroundColor = UIColor.greenColor()
                         iconImage.image = UIImage(named: "Sticker_green.png")
-                        //bottomIcon.backgroundColor = UIColor.greenColor()
-                        bottomIconImage.image = UIImage(named: "Sticker_green.png")
                 }
             }
         }
-        //Set the background of the mirror image
-        bottomIcon.backgroundColor = iconView.backgroundColor
-        
         //Current name of the sticker concerned
         let textCurrentName = UITextView(frame: CGRectMake(0.0, -3.0, 35.0, 35.0))
         for case let textField as UITextField in sticker.subviews{
@@ -1030,40 +992,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         iconView.sendSubviewToBack(iconImage)
         iconViewMain.addSubview(iconView)
         
-        
-        let midIconImage = UIImageView()
-        midIconImage.frame = CGRectMake(-200, 48, CGFloat((stickerDictionaryIcon.count*250)+1000), 10)
-        midIconImage.tag = 114
-        midIconImage.image = UIImage(named: "Pile_page2-2.png")
-        scrollViewIcon.sendSubviewToBack(midIconImage)
-        //scrollViewIcon.addSubview(midIconImage)
-        
-        
-        let textName = UITextView()
-        textName.frame = CGRectMake(0.0, -3.0, 35.0, 35.0)
-        textName.font = UIFont.italicSystemFontOfSize(7)
-        textName.textColor = UIColor.blackColor()
-        textName.backgroundColor = UIColor.clearColor()
-        textName.tag = 9
-        textName.text = textCurrentName.text!
-        textName.editable = false
-        bottomIcon.addSubview(textName)
-        
-        bottomIcon.addSubview(bottomIconImage)
-        bottomIcon.sendSubviewToBack(bottomIconImage)
-        //iconViewMain.addSubview(bottomIcon)
-        
-        
-        iconViewMain.heightAnchor.constraintEqualToConstant(70).active = true
-        iconViewMain.widthAnchor.constraintEqualToConstant(55).active = true
         stickerDictionaryIcon.append(iconViewMain)
     
     }
-    
-    //Add Stickers icons to timeline
-    for (index,sticker) in stickerDictionaryIcon.enumerate(){
-        timeLineViewIcon.insertArrangedSubview(sticker, atIndex: index)
-    }
+        
+        //Add Stickers to timeline
+        for (index,sticker) in stickerDictionaryIcon.enumerate(){
+            if(sticker.frame.width>36){
+                sticker.transform = CGAffineTransformMakeScale(1, 1)
+            }
+            sticker.frame.origin.x = CGFloat(Double(index)*75)
+            scrollViewIcon.addSubview(sticker)
+        }
+     
 }
 
     
@@ -1094,7 +1035,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         transform.m34 = 1.0/500.0
         sender.superview?.layer.transform = transform
         
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             if (view.tag == sender.superview?.tag){
                 view.layer.addAnimation(rotationAnimation, forKey: "rotation")
                 view.layer.transform = transform
@@ -1130,7 +1071,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         transform.m34 = 1.0/500.0
         sender.superview?.superview!.layer.transform = transform
         
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             if (view.tag == sender.superview?.superview!.tag){
                 view.layer.addAnimation(rotationAnimation, forKey: "rotation")
                 view.layer.transform = transform
@@ -1302,7 +1243,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 sticker.transform = CGAffineTransformMakeScale(1, 1)
             }
             sticker.frame.origin.x = CGFloat(Double(index)*242.6)
-            sticker.frame.origin.y = CGFloat(375)
+            sticker.frame.origin.y = CGFloat(250)
             scrollView.addSubview(sticker)
         }
         
@@ -1467,7 +1408,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             //Remove all icon views
             if(self.stickerDictionaryIcon.count != 0){
-                for view in self.timeLineViewIcon.arrangedSubviews{
+                for view in self.stickerDictionaryIcon{
                     view.removeFromSuperview()
                 }
                 self.stickerDictionaryIcon.removeAll()
@@ -1898,6 +1839,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                                         view.removeFromSuperview()
                                     }
                                     self.stickerDictionary.removeAll()
+                                    self.stickerDictionaryTemp.removeAll()
+                                    self.stickerDictionaryArchive.removeAll()
                                     
                                     //Remove stikers
                                     for view in self.stickerDictionaryIcon{
@@ -1965,7 +1908,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func makeSaveButton(){
         let viewSaveImage = UIImageView()
-        viewSaveImage.frame = CGRectMake(590, 45, 80, 100.0)
+        viewSaveImage.frame = CGRectMake(view.frame.width-177.8, 45, 80, 100.0)
         viewSaveImage.tag = 116
         viewSaveImage.image = UIImage(named: "Menu.png")
         viewSaveImage.userInteractionEnabled = true
@@ -2276,13 +2219,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         let buttonOptionsImage = UIImageView()
-        buttonOptionsImage.frame = CGRectMake(660, 20, 30, 30)
+        buttonOptionsImage.frame = CGRectMake(view.frame.width-107.8, 20, 30, 30)
         buttonOptionsImage.image = UIImage(named: "Options.png")
         buttonOptionsImage.userInteractionEnabled = true
         
         
         let buttonOptions:UIButton! = UIButton(type: .System)
-        buttonOptions.frame = CGRectMake(660, 20, 30, 30)
+        buttonOptions.frame = CGRectMake(view.frame.width-107.8, 20, 30, 30)
         buttonOptions.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonOptions.titleLabel?.textAlignment = NSTextAlignment.Center
         buttonOptions.backgroundColor = UIColor.clearColor()
@@ -2322,7 +2265,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func makeViewAllFilesButton(){
         let viewImageProcess = UIImageView()
-        viewImageProcess.frame = CGRectMake(469.5, 45, 120, 30.0)
+        viewImageProcess.frame = CGRectMake(view.frame.width-300.3, 45, 120, 30.0)
         viewImageProcess.tag = 217
         viewImageProcess.image = UIImage(named: "Process.png")
         viewImageProcess.userInteractionEnabled = true
@@ -2422,7 +2365,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         let view = UIView()
-        view.frame = CGRectMake(CGFloat(Double(stickerNumber)*242.6), 375, 170.6, 170.6)
+        view.frame = CGRectMake(CGFloat(Double(stickerNumber)*242.6), 300, 170.6, 170.6)
         view.backgroundColor = UIColor.greenColor()
         view.layer.cornerRadius = 6
         let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged2:"))
@@ -2634,7 +2577,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         let view = UIView()
-        view.frame = CGRectMake(CGFloat(sticker.xPosition), 375, 170.6, 170.6)
+        view.frame = CGRectMake(CGFloat(sticker.xPosition), 250, 170.6, 170.6)
         switch(sticker.backgroundColor){
         case "orange":
             view.backgroundColor = UIColor.orangeColor()
@@ -2856,13 +2799,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             view.transform = CGAffineTransformMakeScale(1, 1)
         }
         //Remove icons from view
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             view.removeFromSuperview()
         }
         
-        //Add Stickers icons to timeline
+        //Add Stickers to timeline
         for (index,sticker) in stickerDictionaryIcon.enumerate(){
-            timeLineViewIcon.insertArrangedSubview(sticker, atIndex: index)
+            if(sticker.frame.width>36){
+                sticker.transform = CGAffineTransformMakeScale(1, 1)
+            }
+            sticker.frame.origin.x = CGFloat(Double(index)*75)
+            scrollViewIcon.addSubview(sticker)
         }
 
         //Transform the tapped icon to zoomed scale
@@ -3048,22 +2995,39 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func nameChanged(textField: UITextField){
         scrollViewDidEndDecelerating(self.scrollView)
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             view.transform = CGAffineTransformMakeScale(1, 1)
         }
         for view in stickerDictionary{
             view.transform = CGAffineTransformMakeScale(1, 1)
         }
-        let lengthFromZero = Double((textField.superview?.tag)!)*242.6
-        let offset = lengthFromZero - 242.6
-        trashViewOffset = CGFloat(offset)
-        drawTrash()
-        drawArchive()
-        trashView.hidden = false
-        archiveView.hidden = false
+        
+        //This selects whether trash or archive be displayed depending on the interface
+        for view in self.view.subviews{
+            if(view.tag==572){//Editor or future
+                if(view.hidden == false){
+                    let lengthFromZero = Double((textField.superview?.tag)!)*242.6
+                    let offset = lengthFromZero - 242.6
+                    trashViewOffset = CGFloat(offset)
+                    drawArchive()
+                    archiveView.hidden = false
+                    
+                }
+            }
+            if(view.tag==570){//Process background
+                if(view.hidden == false){
+                    let lengthFromZero = Double((textField.superview?.tag)!)*242.6
+                    let offset = lengthFromZero - 242.6
+                    trashViewOffset = CGFloat(offset)
+                    drawTrash()
+                    trashView.hidden = false
+                }
+            }
+        }
+        
         
         textField.superview?.transform = CGAffineTransformMakeScale(1.6, 1.6)
-        for view in timeLineViewIcon.arrangedSubviews{
+        for view in stickerDictionaryIcon{
             if (view.tag == textField.superview?.tag){
                 for views in view.subviews{
                     if(views.tag == 5){//Top Icon

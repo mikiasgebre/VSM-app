@@ -3,7 +3,7 @@
 //  d
 //
 //  Created by Kawalya Davis on 09/01/16.
-//  Copyright © 2016 AMK. All rights reserved.
+//  Copyright © 2016 Kawalya Davis. All rights reserved.
 //
 //test
 
@@ -52,7 +52,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var stickerDictionaryTemp = [UIView]()
     let allFilesTableView = UITableView()
     var retrievedFileNames = [String]()
-    //let timeLineViewIcon = UIStackView()
     var scrollView:UIScrollView!
     var scrollViewIcon:UIScrollView!
     var containerTable:UIView!

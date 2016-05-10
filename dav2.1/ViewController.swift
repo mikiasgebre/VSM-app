@@ -44,16 +44,18 @@ class StickerFile: Object {
 
 
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIScrollViewDelegate, MFMailComposeViewControllerDelegate {
     var stickerDictionary = [UIView]()
     var stickerDictionaryIcon = [UIView]()
     var stickerDictionaryTrash = [UIView]()
     var stickerDictionaryArchive = [UIView]()
+    var stickerDictionaryPdfPages = [UIWebView]()
     var stickerDictionaryTemp = [UIView]()
     let allFilesTableView = UITableView()
     var retrievedFileNames = [String]()
     var scrollView:UIScrollView!
     var scrollViewIcon:UIScrollView!
+    var scrollViewPdf:UIScrollView!
     var containerTable:UIView!
     let trashView = UIView()
     var trashViewOffset = CGFloat(70.0)
@@ -70,8 +72,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         makeButtonFileAsPdf()
         makeHeaderButtons()
         makeButtonCreateSticker()
+        makeButtonRefreshStickers()
         createInitialScreen()
-        
         // Do any additional setup after loading the view, typically from a nib.
         
     }
@@ -98,6 +100,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         scrollViewIcon.alwaysBounceHorizontal = true
         scrollViewIcon.tag = 221
         scrollViewIcon.center.x = self.view.center.x
+        
+        
+        scrollViewPdf.frame = CGRectMake(100,250,767.8-0.2, 900)
+        scrollViewPdf.contentSize = CGSizeMake(CGFloat(Double(stickerDictionaryPdfPages.count)*767.8), 900)
+        scrollViewPdf.scrollEnabled = true
+        scrollViewPdf.contentInset = UIEdgeInsetsMake(0, 88.9, 0, 88.9)
+        scrollViewPdf.userInteractionEnabled = true
+        scrollViewPdf.alwaysBounceHorizontal = true
+        scrollViewPdf.delegate = self
+        scrollViewPdf.tag = 222
+        scrollViewPdf.center = self.view.center
+        scrollViewPdf.backgroundColor = UIColor.brownColor()
     }
     
     //The table shows you a list of files that are currently saved
@@ -110,6 +124,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let cell:UITableViewCell = allFilesTableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         cell.textLabel?.text = self.retrievedFileNames[indexPath.row]
         cell.accessoryType = .DetailDisclosureButton
+        cell.accessoryView?.backgroundColor = UIColor.grayColor()
+        let acesssoryImage = UIImageView()
+        acesssoryImage.frame = CGRectMake(0, 0, 50, 50)
+        acesssoryImage.image = UIImage(named: "Info.png")
+        acesssoryImage.userInteractionEnabled = true
+        //cell.accessoryView?.addSubview(acesssoryImage)
+        //cell.accessoryView?.bringSubviewToFront(acesssoryImage)
+        
         return cell
     }
     
@@ -228,6 +250,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
         //let pathToIndex = tableView.indexPathForSelectedRow
+        makeTableDisappear()
         let tappedCell = tableView.cellForRowAtIndexPath(indexPath)! as UITableViewCell
         let newFile = tappedCell.textLabel?.text
         deleteSavedFile(newFile!)
@@ -244,7 +267,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Button that creates the post it sticker pieces
     func makeButtonCreateSticker(){
-        
         buttonCreateSticker.frame = CGRectMake(60, 25, 70, 15)
         buttonCreateSticker.layer.cornerRadius = 5
         buttonCreateSticker.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
@@ -269,7 +291,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func buttonCreateStickerPressed(sender: UIButton!){
         trashView.removeFromSuperview()
         archiveView.removeFromSuperview()
-        createSticker("green")
+        createSticker("orange")
        
         //This hides the other backgrounds
         for view in self.view.subviews{
@@ -286,7 +308,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func createInitialScreen(){
-        createSticker("green")
+        createSticker("orange")
         //This is header title
         for case let textField as UITextField in self.view.subviews{
             if (textField.tag == 57){
@@ -306,9 +328,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     textField.text = "Sticker Number "+String(index+1)
                 }
                 
-                if (textField.tag == 8){
-                    textField.text = "Sticker Number "+String(index+1)
-                }
                 //This the view id
                 if (textField.tag == 9){
                     textField.text = String(index+1)
@@ -348,7 +367,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             drawTrash()
             trashView.hidden = false
         }
-        print("CountDictionary"+String(self.stickerDictionary.count))
         
     }
     
@@ -446,6 +464,46 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     //Button that creates the post it sticker pieces
+        func makeButtonRefreshStickers(){
+               let buttonRefreshStickers:UIButton! = UIButton(type: .System)
+               buttonRefreshStickers.frame = CGRectMake(view.frame.width-67.8, 70, 30, 30)
+                buttonRefreshStickers.layer.cornerRadius = 15
+                buttonRefreshStickers.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
+                buttonRefreshStickers.titleLabel?.numberOfLines = 0
+                buttonRefreshStickers.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+                buttonRefreshStickers.backgroundColor = UIColor.brownColor()
+                buttonRefreshStickers.setTitle("R", forState: UIControlState.Normal)
+                buttonRefreshStickers.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+                buttonRefreshStickers.addTarget(self, action: "buttonRefreshStickersPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+                //self.view.addSubview(buttonRefreshStickers)
+               let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
+                    buttonRefreshStickers.addGestureRecognizer(gesture)
+                    buttonRefreshStickers.userInteractionEnabled = true
+                    buttonRefreshStickers.tag = 29
+    }
+    
+    
+    func buttonRefreshStickersPressed(sender: UIButton!){
+        refreshPage()
+    }
+    
+    func refreshPage(){
+        for view in stickerDictionary{
+            view.removeFromSuperview()
+        }
+        
+        //Add Stickers to timeline
+        for (index,sticker) in stickerDictionary.enumerate(){
+            sticker.frame.origin.x = CGFloat(Double(index)*242.6)
+            scrollView.addSubview(sticker)
+        }
+        
+        
+    }
+    
+    
+    
+    //Button that creates the post it sticker pieces
     func makeButtonFileAsPdf(){
         let buttonPdfImage = UIImageView()
         buttonPdfImage.frame = CGRectMake(view.frame.width-67.8, 20, 30, 30)
@@ -478,7 +536,44 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Button action method
     func buttonFileAsPdfPressed(sender: UIButton!){
-        fileAsPdf()
+        makeTableDisappear()
+        for view in stickerDictionaryPdfPages{
+            view.removeFromSuperview()
+        }
+        stickerDictionaryPdfPages.removeAll()
+        //This is file menu
+        for case let view as UIImageView in self.view.subviews{
+            if (view.tag == 116){
+                view.hidden = true
+            }
+        }
+        //This is search menu
+        for case let view as UIImageView in self.view.subviews{
+            if (view.tag == 217){
+                view.hidden = true
+            }
+        }
+        
+        var numberPages:Int
+        var pageNumber = 0
+        if(stickerDictionary.count%12==0){
+            numberPages = stickerDictionary.count/12
+        }else{
+            numberPages = stickerDictionary.count/12+1
+        }
+        for(var page=0; page<numberPages; page++){
+            pageNumber++
+            fileAsPdf(page*12, pageNumber: pageNumber )
+        }
+        //Add Stickers to timeline
+        for (index,sticker) in stickerDictionaryPdfPages.enumerate(){
+            sticker.frame.origin.x = CGFloat(Double(index)*700)
+            scrollViewPdf.addSubview(sticker)
+        }
+            scrollViewPdf.hidden = false
+        print("Pdf Count "+String(stickerDictionaryPdfPages.count))
+        print("Pdf Count "+String(numberPages))
+        
     }
     
     
@@ -518,118 +613,147 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     
-    
     //Button action method
     func buttonFileAsPdfRemovePressed(sender: UIButton!){
+        makeTableDisappear()
         for case let webView as UIWebView in sender.superview!.subviews{
             if (webView.tag == 72){
                 webView.removeFromSuperview()
             }
             
         }
-        sender.superview?.superview!.removeFromSuperview()
-        sender.superview!.removeFromSuperview()
+        sender.superview?.superview!.hidden = true//hide scrollview container
     }
     
+    
     //Button action method
-    func fileAsPdf(){
-        
-        /*let renderer = UIPrintPageRenderer()
-        let paper = CGRect(x: 0, y: 0, width: 592.2, height: 841.8)
-        let printablePaper = CGRectInset(paper, 0, 0)
-        renderer.setValue(NSValue(CGRect: paper), forKey: "paperArea")
-        renderer.setValue(NSValue(CGRect: printablePaper), forKey: "printableArea")
-        UIGraphicsBeginPDFPage()
-        let pdfContext = UIGraphicsGetCurrentContext()
-        for sticker in stickerDictionary{
-            renderer.drawLayer(sticker.layer, inContext: pdfContext!)
+    func buttonFileAsPdfSendPressed(sender: UIButton!){
+        makeTableDisappear()
+        let mailVc = createMailViewController()
+        if MFMailComposeViewController.canSendMail(){
+            presentViewController(mailVc, animated:true, completion:nil)
+            }
+            
+        else{
+            createAlertView("Sending Email", message: "Sending Pdf As Attachment Failed")
         }
-        UIGraphicsEndPDFContext()*/
-        
+    }
+    
+    func createMailViewController()-> MFMailComposeViewController{
+        let pdfMail = MFMailComposeViewController()
+        pdfMail.mailComposeDelegate = self
+        pdfMail.setToRecipients(["don@self.com"])
+        pdfMail.setMessageBody("Pdf Process", isHTML: true)
+        for view in stickerDictionaryPdfPages{
+            let pdfStickers = NSMutableData()
+            UIGraphicsBeginPDFContextToData(pdfStickers, view.bounds, nil)
+            let pdfContext = UIGraphicsGetCurrentContext()
+            UIGraphicsBeginPDFPage()
+            view.layer.renderInContext(pdfContext!)
+            UIGraphicsEndPDFContext()
+            pdfMail.addAttachmentData(pdfStickers, mimeType: "application/pdf", fileName: "")
+        }
+          return pdfMail
+    }
+    
+    
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
+    
+    //Button action method
+    func fileAsPdf(start: Int, pageNumber: Int){
+        //This contains the pdf page
         let webViewContainer = UIWebView()
-        webViewContainer.frame = CGRectMake(5, 5, 590, 845.8)
+        webViewContainer.frame = CGRectMake(5, 50, 590, 843.8)
         
+        //This contains the stickers and is what is converted into the pdf
         let webView = UIWebView()
-        webView.frame = CGRectMake(5, 50, 580, 841.8)
+        webView.frame = CGRectMake(1, 20, 580, 821.8)
         webView.tag = 72
         
-        
-        var startIndex = 0
-        var endIndex = 0
-        let stickerCount = stickerDictionary.count
-        var groupCount = 0.0
-        let remainder = stickerDictionary.count%3
-        if(stickerDictionary.count%3 == 0){
-            groupCount = (Double(stickerDictionary.count)/3.0)
-        }
-        if(stickerDictionary.count%3 != 0){
-            groupCount = (Double(stickerDictionary.count)/3.0)+1
-        }
-        
-        
-        for (var group = 0.2; group < groupCount; group++){
-            if(startIndex+3 <= stickerCount){
-                endIndex = startIndex+3
+        //This is the title for the pdf
+        let textFieldSaveName = UITextView(frame: CGRectMake(2, 5.0, 200.0, 50.0))
+        textFieldSaveName.textAlignment = NSTextAlignment.Center
+        textFieldSaveName.textColor = UIColor.blackColor()
+        textFieldSaveName.font = UIFont.italicSystemFontOfSize(11)
+        textFieldSaveName.autocapitalizationType = UITextAutocapitalizationType.Words
+        textFieldSaveName.backgroundColor = UIColor.clearColor()
+        textFieldSaveName.tag = 59
+        //This is header file name
+        for case let textField as UITextField in self.view.subviews{
+            if (textField.tag == 59){
+                textFieldSaveName.text = textField.text!+"\r\r\n"+" Page "+String(pageNumber)
             }
-            if(startIndex+3 > stickerCount){
-                startIndex = stickerCount - remainder
-                endIndex = stickerCount
-            }
-            var count = 0.1  //This is needed to increase the x component
-            for (var index = startIndex; index < endIndex; index++){
+        }
+        textFieldSaveName.center.x = webView.center.x
+        webView.addSubview(textFieldSaveName)
+        
+        var stickersAdded = 0
+        let numberRowsPerPage = 4
+        var startIndex = start
+        var counter = 0
+        for (var row = 0; row < numberRowsPerPage; row++){
+            for (var index = startIndex; index < stickerDictionary.count; index++){
                 UIGraphicsBeginImageContextWithOptions(CGRectMake(0, 0, 170.6, 170.6).size, false, 0)
                 stickerDictionary[index].drawViewHierarchyInRect(CGRectMake(0, 0, 170.6, 170.6), afterScreenUpdates: true)
                 let image = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
                 let imageView = UIImageView(image: image)
-                imageView.frame = CGRectMake(CGFloat(count*190), CGFloat(190*group), 170.6, 170.6)
-                count++
+                imageView.frame = CGRectMake(CGFloat(counter*186+25), CGFloat(row*186+60), 170.6, 170.6)
                 webView.addSubview(imageView)
+                counter++
+                stickersAdded++
+                if(counter > 2){
+                  break
+                }
             }
             startIndex+=3
+            counter = 0
+            if(stickersAdded > 11){
+                break
+            }
         }
         
-        /*for (var index=0; index < stickerDictionary.count; index++){
-            //for (indexY, sticker) in stickerDictionary.enumerate(){
-            UIGraphicsBeginImageContextWithOptions(CGRectMake(0, 0, 200, 130).size, false, 0)
-            stickerDictionary[index].drawViewHierarchyInRect(CGRectMake(0, 0, 200, 130), afterScreenUpdates: true)
-            //sticker.layer.renderInContext(UIGraphicsGetCurrentContext()!)
-            let image = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            let imageView = UIImageView(image: image)
-                imageView.frame = CGRectMake(CGFloat(index*210), 20, 200, 130)
-            
-            webView.addSubview(imageView)
-            //}
-         }*/
         
-        let buttonPdfImage = UIImageView()
-        buttonPdfImage.frame = CGRectMake(220, 20, 30, 30)
-        buttonPdfImage.image = UIImage(named: "Save.png")
-        buttonPdfImage.userInteractionEnabled = true
-        buttonPdfImage.center.x = webViewContainer.center.x
-        
-        
-        
-        let buttonFileAsPdf:UIButton! = UIButton(type: .System)
-        buttonFileAsPdf.frame = CGRectMake(-10, 0, 50, 30)
-        buttonFileAsPdf.layer.cornerRadius = 5
-        buttonFileAsPdf.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
-        buttonFileAsPdf.titleLabel?.numberOfLines = 0
-        buttonFileAsPdf.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
-        buttonFileAsPdf.backgroundColor = UIColor.clearColor()
-        buttonFileAsPdf.setTitle("Pdf", forState: UIControlState.Normal)
-        buttonFileAsPdf.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-        buttonFileAsPdf.addTarget(self, action: "buttonFileAsPdfRemovePressed:", forControlEvents: UIControlEvents.TouchUpInside)
-        
-        buttonPdfImage.addSubview(buttonFileAsPdf)
+        let buttonRemovePdf:UIButton! = UIButton(type: .System)
+        buttonRemovePdf.frame = CGRectMake(200, 0, 50, 20)
+        buttonRemovePdf.layer.cornerRadius = 5
+        buttonRemovePdf.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
+        buttonRemovePdf.titleLabel?.numberOfLines = 0
+        buttonRemovePdf.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        buttonRemovePdf.backgroundColor = UIColor.lightGrayColor()
+        buttonRemovePdf.setTitle("Back", forState: UIControlState.Normal)
+        buttonRemovePdf.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
+        buttonRemovePdf.addTarget(self, action: "buttonFileAsPdfRemovePressed:", forControlEvents: UIControlEvents.TouchUpInside)
         let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        buttonFileAsPdf.addGestureRecognizer(gesture)
-        buttonFileAsPdf.userInteractionEnabled = true
-        buttonFileAsPdf.tag = 45
+        buttonRemovePdf.addGestureRecognizer(gesture)
+        buttonRemovePdf.userInteractionEnabled = true
+        buttonRemovePdf.tag = 45
         
         
-        webViewContainer.addSubview(buttonPdfImage)
+        
+        
+        let buttonSendPdf:UIButton! = UIButton(type: .System)
+        buttonSendPdf.frame = CGRectMake(340, 0, 50, 20)
+        buttonSendPdf.layer.cornerRadius = 5
+        buttonSendPdf.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
+        buttonSendPdf.titleLabel?.numberOfLines = 0
+        buttonSendPdf.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        buttonSendPdf.backgroundColor = UIColor.lightGrayColor()
+        buttonSendPdf.setTitle("Send", forState: UIControlState.Normal)
+        buttonSendPdf.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
+        buttonSendPdf.addTarget(self, action: "buttonFileAsPdfSendPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonSendPdf.addGestureRecognizer(gesture)
+        buttonSendPdf.userInteractionEnabled = true
+        buttonSendPdf.tag = 46
+        
+        
+        webViewContainer.addSubview(buttonRemovePdf)
+        webViewContainer.addSubview(buttonSendPdf)
+        
         
         let pdfStickers = NSMutableData()
         UIGraphicsBeginPDFContextToData(pdfStickers, webViewContainer.bounds, nil)
@@ -648,7 +772,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         webViewPdf.frame = webView.frame
         webViewPdf.loadData(pdfStickers, MIMEType: "application/pdf", textEncodingName: "UTF-8", baseURL: NSURL())
         webViewContainer.addSubview(webViewPdf)
-        self.view.addSubview(webViewContainer)
+        stickerDictionaryPdfPages.append(webViewContainer)
+        //self.view.addSubview(webViewContainer)
     }
 
     
@@ -734,6 +859,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         scrollViewIcon.minimumZoomScale = 1
         
         
+        scrollViewPdf = UIScrollView()
+        scrollViewPdf.maximumZoomScale = 2
+        scrollViewPdf.minimumZoomScale = 1
+        scrollViewPdf.hidden = true
+        
+        
         containerTable = UIView()
         containerTable.frame = CGRectMake(380, 80, 300, 250)
         containerTable.userInteractionEnabled = true
@@ -742,6 +873,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         view.addSubview(scrollView)
         view.addSubview(scrollViewIcon)
+        self.view.addSubview(scrollViewPdf)
         
     }
 
@@ -946,7 +1078,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let iconImage = UIImageView()
         iconImage.frame = CGRectMake(-5, -7, 50, 50)
         iconImage.tag = 113
-        iconImage.image = UIImage(named: "Sticker_green.png")
         
         
         //This is the icon view
@@ -1083,25 +1214,56 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
 
     func buttonOptionsPressed(sender: UIButton!){
-        /*//This is header title
+        makeTableDisappear()
+        //Check if process is active
+        for view in self.view.subviews{
+            if(view.tag==570){//Process background
+                if(view.hidden == false){//Process background
+        //This is file menu
         for case let view as UIImageView in self.view.subviews{
             if (view.tag == 116){
                 if(view.hidden == false){
                     view.hidden = true
-                }
-                if(view.hidden == true){
-                    
+                }else{
+                   view.hidden = false
                 }
             }
-        }*/
+        }
+        //This is search menu
+        for case let view as UIImageView in self.view.subviews{
+            if (view.tag == 217){
+                if(view.hidden == false){
+                    view.hidden = true
+                }else{
+                    view.hidden = false
+                }
+            }
+        }
+    }
+}
+}
     }
     
     
     
     func buttonFuturePressed(sender: UIButton!){
+        makeTableDisappear()
         buttonCreateSticker.hidden = true
         sender.superview?.transform = CGAffineTransformMakeScale(1, 1)
         sender.superview?.transform = CGAffineTransformMakeScale(1, 1.2)
+        
+        //This is file menu
+        for case let view as UIImageView in self.view.subviews{
+            if (view.tag == 116){
+                    view.hidden = true
+                }
+        }
+        //This is search menu
+        for case let view as UIImageView in self.view.subviews{
+            if (view.tag == 217){
+                    view.hidden = true
+                }
+        }
         
         //This is process button
         for view in self.view.subviews{
@@ -1176,11 +1338,26 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     func buttonImprovementsPressed(sender: UIButton!){
+        makeTableDisappear()
         archiveView.hidden = true
         trashView.hidden = true
         buttonCreateSticker.hidden = true
         sender.superview?.transform = CGAffineTransformMakeScale(1, 1)
         sender.superview?.transform = CGAffineTransformMakeScale(1, 1.2)
+        
+        //This is file menu
+        for case let view as UIImageView in self.view.subviews{
+            if (view.tag == 116){
+                view.hidden = true
+            }
+        }
+        //This is search menu
+        for case let view as UIImageView in self.view.subviews{
+            if (view.tag == 217){
+                view.hidden = true
+            }
+        }
+        
         
         //This is process button
         for view in self.view.subviews{
@@ -1256,11 +1433,30 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //This may be required to open as another thread in a future release
     
     func buttonProcessPressed(sender: UIButton!){
+        makeTableDisappear()
         buttonCreateSticker.hidden = false
         archiveView.hidden = true
         trashView.hidden = false
         sender.superview?.transform = CGAffineTransformMakeScale(1, 1)
         sender.superview?.transform = CGAffineTransformMakeScale(1, 1.2)
+        
+        //This is file menu
+        for case let view as UIImageView in self.view.subviews{
+            if (view.tag == 116){
+                if(view.hidden == true){
+                    view.hidden = false
+                }
+            }
+        }
+        //This is search menu
+        for case let view as UIImageView in self.view.subviews{
+            if (view.tag == 217){
+                if(view.hidden == true){
+                    view.hidden = false
+                }
+            }
+        }
+        
         
         //This is process button
         for view in self.view.subviews{
@@ -1331,6 +1527,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func buttonCreateNewFilePressed(sender: UIButton!){
+        makeTableDisappear()
         //Check if process is active
         for view in self.view.subviews{
             if(view.tag==570){//Process background
@@ -1449,6 +1646,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func buttonSavePressed(sender: UIButton){// This is the save as button; The save button is the update button
+        makeTableDisappear()
         //Check if process is active
         for view in self.view.subviews{
             if(view.tag==570){//Process background
@@ -1601,7 +1799,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
             }
             print("Count "+String(stickerDictionary.count))
-            createAlertView("Process Saved As", message: "Prcess Saved Successfully As "+"("+filename+")")
+            createAlertView("Process Saved As", message: "Process Saved Successfully As "+"("+filename+")")
             
             
             //This is future button
@@ -1655,6 +1853,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
         func buttonUpdatePressed(sender: UIButton!){
+            makeTableDisappear()
             //Check if process is active
             for view in self.view.subviews{
                 if(view.tag==570){//Process background
@@ -1787,6 +1986,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func buttonDeleteSavedFilePressed(sender: UIButton!){
+        makeTableDisappear()
         let sentView = sender.superview
         var newFile = ""
         for case let textField as UITextField in (sentView?.subviews)!{
@@ -1829,71 +2029,70 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     }
                     
                     //Check if its the current file we are deleting so we can remove its views from the superview
-                    if(self.stickerDictionary.count != 0){
-                        for case let textField as UITextField in self.stickerDictionary[0].subviews{
-                            if(textField.tag == 81){
-                                if(textField.text == fileName){
-                                    //Remove stikers
-                                    for view in self.stickerDictionary{
-                                        view.removeFromSuperview()
-                                    }
-                                    self.stickerDictionary.removeAll()
-                                    self.stickerDictionaryTemp.removeAll()
-                                    self.stickerDictionaryArchive.removeAll()
-                                    
-                                    //Remove stikers
-                                    for view in self.stickerDictionaryIcon{
-                                        view.removeFromSuperview()
-                                    }
-                                    self.stickerDictionaryIcon.removeAll()
-                                    
-                                    //This is future button
-                                    for view in self.view.subviews{
-                                        if(view.tag==118){
-                                            view.transform = CGAffineTransformMakeScale(1, 1)
+                        for case let textField as UITextField in self.view.subviews{
+                            if(textField.tag==59){
+                                    if(textField.text == fileName){
+                                        print(textField.text)
+                                        //Remove stikers
+                                        for view in self.stickerDictionary{
+                                            view.removeFromSuperview()
                                         }
+                                        self.stickerDictionary.removeAll()
+                                        self.stickerDictionaryTemp.removeAll()
+                                        self.stickerDictionaryArchive.removeAll()
+                                        
+                                        //Remove stikers
+                                        for view in self.stickerDictionaryIcon{
+                                            view.removeFromSuperview()
+                                        }
+                                        self.stickerDictionaryIcon.removeAll()
+                                        
+                                        //This is future button
+                                        for view in self.view.subviews{
+                                            if(view.tag==118){
+                                                view.transform = CGAffineTransformMakeScale(1, 1)
+                                            }
+                                        }
+                                        
+                                        
+                                        //This is improvements button
+                                        for view in self.view.subviews{
+                                            if(view.tag==119){
+                                                view.transform = CGAffineTransformMakeScale(1, 1)
+                                            }
+                                        }
+                                        
+                                        //This is header title
+                                        for case let textField as UITextField in self.view.subviews{
+                                            if (textField.tag == 57){
+                                                textField.text = "Create future state"
+                                            }
+                                        }
+                                        
+                                        //This is header file name
+                                        for case let textField as UITextField in self.view.subviews{
+                                            if (textField.tag == 59){
+                                                textField.text = "Unsaved Process"
+                                            }
+                                        }
+                                        
+                                        //This hides the other backgrounds
+                                        for view in self.view.subviews{
+                                            if(view.tag==571){//Improvements background
+                                                view.hidden = true
+                                            }
+                                            if(view.tag==572){//Editor
+                                                view.hidden = true
+                                            }
+                                            if(view.tag==570){//Process background
+                                                view.hidden = false
+                                            }
+                                        }
+                                        
+                                        self.createAlertView("Delete Process", message: "Successfully Deleted"+"("+fileName+")")
                                     }
-                                    
-                                    
-                                    //This is improvements button
-                                    for view in self.view.subviews{
-                                        if(view.tag==119){
-                                            view.transform = CGAffineTransformMakeScale(1, 1)
-                                        }
-                                    }
-                                    
-                                    //This is header title
-                                    for case let textField as UITextField in self.view.subviews{
-                                        if (textField.tag == 57){
-                                            textField.text = "Create future state"
-                                        }
-                                    }
-                                    
-                                    //This is header file name
-                                    for case let textField as UITextField in self.view.subviews{
-                                        if (textField.tag == 59){
-                                            textField.text = "Unsaved Process"
-                                        }
-                                    }
-                                    
-                                    //This hides the other backgrounds
-                                    for view in self.view.subviews{
-                                        if(view.tag==571){//Improvements background
-                                            view.hidden = true
-                                        }
-                                        if(view.tag==572){//Editor
-                                            view.hidden = true
-                                        }
-                                        if(view.tag==570){//Process background
-                                            view.hidden = false
-                                        }
-                                    }
-                                    
-                                    self.createAlertView("Delete Process", message: "Successfully Deleted"+"("+fileName+")")
                                 }
                             }
-                        }
-                    }
                     
                 }))
                 newAlertView.addAction(UIAlertAction(title: "CANCEL", style: .Default, handler: {(action: UIAlertAction!) in
@@ -2219,18 +2418,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         let buttonOptionsImage = UIImageView()
         buttonOptionsImage.frame = CGRectMake(view.frame.width-107.8, 20, 30, 30)
+        buttonOptionsImage.tag = 1191
         buttonOptionsImage.image = UIImage(named: "Options.png")
         buttonOptionsImage.userInteractionEnabled = true
         
         
         let buttonOptions:UIButton! = UIButton(type: .System)
-        buttonOptions.frame = CGRectMake(view.frame.width-107.8, 20, 30, 30)
+        buttonOptions.frame = CGRectMake(0, 0, 30, 30)
         buttonOptions.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonOptions.titleLabel?.textAlignment = NSTextAlignment.Center
         buttonOptions.backgroundColor = UIColor.clearColor()
         buttonOptions.setTitle("", forState: UIControlState.Normal)
-        buttonOptions.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonOptions.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
         buttonOptions.addTarget(self, action: "buttonOptionsPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonOptions.userInteractionEnabled = true
         
         
         let textFieldTitleHeader = UITextField(frame: CGRectMake(1.0, 30.0, 130.0, 20.0))
@@ -2253,11 +2454,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         view.addSubview(viewImageFuture)
         viewImageImprovements.addSubview(buttonImprovements)
         view.addSubview(viewImageImprovements)
+        buttonOptionsImage.addSubview(buttonOptions)
         view.addSubview(buttonOptionsImage)
-        view.addSubview(buttonOptions)
         view.addSubview(textFieldTitleActivityHeader)
         view.addSubview(textFieldSaveName)
-        self.view.addSubview(textFieldTitleHeader)
+        view.addSubview(textFieldTitleHeader)
     }
     
     
@@ -2427,8 +2628,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textCurrentColor.textColor = UIColor.blackColor()
         textCurrentColor.tag = 7
         textCurrentColor.hidden = true
-        textCurrentColor.text = "green"
-        
+        textCurrentColor.text = stickerColor
         
         
         let textCurrentName = UITextField(frame: CGRectMake(0.0, 1.0, 168.0, 16.0))
@@ -2436,7 +2636,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textCurrentName.font = UIFont.italicSystemFontOfSize(8)
         textCurrentName.textColor = UIColor.blackColor()
         textCurrentName.tag = 8
-        textCurrentName.text = "Name this Sticker "+String(stickerNumber)
+        textCurrentName.text = "Name This Sticker"
         textCurrentName.addTarget(self, action: "nameChanged:", forControlEvents: UIControlEvents.AllEditingEvents)
         
         
@@ -2654,6 +2854,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textCurrentName.tag = 8
         textCurrentName.text = sticker.stickerName
         textCurrentName.addTarget(self, action: "nameChanged:", forControlEvents: UIControlEvents.EditingChanged)
+        
         
         
         let textCurrentFile = UITextField(frame: CGRectMake(2.0, 1.0, 165.0, 16.0))

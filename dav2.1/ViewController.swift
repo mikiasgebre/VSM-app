@@ -61,15 +61,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var trashViewOffset = CGFloat(70.0)
     let archiveView = UIView()
     let buttonCreateSticker:UIButton! = UIButton(type: .System)
+    var screen:CGFloat = 0
     
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        screen = UIScreen.mainScreen().bounds.width
         createScrollAndContainerView() //Contains some code for scroll view and stackview
         makeSaveButton()
         makeViewAllFilesButton()
         makeButtonFileAsPdf()
+        makeHeaders()
         makeHeaderButtons()
         makeButtonCreateSticker()
         makeButtonRefreshStickers()
@@ -102,8 +105,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         scrollViewIcon.center.x = self.view.center.x
         
         
-        scrollViewPdf.frame = CGRectMake(100,250,767.8-0.2, 900)
-        scrollViewPdf.contentSize = CGSizeMake(CGFloat(Double(stickerDictionaryPdfPages.count)*767.8), 900)
+        scrollViewPdf.frame = CGRectMake(100,250,767.8-0.2, 650)
+        scrollViewPdf.contentSize = CGSizeMake(CGFloat(Double(stickerDictionaryPdfPages.count)*767.8), 650)
         scrollViewPdf.scrollEnabled = true
         scrollViewPdf.contentInset = UIEdgeInsetsMake(0, 88.9, 0, 88.9)
         scrollViewPdf.userInteractionEnabled = true
@@ -111,8 +114,84 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         scrollViewPdf.delegate = self
         scrollViewPdf.tag = 222
         scrollViewPdf.center = self.view.center
-        scrollViewPdf.backgroundColor = UIColor.brownColor()
+        scrollViewPdf.backgroundColor = UIColor.lightGrayColor()
     }
+    
+    
+    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+        if(UIDevice.currentDevice().orientation.isLandscape.boolValue){
+            screen = 1024
+            print("Screen Landscape "+String(screen))
+            self.view.setNeedsDisplay()
+            for view in self.view.subviews{//File menu
+                if(view.tag == 116){
+                    view.removeFromSuperview()
+                    makeSaveButton()
+                }
+            }
+            for view in self.view.subviews{//options
+                if(view.tag == 1191){
+                    view.removeFromSuperview()
+                }
+                if(view.tag == 59){
+                    view.removeFromSuperview()
+                }
+                if(view.tag == 57){
+                    view.removeFromSuperview()
+                    makeHeaders()
+                }
+            }
+            for view in self.view.subviews{//Search menu
+                if(view.tag == 217){
+                    view.removeFromSuperview()
+                    makeViewAllFilesButton()
+                }
+            }
+            for view in self.view.subviews{//Pdf//
+                if(view.tag == 422){
+                    view.removeFromSuperview()
+                    makeButtonFileAsPdf()
+                }
+            }
+        }else if(UIDevice.currentDevice().orientation.isPortrait.boolValue){
+            screen = 768
+            print("Screen Portrait "+String(screen))
+            self.view.setNeedsDisplay()
+            for view in self.view.subviews{//File menu
+                if(view.tag == 116){
+                    view.removeFromSuperview()
+                    makeSaveButton()
+                }
+            }
+            for view in self.view.subviews{//options
+                if(view.tag == 1191){
+                    view.removeFromSuperview()
+                }
+                if(view.tag == 59){
+                    view.removeFromSuperview()
+                }
+                if(view.tag == 57){
+                    view.removeFromSuperview()
+                    makeHeaders()
+                }
+            }
+            for view in self.view.subviews{//Search menu
+                if(view.tag == 217){
+                    view.removeFromSuperview()
+                    makeViewAllFilesButton()
+                }
+            }
+            for view in self.view.subviews{//Pdf//
+                if(view.tag == 422){
+                    view.removeFromSuperview()
+                    makeButtonFileAsPdf()
+                }
+            }
+
+        }
+    }
+    
+    
     
     //The table shows you a list of files that are currently saved
     func tableView(tableView:UITableView, numberOfRowsInSection section: Int)->Int{
@@ -506,9 +585,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Button that creates the post it sticker pieces
     func makeButtonFileAsPdf(){
         let buttonPdfImage = UIImageView()
-        buttonPdfImage.frame = CGRectMake(view.frame.width-67.8, 20, 30, 30)
+        buttonPdfImage.frame = CGRectMake(screen-67.8, 20, 30, 30)
         buttonPdfImage.image = UIImage(named: "Save.png")
         buttonPdfImage.userInteractionEnabled = true
+        buttonPdfImage.tag = 422
         
         
         let buttonFileAsPdf:UIButton! = UIButton(type: .System)
@@ -556,14 +636,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         var numberPages:Int
         var pageNumber = 0
-        if(stickerDictionary.count%12==0){
-            numberPages = stickerDictionary.count/12
+        if(stickerDictionary.count%9==0){
+            numberPages = stickerDictionary.count/1
         }else{
-            numberPages = stickerDictionary.count/12+1
+            numberPages = stickerDictionary.count/9+1
         }
         for(var page=0; page<numberPages; page++){
             pageNumber++
-            fileAsPdf(page*12, pageNumber: pageNumber )
+            fileAsPdf(page*9, pageNumber: pageNumber )
         }
         //Add Stickers to timeline
         for (index,sticker) in stickerDictionaryPdfPages.enumerate(){
@@ -630,12 +710,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func buttonFileAsPdfSendPressed(sender: UIButton!){
         makeTableDisappear()
         let mailVc = createMailViewController()
+        mailVc.view.frame = CGRectMake(233.9, 200, 30, 300)
+        mailVc.view.center.x = self.view.center.x
         if MFMailComposeViewController.canSendMail(){
             presentViewController(mailVc, animated:true, completion:nil)
             }
             
         else{
-            createAlertView("Sending Email", message: "Sending Pdf As Attachment Failed")
+            createAlertView("Sending Email", message: "Device could not send Pdf As Attachment")
         }
     }
     
@@ -667,18 +749,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func fileAsPdf(start: Int, pageNumber: Int){
         //This contains the pdf page
         let webViewContainer = UIWebView()
-        webViewContainer.frame = CGRectMake(5, 50, 590, 843.8)
+        webViewContainer.frame = CGRectMake(3, 30, 580, 602)
         
         //This contains the stickers and is what is converted into the pdf
         let webView = UIWebView()
-        webView.frame = CGRectMake(1, 20, 580, 821.8)
+        webView.frame = CGRectMake(0, 17, 580, 600)
         webView.tag = 72
         
         //This is the title for the pdf
-        let textFieldSaveName = UITextView(frame: CGRectMake(2, 5.0, 200.0, 50.0))
+        let textFieldSaveName = UITextView(frame: CGRectMake(2, 2.0, 200.0, 40.0))
         textFieldSaveName.textAlignment = NSTextAlignment.Center
         textFieldSaveName.textColor = UIColor.blackColor()
-        textFieldSaveName.font = UIFont.italicSystemFontOfSize(11)
+        textFieldSaveName.font = UIFont.italicSystemFontOfSize(9)
         textFieldSaveName.autocapitalizationType = UITextAutocapitalizationType.Words
         textFieldSaveName.backgroundColor = UIColor.clearColor()
         textFieldSaveName.tag = 59
@@ -692,7 +774,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         webView.addSubview(textFieldSaveName)
         
         var stickersAdded = 0
-        let numberRowsPerPage = 4
+        let numberRowsPerPage = 3
         var startIndex = start
         var counter = 0
         for (var row = 0; row < numberRowsPerPage; row++){
@@ -702,7 +784,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 let image = UIGraphicsGetImageFromCurrentImageContext()
                 UIGraphicsEndImageContext()
                 let imageView = UIImageView(image: image)
-                imageView.frame = CGRectMake(CGFloat(counter*186+25), CGFloat(row*186+60), 170.6, 170.6)
+                imageView.frame = CGRectMake(CGFloat(counter*186+20), CGFloat(row*186+50), 170.6, 170.6)
                 webView.addSubview(imageView)
                 counter++
                 stickersAdded++
@@ -712,14 +794,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             startIndex+=3
             counter = 0
-            if(stickersAdded > 11){
+            if(stickersAdded > 10){
                 break
             }
         }
         
         
         let buttonRemovePdf:UIButton! = UIButton(type: .System)
-        buttonRemovePdf.frame = CGRectMake(200, 0, 50, 20)
+        buttonRemovePdf.frame = CGRectMake(200, 1, 50, 15)
         buttonRemovePdf.layer.cornerRadius = 5
         buttonRemovePdf.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
         buttonRemovePdf.titleLabel?.numberOfLines = 0
@@ -737,7 +819,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         let buttonSendPdf:UIButton! = UIButton(type: .System)
-        buttonSendPdf.frame = CGRectMake(340, 0, 50, 20)
+        buttonSendPdf.frame = CGRectMake(340, 1, 50, 15)
         buttonSendPdf.layer.cornerRadius = 5
         buttonSendPdf.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
         buttonSendPdf.titleLabel?.numberOfLines = 0
@@ -831,14 +913,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         //scrollView.backgroundColor = UIColor.brownColor()
         
         let scrollViewImage = UIImageView()
-        scrollViewImage.frame = CGRectMake(0,50,view.frame.width-0.2, 1000)
+        scrollViewImage.frame = CGRectMake(0,50,screen*2, 1000)
         scrollViewImage.image = UIImage(named: "Process_background.png")
         scrollViewImage.tag = 570
         self.view.addSubview(scrollViewImage)
         scrollViewImage.hidden = false
         
         let scrollViewImageImprovements = UIImageView()
-        scrollViewImageImprovements.frame = CGRectMake(0,50,view.frame.width-0.2, 1000)
+        scrollViewImageImprovements.frame = CGRectMake(0,50,screen*2, 1000)
         scrollViewImageImprovements.image = UIImage(named: "improvements_background.png")
         scrollViewImageImprovements.tag = 571
         self.view.addSubview(scrollViewImageImprovements)
@@ -846,7 +928,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         let scrollViewImageFuture = UIImageView()
-        scrollViewImageFuture.frame = CGRectMake(0,50,view.frame.width-0.2, 1000)
+        scrollViewImageFuture.frame = CGRectMake(0,50,screen, 1000)
         scrollViewImageFuture.image = UIImage(named: "Editor_background.png")
         scrollViewImageFuture.tag = 572
         self.view.addSubview(scrollViewImageFuture)
@@ -2106,7 +2188,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func makeSaveButton(){
         let viewSaveImage = UIImageView()
-        viewSaveImage.frame = CGRectMake(view.frame.width-177.8, 45, 80, 100.0)
+        viewSaveImage.frame = CGRectMake(screen-177.8, 45, 80, 100.0)
         viewSaveImage.tag = 116
         viewSaveImage.image = UIImage(named: "Menu.png")
         viewSaveImage.userInteractionEnabled = true
@@ -2247,7 +2329,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         allFilesTableView.userInteractionEnabled = true
         allFilesTableView.tag = 15
         allFilesTableView.scrollEnabled = true
-        
         if(search.isEmpty){
             let retrievedFiles = try! Realm().objects(StickerFile)
             if(retrievedFiles.count == 0){
@@ -2312,7 +2393,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             
         }
-        
+        allFilesTableView.setNeedsDisplay()
     }
 
 
@@ -2330,7 +2411,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
             }
         }
-        
+        allFilesTableView.setNeedsDisplay()
     }
     
     
@@ -2401,6 +2482,33 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         
+        viewImageProcess.addSubview(buttonProcess)
+        view.addSubview(viewImageProcess)
+        viewImageFuture.addSubview(buttonFuture)
+        view.addSubview(viewImageFuture)
+        viewImageImprovements.addSubview(buttonImprovements)
+        view.addSubview(viewImageImprovements)
+        view.addSubview(textFieldSaveName)
+    }
+    
+    
+    
+    
+    
+    func makeHeaders(){
+        let textFieldTitleHeader = UITextField(frame: CGRectMake(1.0, 30.0, 130.0, 20.0))
+        textFieldTitleHeader.textAlignment = NSTextAlignment.Center
+        textFieldTitleHeader.textColor = UIColor.blackColor()
+        textFieldTitleHeader.font = UIFont.italicSystemFontOfSize(8)
+        textFieldTitleHeader.borderStyle = UITextBorderStyle.Line
+        textFieldTitleHeader.autocapitalizationType = UITextAutocapitalizationType.Words
+        textFieldTitleHeader.backgroundColor = UIColor.clearColor()
+        textFieldTitleHeader.borderStyle = UITextBorderStyle.None
+        textFieldTitleHeader.tag = 59
+        textFieldTitleHeader.text = "Unsaved Process"
+        textFieldTitleHeader.center.x = screen/2
+        
+        
         let textFieldTitleActivityHeader = UITextField(frame: CGRectMake(241.0, 70.0, 130.0, 20.0))
         textFieldTitleActivityHeader.textAlignment = NSTextAlignment.Center
         textFieldTitleActivityHeader.textColor = UIColor.blackColor()
@@ -2411,16 +2519,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         textFieldTitleActivityHeader.borderStyle = UITextBorderStyle.None
         textFieldTitleActivityHeader.tag = 57
         textFieldTitleActivityHeader.text = "Create Future State"
-        textFieldTitleActivityHeader.center.x = self.view.center.x
-        
-        
+        textFieldTitleActivityHeader.center.x = screen/2
         
         
         let buttonOptionsImage = UIImageView()
-        buttonOptionsImage.frame = CGRectMake(view.frame.width-107.8, 20, 30, 30)
+        buttonOptionsImage.frame = CGRectMake(screen-107.8, 20, 30, 30)
         buttonOptionsImage.tag = 1191
         buttonOptionsImage.image = UIImage(named: "Options.png")
         buttonOptionsImage.userInteractionEnabled = true
+        
         
         
         let buttonOptions:UIButton! = UIButton(type: .System)
@@ -2434,38 +2541,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonOptions.userInteractionEnabled = true
         
         
-        let textFieldTitleHeader = UITextField(frame: CGRectMake(1.0, 30.0, 130.0, 20.0))
-        textFieldTitleHeader.textAlignment = NSTextAlignment.Center
-        textFieldTitleHeader.textColor = UIColor.blackColor()
-        textFieldTitleHeader.font = UIFont.italicSystemFontOfSize(8)
-        textFieldTitleHeader.borderStyle = UITextBorderStyle.Line
-        textFieldTitleHeader.autocapitalizationType = UITextAutocapitalizationType.Words
-        textFieldTitleHeader.backgroundColor = UIColor.clearColor()
-        textFieldTitleHeader.borderStyle = UITextBorderStyle.None
-        textFieldTitleHeader.tag = 59
-        textFieldTitleHeader.text = "Unsaved Process"
-        textFieldTitleHeader.center.x = self.view.center.x
         
-        
-        
-        viewImageProcess.addSubview(buttonProcess)
-        view.addSubview(viewImageProcess)
-        viewImageFuture.addSubview(buttonFuture)
-        view.addSubview(viewImageFuture)
-        viewImageImprovements.addSubview(buttonImprovements)
-        view.addSubview(viewImageImprovements)
+        view.addSubview(textFieldTitleHeader)
+        view.addSubview(textFieldTitleActivityHeader)
         buttonOptionsImage.addSubview(buttonOptions)
         view.addSubview(buttonOptionsImage)
-        view.addSubview(textFieldTitleActivityHeader)
-        view.addSubview(textFieldSaveName)
-        view.addSubview(textFieldTitleHeader)
     }
+    
     
     
     
     func makeViewAllFilesButton(){
         let viewImageProcess = UIImageView()
-        viewImageProcess.frame = CGRectMake(view.frame.width-300.3, 45, 120, 30.0)
+        viewImageProcess.frame = CGRectMake(screen-300.3, 45, 120, 30.0)
         viewImageProcess.tag = 217
         viewImageProcess.image = UIImage(named: "Process.png")
         viewImageProcess.userInteractionEnabled = true
@@ -2705,7 +2793,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //This is the image of the real icon
         let buttonFlipImage = UIImageView()
-        buttonFlipImage.frame = CGRectMake(0, 0, 20, 8)
+        buttonFlipImage.frame = CGRectMake(0, 0, 48, 48)
         buttonFlipImage.tag = 113
         buttonFlipImage.image = UIImage(named: "Info.png")
         buttonFlipImage.userInteractionEnabled = true
@@ -2715,23 +2803,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let buttonFlip:UIButton! = UIButton(type: .System)
         buttonFlip.frame = CGRectMake(135, 150, 18, 18.0)
         buttonFlip.layer.cornerRadius = 9
-        buttonFlip.backgroundColor = UIColor.brownColor()
+        buttonFlip.backgroundColor = UIColor.clearColor()
         buttonFlip.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonFlip.titleLabel?.textAlignment = NSTextAlignment.Center
         buttonFlip.setTitle("Flip", forState: UIControlState.Normal)
         buttonFlip.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonFlip.addTarget(self, action: "buttonFlipPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonFlip.setImage(buttonFlipImage.image, forState: UIControlState.Normal)
         
         
         let buttonFlipBack:UIButton! = UIButton(type: .System)
         buttonFlipBack.frame = CGRectMake(133, 148, 18, 18.0)
         buttonFlipBack.layer.cornerRadius = 9
-        buttonFlipBack.backgroundColor = UIColor.brownColor()
+        buttonFlipBack.backgroundColor = UIColor.clearColor()
         buttonFlipBack.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonFlipBack.titleLabel?.textAlignment = NSTextAlignment.Center
         buttonFlipBack.setTitle("Flip", forState: UIControlState.Normal)
         buttonFlipBack.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonFlipBack.addTarget(self, action: "buttonFlipBackPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonFlipBack.setImage(buttonFlipImage.image, forState: UIControlState.Normal)
         
         
         

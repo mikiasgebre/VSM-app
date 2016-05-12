@@ -202,7 +202,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath)->UITableViewCell{
         let cell:UITableViewCell = allFilesTableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as UITableViewCell
         cell.textLabel?.text = self.retrievedFileNames[indexPath.row]
-        cell.accessoryType = .DetailDisclosureButton
+        cell.accessoryType = .DetailButton
         cell.accessoryView?.backgroundColor = UIColor.grayColor()
         let acesssoryImage = UIImageView()
         acesssoryImage.frame = CGRectMake(0, 0, 50, 50)
@@ -928,7 +928,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         let scrollViewImageFuture = UIImageView()
-        scrollViewImageFuture.frame = CGRectMake(0,50,screen, 1000)
+        scrollViewImageFuture.frame = CGRectMake(0,50,screen*2, 1000)
         scrollViewImageFuture.image = UIImage(named: "Editor_background.png")
         scrollViewImageFuture.tag = 572
         self.view.addSubview(scrollViewImageFuture)
@@ -1501,7 +1501,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 sticker.transform = CGAffineTransformMakeScale(1, 1)
             }
             sticker.frame.origin.x = CGFloat(Double(index)*242.6)
-            sticker.frame.origin.y = CGFloat(250)
+            //sticker.frame.origin.y = CGFloat(250)
             scrollView.addSubview(sticker)
         }
         
@@ -2806,7 +2806,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonFlip.backgroundColor = UIColor.clearColor()
         buttonFlip.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonFlip.titleLabel?.textAlignment = NSTextAlignment.Center
-        buttonFlip.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlip.setTitle("", forState: UIControlState.Normal)
         buttonFlip.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonFlip.addTarget(self, action: "buttonFlipPressed:", forControlEvents: UIControlEvents.TouchUpInside)
         buttonFlip.setImage(buttonFlipImage.image, forState: UIControlState.Normal)
@@ -2818,7 +2818,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonFlipBack.backgroundColor = UIColor.clearColor()
         buttonFlipBack.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonFlipBack.titleLabel?.textAlignment = NSTextAlignment.Center
-        buttonFlipBack.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlipBack.setTitle("", forState: UIControlState.Normal)
         buttonFlipBack.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonFlipBack.addTarget(self, action: "buttonFlipBackPressed:", forControlEvents: UIControlEvents.TouchUpInside)
         buttonFlipBack.setImage(buttonFlipImage.image, forState: UIControlState.Normal)
@@ -2866,7 +2866,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         let view = UIView()
-        view.frame = CGRectMake(CGFloat(sticker.xPosition), 250, 170.6, 170.6)
+        view.frame = CGRectMake(CGFloat(sticker.xPosition), 300, 170.6, 170.6)
         switch(sticker.backgroundColor){
         case "orange":
             view.backgroundColor = UIColor.orangeColor()
@@ -3012,26 +3012,37 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         
+        //This is the image of the real icon
+        let buttonFlipImage = UIImageView()
+        buttonFlipImage.frame = CGRectMake(0, 0, 48, 48)
+        buttonFlipImage.tag = 113
+        buttonFlipImage.image = UIImage(named: "Info.png")
+        buttonFlipImage.userInteractionEnabled = true
+        
+        
+        
         let buttonFlip:UIButton! = UIButton(type: .System)
         buttonFlip.frame = CGRectMake(135, 150, 18, 18.0)
         buttonFlip.layer.cornerRadius = 9
-        buttonFlip.backgroundColor = UIColor.brownColor()
+        buttonFlip.backgroundColor = UIColor.clearColor()
         buttonFlip.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonFlip.titleLabel?.textAlignment = NSTextAlignment.Center
-        buttonFlip.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlip.setTitle("", forState: UIControlState.Normal)
         buttonFlip.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonFlip.addTarget(self, action: "buttonFlipPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonFlip.setImage(buttonFlipImage.image, forState: UIControlState.Normal)
         
         
         let buttonFlipBack:UIButton! = UIButton(type: .System)
         buttonFlipBack.frame = CGRectMake(133, 148, 18, 18.0)
         buttonFlipBack.layer.cornerRadius = 9
-        buttonFlipBack.backgroundColor = UIColor.brownColor()
+        buttonFlipBack.backgroundColor = UIColor.clearColor()
         buttonFlipBack.titleLabel?.font = UIFont.italicSystemFontOfSize(8)
         buttonFlipBack.titleLabel?.textAlignment = NSTextAlignment.Center
-        buttonFlipBack.setTitle("Flip", forState: UIControlState.Normal)
+        buttonFlipBack.setTitle("", forState: UIControlState.Normal)
         buttonFlipBack.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         buttonFlipBack.addTarget(self, action: "buttonFlipBackPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonFlip.setImage(buttonFlipImage.image, forState: UIControlState.Normal)
         
         
         

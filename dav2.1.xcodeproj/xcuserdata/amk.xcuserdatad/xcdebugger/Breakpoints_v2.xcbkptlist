@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "dav2.1/ViewController.swift"
-            timestampString = "484736027.073915"
+            timestampString = "484739154.700915"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3066"
-            endingLineNumber = "3066"
+            startingLineNumber = "3077"
+            endingLineNumber = "3077"
             landmarkName = "makeStickerFromFile(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "dav2.1/ViewController.swift"
-            timestampString = "484736027.073915"
+            timestampString = "484739154.700915"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3106"
-            endingLineNumber = "3106"
+            startingLineNumber = "3117"
+            endingLineNumber = "3117"
             landmarkName = "iconTapped(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -138,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "dav2.1/ViewController.swift"
-            timestampString = "484736027.073915"
+            timestampString = "484739154.700915"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3294"
-            endingLineNumber = "3294"
+            startingLineNumber = "3305"
+            endingLineNumber = "3305"
             landmarkName = "nameChanged(_:)"
             landmarkType = "5">
          </BreakpointContent>

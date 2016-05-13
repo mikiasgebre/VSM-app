@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "dav2.1/ViewController.swift"
-            timestampString = "484851381.117047"
+            timestampString = "484860724.96386"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3100"
-            endingLineNumber = "3100"
+            startingLineNumber = "3098"
+            endingLineNumber = "3098"
             landmarkName = "makeStickerFromFile(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "dav2.1/ViewController.swift"
-            timestampString = "484851381.117047"
+            timestampString = "484860724.96386"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3140"
-            endingLineNumber = "3140"
+            startingLineNumber = "3138"
+            endingLineNumber = "3138"
             landmarkName = "iconTapped(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -138,11 +138,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "dav2.1/ViewController.swift"
-            timestampString = "484851381.117047"
+            timestampString = "484860724.96386"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "3319"
-            endingLineNumber = "3319"
+            startingLineNumber = "3317"
+            endingLineNumber = "3317"
             landmarkName = "nameChanged(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -170,11 +170,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "dav2.1/ViewController.swift"
-            timestampString = "484851381.117047"
+            timestampString = "484860724.96386"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2701"
-            endingLineNumber = "2701"
+            startingLineNumber = "2699"
+            endingLineNumber = "2699"
             landmarkName = "makeSticker(_:stickerNumber:stickerColor:)"
             landmarkType = "5">
          </BreakpointContent>

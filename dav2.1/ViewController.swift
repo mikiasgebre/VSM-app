@@ -2220,8 +2220,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         let viewSave = UIView()
         viewSave.frame = CGRectMake(0, 0, 80, 100)
         viewSave.backgroundColor = UIColor.clearColor()
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        viewSave.addGestureRecognizer(gesture)
         viewSave.userInteractionEnabled = true
         viewSave.tag = 4
         

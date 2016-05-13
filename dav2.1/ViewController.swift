@@ -62,6 +62,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     let archiveView = UIView()
     let buttonCreateSticker:UIButton! = UIButton(type: .System)
     var screen:CGFloat = 0
+    var initial:Bool = false
     
     
     
@@ -76,7 +77,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         makeHeaderButtons()
         makeButtonCreateSticker()
         makeButtonRefreshStickers()
-        createInitialScreen()
+        if(!initial){
+            createInitialScreen()
+        }
         // Do any additional setup after loading the view, typically from a nib.
         
     }
@@ -153,6 +156,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     makeButtonFileAsPdf()
                 }
             }
+            for view in self.view.subviews{//Refresh
+                if(view.tag == 29){
+                    view.removeFromSuperview()
+                    makeButtonRefreshStickers()
+                }
+            }
         }else if(UIDevice.currentDevice().orientation.isPortrait.boolValue){
             screen = 768
             print("Screen Portrait "+String(screen))
@@ -187,7 +196,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     makeButtonFileAsPdf()
                 }
             }
-
+            for view in self.view.subviews{//Refresh
+                if(view.tag == 29){
+                    view.removeFromSuperview()
+                    makeButtonRefreshStickers()
+                }
+            }
         }
     }
     
@@ -356,8 +370,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonCreateSticker.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
         buttonCreateSticker.addTarget(self, action: "buttonCreateStickerPressed:", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(buttonCreateSticker)
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        buttonCreateSticker.addGestureRecognizer(gesture)
         buttonCreateSticker.userInteractionEnabled = true
         buttonCreateSticker.tag = 20
         
@@ -394,6 +406,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 textField.text = "Map your process"
             }
         }
+        initial = true
     }
     
     func createSticker(stickerColor: String){
@@ -545,7 +558,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Button that creates the post it sticker pieces
         func makeButtonRefreshStickers(){
                let buttonRefreshStickers:UIButton! = UIButton(type: .System)
-               buttonRefreshStickers.frame = CGRectMake(view.frame.width-67.8, 70, 30, 30)
+               buttonRefreshStickers.frame = CGRectMake(screen-67.8, 70, 30, 30)
                 buttonRefreshStickers.layer.cornerRadius = 15
                 buttonRefreshStickers.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
                 buttonRefreshStickers.titleLabel?.numberOfLines = 0
@@ -554,9 +567,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 buttonRefreshStickers.setTitle("R", forState: UIControlState.Normal)
                 buttonRefreshStickers.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
                 buttonRefreshStickers.addTarget(self, action: "buttonRefreshStickersPressed:", forControlEvents: UIControlEvents.TouchUpInside)
-                //self.view.addSubview(buttonRefreshStickers)
-               let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-                    buttonRefreshStickers.addGestureRecognizer(gesture)
+                self.view.addSubview(buttonRefreshStickers)
                     buttonRefreshStickers.userInteractionEnabled = true
                     buttonRefreshStickers.tag = 29
     }
@@ -566,17 +577,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         refreshPage()
     }
     
-    func refreshPage(){
-        for view in stickerDictionary{
+    func refreshPage() -> (){
+        for view in self.view.subviews{
             view.removeFromSuperview()
         }
-        
+        self.viewDidLoad()
+        self.viewWillAppear(true)
         //Add Stickers to timeline
         for (index,sticker) in stickerDictionary.enumerate(){
+            if(sticker.frame.width>171){
+                sticker.transform = CGAffineTransformMakeScale(1, 1)
+            }
             sticker.frame.origin.x = CGFloat(Double(index)*242.6)
             scrollView.addSubview(sticker)
         }
         
+        createIcons(stickerDictionary)
         
     }
     
@@ -616,6 +632,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //Button action method
     func buttonFileAsPdfPressed(sender: UIButton!){
+        if(stickerDictionary.count == 0){
+            return
+        }
         makeTableDisappear()
         for view in stickerDictionaryPdfPages{
             view.removeFromSuperview()
@@ -733,7 +752,16 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             UIGraphicsBeginPDFPage()
             view.layer.renderInContext(pdfContext!)
             UIGraphicsEndPDFContext()
-            pdfMail.addAttachmentData(pdfStickers, mimeType: "application/pdf", fileName: "")
+            
+            var count = 0
+            let docDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
+            let fileName = "pdfFile"+String(count)+String(NSDate())
+            let filePath = docDirectory.stringByAppendingString(fileName)
+            pdfStickers.writeToFile(filePath, atomically: true)
+            let fileContents = NSData(contentsOfFile: filePath)
+            count+=1
+            //webViewPdf.loadData(pdfStickers, MIMEType: "application/pdf", textEncodingName: "UTF-8", baseURL: NSURL(fileURLWithPath: fileName))
+            pdfMail.addAttachmentData(fileContents!, mimeType: "application/pdf", fileName: fileName)
         }
           return pdfMail
     }
@@ -845,11 +873,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         UIGraphicsEndPDFContext()
         
         
-        var count = 0
-        let docDirectory = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0]
-            let fileName = docDirectory+"/"+"pdfFile"+String(count)
-            pdfStickers.writeToFile(fileName, atomically: true)
-            count+=1
         let webViewPdf = UIWebView()
         webViewPdf.frame = webView.frame
         webViewPdf.loadData(pdfStickers, MIMEType: "application/pdf", textEncodingName: "UTF-8", baseURL: NSURL())
@@ -3245,14 +3268,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             if((gesture.view!.frame.intersects(trashView.frame))){
                 print("Intersect Delete Occurred")
-                
-                
-                if(gesture.view!.tag==19){
-                    deleteSticker((gesture.view!.superview)!)
-                }
-                else{
                     deleteSticker(gesture.view!)
-                }
                 trashView.removeFromSuperview()
                 archiveView.removeFromSuperview()
                 
@@ -3268,6 +3284,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                         return
                     }
                 }
+                
                 for view in stickerDictionary{
                     if(gesture.view!.tag == view.tag){
                         for case let textField as UITextField in view.subviews{
@@ -3277,13 +3294,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                         }
                     }
                 }
+                
                 stickerDictionaryArchive.append(gesture.view!)
-                if(gesture.view!.tag==19){
-                    deleteSticker((gesture.view!.superview)!)
-                }
-                else{
-                    deleteSticker(gesture.view!)
-                }
+                deleteSticker(gesture.view!)
+                
                 trashView.removeFromSuperview()
                 archiveView.removeFromSuperview()
                 

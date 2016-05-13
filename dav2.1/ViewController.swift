@@ -623,8 +623,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         self.view.addSubview(buttonPdfImage)
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        buttonFileAsPdf.addGestureRecognizer(gesture)
         buttonFileAsPdf.userInteractionEnabled = true
         buttonFileAsPdf.tag = 42
         
@@ -703,8 +701,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.view.addSubview(buttonPdfImage)
         
         
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        buttonFileAsPdf.addGestureRecognizer(gesture)
         buttonFileAsPdf.userInteractionEnabled = true
         buttonFileAsPdf.tag = 45
         
@@ -838,8 +834,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonRemovePdf.setTitle("Back", forState: UIControlState.Normal)
         buttonRemovePdf.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
         buttonRemovePdf.addTarget(self, action: "buttonFileAsPdfRemovePressed:", forControlEvents: UIControlEvents.TouchUpInside)
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        buttonRemovePdf.addGestureRecognizer(gesture)
         buttonRemovePdf.userInteractionEnabled = true
         buttonRemovePdf.tag = 45
         
@@ -856,7 +850,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonSendPdf.setTitle("Send", forState: UIControlState.Normal)
         buttonSendPdf.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
         buttonSendPdf.addTarget(self, action: "buttonFileAsPdfSendPressed:", forControlEvents: UIControlEvents.TouchUpInside)
-        buttonSendPdf.addGestureRecognizer(gesture)
         buttonSendPdf.userInteractionEnabled = true
         buttonSendPdf.tag = 46
         
@@ -897,8 +890,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if(stickerDictionary.count != 0){
             scrollView.addSubview(trashView)
         }
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged2:"))
-        trashView.addGestureRecognizer(gesture)
         trashView.userInteractionEnabled = true
         trashView.tag = 1
         trashView.addSubview(viewImage)
@@ -2585,8 +2576,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         viewAllFiles.frame = CGRectMake(0, 0, 120, 20)
         viewAllFiles.backgroundColor = UIColor.clearColor()
         viewAllFiles.layer.cornerRadius = 6
-        let gesture = UIPanGestureRecognizer(target: self, action: Selector("dragged:"))
-        viewAllFiles.addGestureRecognizer(gesture)
         viewAllFiles.userInteractionEnabled = true
         viewAllFiles.tag = 5
         

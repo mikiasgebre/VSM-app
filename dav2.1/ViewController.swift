@@ -584,16 +584,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.viewDidLoad()
         self.viewWillAppear(true)
         //Add Stickers to timeline
-        for (index,sticker) in stickerDictionary.enumerate(){
-            if(sticker.frame.width>171){
-                sticker.transform = CGAffineTransformMakeScale(1, 1)
-            }
-            sticker.frame.origin.x = CGFloat(Double(index)*242.6)
-            scrollView.addSubview(sticker)
-        }
-        
-        createIcons(stickerDictionary)
-        
+        processPressed()
     }
     
     
@@ -1435,8 +1426,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func buttonImprovementsPressed(sender: UIButton!){
         makeTableDisappear()
-        archiveView.hidden = true
-        trashView.hidden = true
+        archiveView.removeFromSuperview()
+        trashView.removeFromSuperview()
         buttonCreateSticker.hidden = true
         sender.superview?.transform = CGAffineTransformMakeScale(1, 1)
         sender.superview?.transform = CGAffineTransformMakeScale(1, 1.2)
@@ -1496,7 +1487,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         //remove Stickers off timeline
-        for view in stickerDictionary{
+        for view in scrollView.subviews{
             view.removeFromSuperview()
         }
         
@@ -1510,18 +1501,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             view.tag = index
             stickerDictionary.append(view)
         }
-        for (index,sticker) in stickerDictionary.enumerate(){
+        for (index,sticker) in stickerDictionary.enumerate(){//Add stickers to timeline
             if(sticker.frame.width>171){
                 sticker.transform = CGAffineTransformMakeScale(1, 1)
             }
             sticker.frame.origin.x = CGFloat(Double(index)*242.6)
-            //sticker.frame.origin.y = CGFloat(250)
+            sticker.frame.origin.y = CGFloat(300)
             scrollView.addSubview(sticker)
         }
         
-        scrollViewDidEndDecelerating(self.scrollView)
+        //scrollViewDidEndDecelerating(self.scrollView)
         createIcons(stickerDictionary)
-        
+        print("Number"+String(scrollView.subviews.count))
     }
     
     
@@ -1529,13 +1520,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //This may be required to open as another thread in a future release
     
     func buttonProcessPressed(sender: UIButton!){
+        sender.superview?.transform = CGAffineTransformMakeScale(1, 1)
+        sender.superview?.transform = CGAffineTransformMakeScale(1, 1.2)
+        processPressed()
+    }
+    
+    func processPressed(){
+        
         makeTableDisappear()
         buttonCreateSticker.hidden = false
         archiveView.hidden = true
         trashView.hidden = false
-        sender.superview?.transform = CGAffineTransformMakeScale(1, 1)
-        sender.superview?.transform = CGAffineTransformMakeScale(1, 1.2)
-        
+       
         //This is file menu
         for case let view as UIImageView in self.view.subviews{
             if (view.tag == 116){
@@ -1618,7 +1614,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
         createIcons(stickerDictionary)
-        
         
     }
     

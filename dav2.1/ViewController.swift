@@ -38,7 +38,7 @@ class StickerFile: Object {
     override static func indexedProperties() -> [String] {
         return ["fileName"]
     }
-
+    
     
 }
 
@@ -244,90 +244,91 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             for view in self.view.subviews{
                 if(view.tag==570){//Process background
                     if(view.hidden == false){//Process background
-                    
-            for view in self.stickerDictionary{
-                view.removeFromSuperview()
-            }
-            stickerDictionary.removeAll()
-            stickerDictionaryArchive.removeAll()
-            stickerDictionaryTemp.removeAll()
-            
-            let firstFile = retrievedFileNames.first?.stickers
-            for sticker in firstFile! {
-                makeStickerFromFile(sticker)// Adds stickers to the dictionary
-            }
-            
-            for (index,sticker) in stickerDictionary.enumerate(){
-                sticker.tag = index
-                for case let textField as UITextField in sticker.subviews{
-                    if (textField.tag == 2){
-                        textField.text = "Sticker Number "+String(index+1)
-                    }
-                    //This the view id
-                    if (textField.tag == 9){
-                        textField.text = String(index+1)
-                    }
-                    
-                    //self.view.addSubview(sticker)
-                }
-            }
-            
-            //Add Stickers to timeline
-            for (index,sticker) in stickerDictionary.enumerate(){
-                if(sticker.frame.width>171){
-                        sticker.transform = CGAffineTransformMakeScale(1, 1)
-                }
-                sticker.frame.origin.x = CGFloat(Double(index)*242.6)
-                scrollView.addSubview(sticker)
-            }
-            
-            
-            //This is future button
-            for view in self.view.subviews{
-                if(view.tag==118){
-                    view.transform = CGAffineTransformMakeScale(1, 1)
-                }
-            }
-            
-            
-            //This is improvements button
-            for view in self.view.subviews{
-                if(view.tag==119){
-                    view.transform = CGAffineTransformMakeScale(1, 1)
-                }
-            }
-            
-            //This is header title
-            for case let textField as UITextField in self.view.subviews{
-                if (textField.tag == 57){
-                    textField.text = "Create future state"
-                }
-            }
-            
-            //This is header file name
-            for case let textField as UITextField in self.view.subviews{
-                if (textField.tag == 59){
-                    textField.text = newFile
-                }
-            }
-            
-            //This hides the other backgrounds
-            for view in self.view.subviews{
-                if(view.tag==571){//Improvements background
-                    view.hidden = true
-                }
-                if(view.tag==572){//Editor
-                    view.hidden = true
-                }
-                if(view.tag==570){//Process background
-                    view.hidden = false
-                }
-            }
+                        
+                        for view in self.stickerDictionary{
+                            view.removeFromSuperview()
+                        }
+                        stickerDictionary.removeAll()
+                        stickerDictionaryArchive.removeAll()
+                        stickerDictionaryTemp.removeAll()
+                        
+                        let firstFile = retrievedFileNames.first?.stickers
+                        for sticker in firstFile! {
+                            makeStickerFromFile(sticker)// Adds stickers to the dictionary
+                        }
+                        
+                        for (index,sticker) in stickerDictionary.enumerate(){
+                            sticker.tag = index
+                            for case let textField as UITextField in sticker.subviews{
+                                if (textField.tag == 2){
+                                    textField.text = "Sticker Number "+String(index+1)
+                                }
+                                //This the view id
+                                if (textField.tag == 9){
+                                    textField.text = String(index+1)
+                                }
+                                
+                                //self.view.addSubview(sticker)
+                            }
+                        }
+                        
+                        //Add Stickers to timeline
+                        for (index,sticker) in stickerDictionary.enumerate(){
+                            if(sticker.frame.width>171){
+                                sticker.transform = CGAffineTransformMakeScale(1, 1)
+                            }
+                            sticker.frame.origin.x = CGFloat(Double(index)*242.6)
+                            sticker.frame.origin.y = CGFloat(300)
+                            scrollView.addSubview(sticker)
+                        }
+                        
+                        
+                        //This is future button
+                        for view in self.view.subviews{
+                            if(view.tag==118){
+                                view.transform = CGAffineTransformMakeScale(1, 1)
+                            }
+                        }
+                        
+                        
+                        //This is improvements button
+                        for view in self.view.subviews{
+                            if(view.tag==119){
+                                view.transform = CGAffineTransformMakeScale(1, 1)
+                            }
+                        }
+                        
+                        //This is header title
+                        for case let textField as UITextField in self.view.subviews{
+                            if (textField.tag == 57){
+                                textField.text = "Create future state"
+                            }
+                        }
+                        
+                        //This is header file name
+                        for case let textField as UITextField in self.view.subviews{
+                            if (textField.tag == 59){
+                                textField.text = newFile
+                            }
+                        }
+                        
+                        //This hides the other backgrounds
+                        for view in self.view.subviews{
+                            if(view.tag==571){//Improvements background
+                                view.hidden = true
+                            }
+                            if(view.tag==572){//Editor
+                                view.hidden = true
+                            }
+                            if(view.tag==570){//Process background
+                                view.hidden = false
+                            }
+                        }
                         //trashViewOffset = scrollView.contentOffset+72
                         drawTrash()
                         trashView.hidden = false
                         
-            createIcons(stickerDictionary)
+                        createIcons(stickerDictionary)
                     }
                 }
             }
@@ -383,7 +384,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         trashView.removeFromSuperview()
         archiveView.removeFromSuperview()
         createSticker("orange")
-       
+        
         //This hides the other backgrounds
         for view in self.view.subviews{
             if(view.tag==571){//Improvements background
@@ -431,12 +432,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             view.removeFromSuperview()
         }
         
-       //Add Stickers to timeline
+        //Add Stickers to timeline
         for (index,sticker) in stickerDictionary.enumerate(){
             if(sticker.frame.width>171){
                 sticker.transform = CGAffineTransformMakeScale(1, 1)
             }
             sticker.frame.origin.x = CGFloat(Double(index)*242.6)
+            sticker.frame.origin.y = CGFloat(300)
             scrollView.addSubview(sticker)
         }
         
@@ -465,21 +467,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         if(scrollView.tag==220){
-        var zoomedView = UIView()
+            var zoomedView = UIView()
             for view in stickerDictionary{
                 if(view.frame.width>171){
                     view.transform = CGAffineTransformMakeScale(1, 1)
                     zoomedView = view
                 }
             }
-        for view in stickerDictionaryIcon{
-            if (view.tag == zoomedView.tag){
-                view.transform = CGAffineTransformMakeScale(1, 1)
+            for view in stickerDictionaryIcon{
+                if (view.tag == zoomedView.tag){
+                    view.transform = CGAffineTransformMakeScale(1, 1)
+                }
             }
-        }
-        
-        trashView.removeFromSuperview()
-        archiveView.removeFromSuperview()
+            
+            trashView.removeFromSuperview()
+            archiveView.removeFromSuperview()
         }
     }
     
@@ -487,52 +489,52 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func scrollViewDidEndDecelerating(scrollView: UIScrollView){
         if(scrollView.tag==220){
-        let offset = scrollView.contentOffset.x
-        let sections = ceil(offset/242.6) //Each sticker has this width, the offset is from origin of scrollview to end of timeline backwards
-        let fullOffset = (sections*242.6)-54
-        
-        var itemNumber = Int(sections)
-        print("Offset "+String(itemNumber))
-        
-        if(scrollView.contentOffset.x == -274.0){
-            let item = 0
-            scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: 0), animated: false)
-            for views in stickerDictionary{
-                if(views.tag == item){
+            let offset = scrollView.contentOffset.x
+            let sections = ceil(offset/242.6) //Each sticker has this width, the offset is from origin of scrollview to end of timeline backwards
+            let fullOffset = (sections*242.6)-54
+            
+            var itemNumber = Int(sections)
+            print("Offset "+String(itemNumber))
+            
+            if(scrollView.contentOffset.x == -274.0){
+                let item = 0
+                scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: 0), animated: false)
+                for views in stickerDictionary{
+                    if(views.tag == item){
                         views.transform = CGAffineTransformMakeScale(1.6, 1.6)
+                    }
                 }
-            }
-            
-            for view in stickerDictionaryIcon{
-                if (view.tag == item){
-                    view.transform = CGAffineTransformMakeScale(1.4, 1.4)
+                
+                for view in stickerDictionaryIcon{
+                    if (view.tag == item){
+                        view.transform = CGAffineTransformMakeScale(1.4, 1.4)
+                    }
                 }
-            }
-            
-            
-        }else{
-            scrollView.setContentOffset(CGPoint(x: fullOffset, y: 0), animated: false)
-            if(itemNumber>=stickerDictionary.count){
-                itemNumber = stickerDictionary.count-2
-            }
-            for view in stickerDictionary{
-                if(view.tag == itemNumber+1){
+                
+                
+            }else{
+                scrollView.setContentOffset(CGPoint(x: fullOffset, y: 0), animated: false)
+                if(itemNumber>=stickerDictionary.count){
+                    itemNumber = stickerDictionary.count-2
+                }
+                for view in stickerDictionary{
+                    if(view.tag == itemNumber+1){
                         view.transform = CGAffineTransformMakeScale(1.6, 1.6)
+                    }
+                }
+                
+                
+                for view in stickerDictionaryIcon{//Before we zoom anything, make sure all are reset
+                    view.transform = CGAffineTransformMakeScale(1, 1)
+                }
+                
+                
+                for view in stickerDictionaryIcon{
+                    if (view.tag == itemNumber+1){
+                        view.transform = CGAffineTransformMakeScale(1.4, 1.4)
+                    }
                 }
             }
-            
-            
-            for view in stickerDictionaryIcon{//Before we zoom anything, make sure all are reset
-                view.transform = CGAffineTransformMakeScale(1, 1)
-            }
-            
-            
-            for view in stickerDictionaryIcon{
-                if (view.tag == itemNumber+1){
-                    view.transform = CGAffineTransformMakeScale(1.4, 1.4)
-                }
-            }
-        }
             
             //This selects whether trash or archive be displayed depending on the interface
             for view in self.view.subviews{
@@ -556,20 +558,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     //Button that creates the post it sticker pieces
-        func makeButtonRefreshStickers(){
-               let buttonRefreshStickers:UIButton! = UIButton(type: .System)
-               buttonRefreshStickers.frame = CGRectMake(screen-67.8, 70, 30, 30)
-                buttonRefreshStickers.layer.cornerRadius = 15
-                buttonRefreshStickers.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
-                buttonRefreshStickers.titleLabel?.numberOfLines = 0
-                buttonRefreshStickers.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
-                buttonRefreshStickers.backgroundColor = UIColor.brownColor()
-                buttonRefreshStickers.setTitle("R", forState: UIControlState.Normal)
-                buttonRefreshStickers.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-                buttonRefreshStickers.addTarget(self, action: "buttonRefreshStickersPressed:", forControlEvents: UIControlEvents.TouchUpInside)
-                self.view.addSubview(buttonRefreshStickers)
-                    buttonRefreshStickers.userInteractionEnabled = true
-                    buttonRefreshStickers.tag = 29
+    func makeButtonRefreshStickers(){
+        let buttonRefreshStickers:UIButton! = UIButton(type: .System)
+        buttonRefreshStickers.frame = CGRectMake(screen-67.8, 70, 30, 30)
+        buttonRefreshStickers.layer.cornerRadius = 15
+        buttonRefreshStickers.titleLabel?.font = UIFont.italicSystemFontOfSize(10)
+        buttonRefreshStickers.titleLabel?.numberOfLines = 0
+        buttonRefreshStickers.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        buttonRefreshStickers.backgroundColor = UIColor.brownColor()
+        buttonRefreshStickers.setTitle("R", forState: UIControlState.Normal)
+        buttonRefreshStickers.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        buttonRefreshStickers.addTarget(self, action: "buttonRefreshStickersPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        self.view.addSubview(buttonRefreshStickers)
+        buttonRefreshStickers.userInteractionEnabled = true
+        buttonRefreshStickers.tag = 29
     }
     
     
@@ -658,7 +660,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             sticker.frame.origin.x = CGFloat(Double(index)*700)
             scrollViewPdf.addSubview(sticker)
         }
-            scrollViewPdf.hidden = false
+        scrollViewPdf.hidden = false
         print("Pdf Count "+String(stickerDictionaryPdfPages.count))
         print("Pdf Count "+String(numberPages))
         
@@ -720,7 +722,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         mailVc.view.center.x = self.view.center.x
         if MFMailComposeViewController.canSendMail(){
             presentViewController(mailVc, animated:true, completion:nil)
-            }
+        }
             
         else{
             createAlertView("Sending Email", message: "Device could not send Pdf As Attachment")
@@ -750,7 +752,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             //webViewPdf.loadData(pdfStickers, MIMEType: "application/pdf", textEncodingName: "UTF-8", baseURL: NSURL(fileURLWithPath: fileName))
             pdfMail.addAttachmentData(fileContents!, mimeType: "application/pdf", fileName: fileName)
         }
-          return pdfMail
+        return pdfMail
     }
     
     
@@ -804,7 +806,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 counter++
                 stickersAdded++
                 if(counter > 2){
-                  break
+                    break
                 }
             }
             startIndex+=3
@@ -864,7 +866,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         stickerDictionaryPdfPages.append(webViewContainer)
         //self.view.addSubview(webViewContainer)
     }
-
+    
     
     
     func drawTrash(){
@@ -908,7 +910,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         archiveView.tag = 1
         archiveView.addSubview(viewImage)
     }
-
+    
     
     
     func createScrollAndContainerView() {
@@ -963,7 +965,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         self.view.addSubview(scrollViewPdf)
         
     }
-
+    
     
     func buttonOrangeColorPressed(sender: UIButton!){
         let sentView = sender.superview?.superview
@@ -1001,7 +1003,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
             }
         }
-
+        
     }
     
     
@@ -1096,7 +1098,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         sentView.removeFromSuperview()
         for (index,sticker) in stickerDictionary.enumerate(){
             if(sticker.tag==sentView.tag){
-               stickerDictionary.removeAtIndex(index)
+                stickerDictionary.removeAtIndex(index)
             }
         }
         
@@ -1106,15 +1108,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             for case let textField as UITextField in sticker.subviews{
                 if (textField.tag == 2){
                     textField.text = "Sticker Number "+String(index+1)
+                    textField.hidden = true
                 }
             }
-            
-            for case let textField as UITextField in sticker.subviews{
-                if (textField.tag == 8){
-                    textField.text = "Name This Sticker "+String(index+1)
-                }
-            }
-            
             
             for case let textField as UITextField in sticker.subviews{
                 if (textField.tag == 9){
@@ -1126,8 +1122,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         //remove Stickers off timeline
         for view in stickerDictionary{
-           view.removeFromSuperview()
-       }
+            view.removeFromSuperview()
+        }
         
         
         //Add Stickers to timeline
@@ -1153,30 +1149,30 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         //Remove all the icons from the icon dictionary
         stickerDictionaryIcon.removeAll()
-    for sticker in stickerDictionary{
-        //This is the main icon view which has an icon and a mirror of the icon
-        let iconViewMain = UIView()
-        iconViewMain.frame = CGRectMake(0,20,45, 45)
-        iconViewMain.layer.cornerRadius = 5
-        iconViewMain.tag = sticker.tag
-        
-        
-        //This is the image of the real icon
-        let iconImage = UIImageView()
-        iconImage.frame = CGRectMake(-5, -7, 50, 50)
-        iconImage.tag = 113
-        
-        
-        //This is the icon view
-        let iconView = UIView()
-        iconView.frame = CGRectMake(0,0,35, 35)
-        iconView.layer.cornerRadius = 5
-        iconView.tag = 5
-        let gesture = UITapGestureRecognizer(target: self, action: Selector("iconTapped:"))
-        iconView.addGestureRecognizer(gesture)
-        for case let textField as UITextField in sticker.subviews{
-            if (textField.tag == 7){
-                switch(textField.text!){
+        for sticker in stickerDictionary{
+            //This is the main icon view which has an icon and a mirror of the icon
+            let iconViewMain = UIView()
+            iconViewMain.frame = CGRectMake(0,20,45, 45)
+            iconViewMain.layer.cornerRadius = 5
+            iconViewMain.tag = sticker.tag
+            
+            
+            //This is the image of the real icon
+            let iconImage = UIImageView()
+            iconImage.frame = CGRectMake(-5, -7, 50, 50)
+            iconImage.tag = 113
+            
+            
+            //This is the icon view
+            let iconView = UIView()
+            iconView.frame = CGRectMake(0,0,35, 35)
+            iconView.layer.cornerRadius = 5
+            iconView.tag = 5
+            let gesture = UITapGestureRecognizer(target: self, action: Selector("iconTapped:"))
+            iconView.addGestureRecognizer(gesture)
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 7){
+                    switch(textField.text!){
                     case "orange":
                         iconView.backgroundColor = UIColor.orangeColor()
                         iconImage.image = UIImage(named: "Sticker_orange.png")
@@ -1189,29 +1185,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     default:
                         iconView.backgroundColor = UIColor.greenColor()
                         iconImage.image = UIImage(named: "Sticker_green.png")
+                    }
                 }
             }
-        }
-        //Current name of the sticker concerned
-        let textCurrentName = UITextView(frame: CGRectMake(0.0, -3.0, 35.0, 35.0))
-        for case let textField as UITextField in sticker.subviews{
-            if (textField.tag == 8){
-                textCurrentName.font = UIFont.italicSystemFontOfSize(7)
-                textCurrentName.textColor = UIColor.blackColor()
-                textCurrentName.backgroundColor = UIColor.clearColor()
-                textCurrentName.tag = 8
-                textCurrentName.text = textField.text!
-                textCurrentName.editable = false
-                iconView.addSubview(textCurrentName)
+            //Current name of the sticker concerned
+            let textCurrentName = UITextView(frame: CGRectMake(0.0, -3.0, 35.0, 35.0))
+            for case let textField as UITextField in sticker.subviews{
+                if (textField.tag == 8){
+                    textCurrentName.font = UIFont.italicSystemFontOfSize(7)
+                    textCurrentName.textColor = UIColor.blackColor()
+                    textCurrentName.backgroundColor = UIColor.clearColor()
+                    textCurrentName.tag = 8
+                    textCurrentName.text = textField.text!
+                    textCurrentName.editable = false
+                    iconView.addSubview(textCurrentName)
+                }
             }
+            iconView.addSubview(iconImage)
+            iconView.sendSubviewToBack(iconImage)
+            iconViewMain.addSubview(iconView)
+            
+            stickerDictionaryIcon.append(iconViewMain)
+            
         }
-        iconView.addSubview(iconImage)
-        iconView.sendSubviewToBack(iconImage)
-        iconViewMain.addSubview(iconView)
-        
-        stickerDictionaryIcon.append(iconViewMain)
-    
-    }
         
         //Add Stickers to timeline
         for (index,sticker) in stickerDictionaryIcon.enumerate(){
@@ -1221,9 +1217,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             sticker.frame.origin.x = CGFloat(Double(index)*75)
             scrollViewIcon.addSubview(sticker)
         }
-     
-}
-
+        
+    }
+    
     
     //Button action method
     func buttonFlipPressed(sender: UIButton!){
@@ -1298,37 +1294,37 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         CATransaction.commit()
     }
-
-
+    
+    
     func buttonOptionsPressed(sender: UIButton!){
         makeTableDisappear()
         //Check if process is active
         for view in self.view.subviews{
             if(view.tag==570){//Process background
                 if(view.hidden == false){//Process background
-        //This is file menu
-        for case let view as UIImageView in self.view.subviews{
-            if (view.tag == 116){
-                if(view.hidden == false){
-                    view.hidden = true
-                }else{
-                   view.hidden = false
+                    //This is file menu
+                    for case let view as UIImageView in self.view.subviews{
+                        if (view.tag == 116){
+                            if(view.hidden == false){
+                                view.hidden = true
+                            }else{
+                                view.hidden = false
+                            }
+                        }
+                    }
+                    //This is search menu
+                    for case let view as UIImageView in self.view.subviews{
+                        if (view.tag == 217){
+                            if(view.hidden == false){
+                                view.hidden = true
+                            }else{
+                                view.hidden = false
+                            }
+                        }
+                    }
                 }
             }
         }
-        //This is search menu
-        for case let view as UIImageView in self.view.subviews{
-            if (view.tag == 217){
-                if(view.hidden == false){
-                    view.hidden = true
-                }else{
-                    view.hidden = false
-                }
-            }
-        }
-    }
-}
-}
     }
     
     
@@ -1342,14 +1338,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         //This is file menu
         for case let view as UIImageView in self.view.subviews{
             if (view.tag == 116){
-                    view.hidden = true
-                }
+                view.hidden = true
+            }
         }
         //This is search menu
         for case let view as UIImageView in self.view.subviews{
             if (view.tag == 217){
-                    view.hidden = true
-                }
+                view.hidden = true
+            }
         }
         
         //This is process button
@@ -1404,15 +1400,28 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 stickerDictionary.append(view)
             }
             stickerDictionaryTemp.removeAll()
+            
         }
         
+        //Check if current dictionary contains archives
+        if(stickerDictionaryTemp.count == 0){
+            if(stickerDictionary.count != 0){
+            for case let textField as UITextField in stickerDictionary[0].subviews{
+                if(textField.tag == 20){
+                    if(textField.text! == "archived"){
+                        stickerDictionary.removeAll()
+                    }
+                }
+            }
+            }
+        }
         
-        //Add Stickers to timeline
-        for (index,sticker) in stickerDictionary.enumerate(){
+        for (index,sticker) in stickerDictionary.enumerate(){//Add stickers to timeline
             if(sticker.frame.width>171){
                 sticker.transform = CGAffineTransformMakeScale(1, 1)
             }
             sticker.frame.origin.x = CGFloat(Double(index)*242.6)
+            sticker.frame.origin.y = CGFloat(300)
             scrollView.addSubview(sticker)
         }
         
@@ -1516,7 +1525,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
-
+    
     //This may be required to open as another thread in a future release
     
     func buttonProcessPressed(sender: UIButton!){
@@ -1531,7 +1540,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonCreateSticker.hidden = false
         archiveView.hidden = true
         trashView.hidden = false
-       
+        
         //This is file menu
         for case let view as UIImageView in self.view.subviews{
             if (view.tag == 116){
@@ -1605,16 +1614,30 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             stickerDictionaryTemp.removeAll()
         }
         
-        for (index,sticker) in stickerDictionary.enumerate(){
+        //Check if current dictionary contains archives
+        if(stickerDictionaryTemp.count == 0){
+            if(stickerDictionary.count != 0){
+                for case let textField as UITextField in stickerDictionary[0].subviews{
+                    if(textField.tag == 20){
+                        if(textField.text! == "archived"){
+                            stickerDictionary.removeAll()
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        for (index,sticker) in stickerDictionary.enumerate(){//Add stickers to timeline
             if(sticker.frame.width>171){
                 sticker.transform = CGAffineTransformMakeScale(1, 1)
             }
             sticker.frame.origin.x = CGFloat(Double(index)*242.6)
+            sticker.frame.origin.y = CGFloat(300)
             scrollView.addSubview(sticker)
         }
         
         createIcons(stickerDictionary)
-        
     }
     
     func buttonCreateNewFilePressed(sender: UIButton!){
@@ -1624,10 +1647,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if(view.tag==570){//Process background
                 if(view.hidden == false){//Process background
                     
-        createNewFile()
-    }
-}
-}
+                    createNewFile()
+                }
+            }
+        }
     }
     
     
@@ -1636,89 +1659,89 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         archiveView.removeFromSuperview()
         //Check if you have any views on screen
         if(stickerDictionary.count != 0){
-        let newFileAlert = UIAlertController(title: "New Process", message: "Are you sure you want to create another Process without saving this one first? All changes if any in the current process will be lost.", preferredStyle: UIAlertControllerStyle.Alert)
-        newFileAlert.view.backgroundColor = UIColor.greenColor()
-        
-        newFileAlert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(action: UIAlertAction!) in
+            let newFileAlert = UIAlertController(title: "New Process", message: "Are you sure you want to create another Process without saving this one first? All changes if any in the current process will be lost.", preferredStyle: UIAlertControllerStyle.Alert)
+            newFileAlert.view.backgroundColor = UIColor.greenColor()
             
+            newFileAlert.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(action: UIAlertAction!) in
+                
                 for view in self.view.subviews{
                     if(view.tag==59){
                         for case let textField as UITextField in view.subviews{
-                                if (textField.tag == 5){
-                                    textField.text = "Unsaved Process"
-                                }
+                            if (textField.tag == 5){
+                                textField.text = "Unsaved Process"
+                            }
                         }
                     }
                 }
-            
-            //This is future button
-            for view in self.view.subviews{
-                if(view.tag==118){
-                    view.transform = CGAffineTransformMakeScale(1, 1)
+                
+                //This is future button
+                for view in self.view.subviews{
+                    if(view.tag==118){
+                        view.transform = CGAffineTransformMakeScale(1, 1)
+                    }
                 }
-            }
-            
-            
-            //This is improvements button
-            for view in self.view.subviews{
-                if(view.tag==119){
-                    view.transform = CGAffineTransformMakeScale(1, 1)
+                
+                
+                //This is improvements button
+                for view in self.view.subviews{
+                    if(view.tag==119){
+                        view.transform = CGAffineTransformMakeScale(1, 1)
+                    }
                 }
-            }
-            
-            //This is header title
-            for case let textField as UITextField in self.view.subviews{
-                if (textField.tag == 57){
-                    textField.text = "Create future state"
+                
+                //This is header title
+                for case let textField as UITextField in self.view.subviews{
+                    if (textField.tag == 57){
+                        textField.text = "Create future state"
+                    }
                 }
-            }
-            
-            //This is header file name
-            for case let textField as UITextField in self.view.subviews{
-                if (textField.tag == 59){
-                    textField.text = "Unsaved Process"
+                
+                //This is header file name
+                for case let textField as UITextField in self.view.subviews{
+                    if (textField.tag == 59){
+                        textField.text = "Unsaved Process"
+                    }
                 }
-            }
-            
-            //This hides the other backgrounds
-            for view in self.view.subviews{
-                if(view.tag==571){//Improvements background
-                    view.hidden = true
+                
+                //This hides the other backgrounds
+                for view in self.view.subviews{
+                    if(view.tag==571){//Improvements background
+                        view.hidden = true
+                    }
+                    if(view.tag==572){//Editor
+                        view.hidden = true
+                    }
+                    if(view.tag==570){//Process background
+                        view.hidden = false
+                    }
                 }
-                if(view.tag==572){//Editor
-                    view.hidden = true
+                
+                //Remove all icon views
+                if(self.stickerDictionaryIcon.count != 0){
+                    for view in self.stickerDictionaryIcon{
+                        view.removeFromSuperview()
+                    }
+                    self.stickerDictionaryIcon.removeAll()
                 }
-                if(view.tag==570){//Process background
-                    view.hidden = false
-                }
-            }
-            
-            //Remove all icon views
-            if(self.stickerDictionaryIcon.count != 0){
-                for view in self.stickerDictionaryIcon{
+                
+                //Remove all stickers from dictionary
+                for view in self.stickerDictionary{
                     view.removeFromSuperview()
                 }
-                self.stickerDictionaryIcon.removeAll()
-            }
+                self.stickerDictionary.removeAll()
+                self.stickerDictionaryArchive.removeAll()
+                self.stickerDictionaryTemp.removeAll()
+                
+                //self.makeTableAppear()
+            }))
             
-            //Remove all stickers from dictionary
-            for view in self.stickerDictionary{
-                view.removeFromSuperview()
-            }
-            self.stickerDictionary.removeAll()
-            self.stickerDictionaryArchive.removeAll()
-            self.stickerDictionaryTemp.removeAll()
-            
-            //self.makeTableAppear()
-        }))
-        
-        newFileAlert.addAction(UIAlertAction(title: "CANCEL", style: .Default, handler: {(action: UIAlertAction!) in
+            newFileAlert.addAction(UIAlertAction(title: "CANCEL", style: .Default, handler: {(action: UIAlertAction!) in
+                
+                
+            }))
             
             
-        }))
-        
-        
-        presentViewController(newFileAlert, animated: true, completion: nil)
+            presentViewController(newFileAlert, animated: true, completion: nil)
             
         }//End if statement
         
@@ -1730,10 +1753,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if(view.tag==570){//Process background
                 if(view.hidden == false){//Process background
                     
-        makeTableAppear("")
-    }
-}
-}
+                    makeTableAppear("")
+                }
+            }
+        }
     }
     
     func buttonSavePressed(sender: UIButton){// This is the save as button; The save button is the update button
@@ -1742,15 +1765,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         for view in self.view.subviews{
             if(view.tag==570){//Process background
                 if(view.hidden == false){//Process background
-        if(stickerDictionary.count != 0){
-            //This is what calls the save function
-            createAlertViewInput("Save Process", message: "Enter Process Name.")
-        }else{
-            self.createAlertView("Save Process", message: "The current process contains zero items")
-        }
-    }
+                    if(stickerDictionary.count != 0){
+                        //This is what calls the save function
+                        createAlertViewInput("Save Process", message: "Enter Process Name.")
+                    }else{
+                        self.createAlertView("Save Process", message: "The current process contains zero items")
+                    }
+                }
             }
-    }
+        }
     }
     
     
@@ -1943,43 +1966,43 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
-        func buttonUpdatePressed(sender: UIButton!){
-            makeTableDisappear()
-            //Check if process is active
-            for view in self.view.subviews{
-                if(view.tag==570){//Process background
-                    if(view.hidden == false){//Process background
-                //This is header file name
-                var newFile = ""
-                if(stickerDictionary.count != 0){
-                    for case let textField as UITextField in stickerDictionary[0].subviews{
-                        if (textField.tag == 81){
-                            newFile = textField.text!
-                        }
-                    }
+    func buttonUpdatePressed(sender: UIButton!){
+        makeTableDisappear()
+        //Check if process is active
+        for view in self.view.subviews{
+            if(view.tag==570){//Process background
+                if(view.hidden == false){//Process background
                     //This is header file name
-                    for case let textField as UITextField in self.view.subviews{
-                        if (textField.tag == 59){
-                            newFile = textField.text!
+                    var newFile = ""
+                    if(stickerDictionary.count != 0){
+                        for case let textField as UITextField in stickerDictionary[0].subviews{
+                            if (textField.tag == 81){
+                                newFile = textField.text!
+                            }
                         }
+                        //This is header file name
+                        for case let textField as UITextField in self.view.subviews{
+                            if (textField.tag == 59){
+                                newFile = textField.text!
+                            }
+                        }
+                        if(newFile.isEmpty){
+                            self.createAlertView("Save Process", message: "You need to save as first")
+                        }
+                        if(!self.checkFileExists(newFile)){
+                            self.createAlertView("Save Process", message: "The current process does not exist")
+                        }
+                        updateFile(newFile)
+                    }else{
+                        self.createAlertView("Save Process", message: "The current process contains zero items")
                     }
-                    if(newFile.isEmpty){
-                        self.createAlertView("Save Process", message: "You need to save as first")
-                    }
-                    if(!self.checkFileExists(newFile)){
-                        self.createAlertView("Save Process", message: "The current process does not exist")
-                    }
-                    updateFile(newFile)
-                }else{
-                    self.createAlertView("Save Process", message: "The current process contains zero items")
                 }
-    }
-}
-}
+            }
         }
+    }
     
     
-
+    
     func updateFile(filename: String){
         let predicate = NSPredicate(format: "fileName == %@", filename)
         let retrievedFileNames = try! Realm().objects(StickerFile).filter(predicate)
@@ -2031,7 +2054,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 stickerView.height = Float(sticker.frame.size.height)
                 
                 for case let textField as UITextView in (sticker.subviews){
-                if (textField.tag == 3){
+                    if (textField.tag == 3){
                         stickerView.text = textField.text!
                     }
                 }
@@ -2096,101 +2119,101 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     func deleteSavedFile(fileName: String){
-            let predicate = NSPredicate(format: "fileName == %@", fileName)
-            let retrievedFileNames = try! Realm().objects(StickerFile).filter(predicate)
-            if(retrievedFileNames.count == 0){//file exists not
-                createAlertView("Delete Process", message: "Process With Process Name"+"("+fileName+") does not exist")
-            }
-            if(retrievedFileNames.count != 0){//file exists
-                let newAlertView = UIAlertController(title: "Delete Process", message: "Are you sure you want to Delete the Process Named "+fileName+" ? All data in the process will be lost.", preferredStyle: UIAlertControllerStyle.Alert)
-                newAlertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(action: UIAlertAction!) in
-                    let realm = try! Realm()
-                    //Get attached list
-                    let firstFile = retrievedFileNames.first?.stickers
-                    //Delete the list per item
-                    for sticker in firstFile!{
-                        try! realm.write {
-                            realm.delete(sticker)
-                        }
-                    }
-                    
-                    //Delete the file itself
+        let predicate = NSPredicate(format: "fileName == %@", fileName)
+        let retrievedFileNames = try! Realm().objects(StickerFile).filter(predicate)
+        if(retrievedFileNames.count == 0){//file exists not
+            createAlertView("Delete Process", message: "Process With Process Name"+"("+fileName+") does not exist")
+        }
+        if(retrievedFileNames.count != 0){//file exists
+            let newAlertView = UIAlertController(title: "Delete Process", message: "Are you sure you want to Delete the Process Named "+fileName+" ? All data in the process will be lost.", preferredStyle: UIAlertControllerStyle.Alert)
+            newAlertView.addAction(UIAlertAction(title: "OK", style: .Default, handler: {(action: UIAlertAction!) in
+                let realm = try! Realm()
+                //Get attached list
+                let firstFile = retrievedFileNames.first?.stickers
+                //Delete the list per item
+                for sticker in firstFile!{
                     try! realm.write {
-                        realm.delete(retrievedFileNames.first!)
+                        realm.delete(sticker)
                     }
-                    
-                    //Check if its the current file we are deleting so we can remove its views from the superview
-                        for case let textField as UITextField in self.view.subviews{
-                            if(textField.tag==59){
-                                    if(textField.text == fileName){
-                                        print(textField.text)
-                                        //Remove stikers
-                                        for view in self.stickerDictionary{
-                                            view.removeFromSuperview()
-                                        }
-                                        self.stickerDictionary.removeAll()
-                                        self.stickerDictionaryTemp.removeAll()
-                                        self.stickerDictionaryArchive.removeAll()
-                                        
-                                        //Remove stikers
-                                        for view in self.stickerDictionaryIcon{
-                                            view.removeFromSuperview()
-                                        }
-                                        self.stickerDictionaryIcon.removeAll()
-                                        
-                                        //This is future button
-                                        for view in self.view.subviews{
-                                            if(view.tag==118){
-                                                view.transform = CGAffineTransformMakeScale(1, 1)
-                                            }
-                                        }
-                                        
-                                        
-                                        //This is improvements button
-                                        for view in self.view.subviews{
-                                            if(view.tag==119){
-                                                view.transform = CGAffineTransformMakeScale(1, 1)
-                                            }
-                                        }
-                                        
-                                        //This is header title
-                                        for case let textField as UITextField in self.view.subviews{
-                                            if (textField.tag == 57){
-                                                textField.text = "Create future state"
-                                            }
-                                        }
-                                        
-                                        //This is header file name
-                                        for case let textField as UITextField in self.view.subviews{
-                                            if (textField.tag == 59){
-                                                textField.text = "Unsaved Process"
-                                            }
-                                        }
-                                        
-                                        //This hides the other backgrounds
-                                        for view in self.view.subviews{
-                                            if(view.tag==571){//Improvements background
-                                                view.hidden = true
-                                            }
-                                            if(view.tag==572){//Editor
-                                                view.hidden = true
-                                            }
-                                            if(view.tag==570){//Process background
-                                                view.hidden = false
-                                            }
-                                        }
-                                        
-                                        self.createAlertView("Delete Process", message: "Successfully Deleted"+"("+fileName+")")
-                                    }
+                }
+                
+                //Delete the file itself
+                try! realm.write {
+                    realm.delete(retrievedFileNames.first!)
+                }
+                
+                //Check if its the current file we are deleting so we can remove its views from the superview
+                for case let textField as UITextField in self.view.subviews{
+                    if(textField.tag==59){
+                        if(textField.text == fileName){
+                            print(textField.text)
+                            //Remove stikers
+                            for view in self.stickerDictionary{
+                                view.removeFromSuperview()
+                            }
+                            self.stickerDictionary.removeAll()
+                            self.stickerDictionaryTemp.removeAll()
+                            self.stickerDictionaryArchive.removeAll()
+                            
+                            //Remove stikers
+                            for view in self.stickerDictionaryIcon{
+                                view.removeFromSuperview()
+                            }
+                            self.stickerDictionaryIcon.removeAll()
+                            
+                            //This is future button
+                            for view in self.view.subviews{
+                                if(view.tag==118){
+                                    view.transform = CGAffineTransformMakeScale(1, 1)
                                 }
                             }
-                    
-                }))
-                newAlertView.addAction(UIAlertAction(title: "CANCEL", style: .Default, handler: {(action: UIAlertAction!) in
-                }))
-                presentViewController(newAlertView, animated: true, completion: nil)
-                
+                            
+                            
+                            //This is improvements button
+                            for view in self.view.subviews{
+                                if(view.tag==119){
+                                    view.transform = CGAffineTransformMakeScale(1, 1)
+                                }
+                            }
+                            
+                            //This is header title
+                            for case let textField as UITextField in self.view.subviews{
+                                if (textField.tag == 57){
+                                    textField.text = "Create future state"
+                                }
+                            }
+                            
+                            //This is header file name
+                            for case let textField as UITextField in self.view.subviews{
+                                if (textField.tag == 59){
+                                    textField.text = "Unsaved Process"
+                                }
+                            }
+                            
+                            //This hides the other backgrounds
+                            for view in self.view.subviews{
+                                if(view.tag==571){//Improvements background
+                                    view.hidden = true
+                                }
+                                if(view.tag==572){//Editor
+                                    view.hidden = true
+                                }
+                                if(view.tag==570){//Process background
+                                    view.hidden = false
+                                }
+                            }
+                            
+                            self.createAlertView("Delete Process", message: "Successfully Deleted"+"("+fileName+")")
+                        }
+                    }
                 }
+                
+            }))
+            newAlertView.addAction(UIAlertAction(title: "CANCEL", style: .Default, handler: {(action: UIAlertAction!) in
+            }))
+            presentViewController(newAlertView, animated: true, completion: nil)
+            
+        }
     }
     
     
@@ -2291,27 +2314,27 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if(view.tag==570){//Process background
                 if(view.hidden == false){//Process background
                     
-        let sentView = sender.superview
-        var newFile = ""
-        for case let textField as UITextField in (sentView?.subviews)!{
-            if (textField.tag == 5){
-                newFile = textField.text!
-            }
-        }
-        makeTableAppear(newFile)
+                    let sentView = sender.superview
+                    var newFile = ""
+                    for case let textField as UITextField in (sentView?.subviews)!{
+                        if (textField.tag == 5){
+                            newFile = textField.text!
+                        }
+                    }
+                    makeTableAppear(newFile)
                 }
             }
         }
     }
-
-
+    
+    
     //This is view all button
     func buttonViewAllFilesPressed(sender: UIButton!){
         //Check if process is active
         for view in self.view.subviews{
             if(view.tag==570){//Process background
                 if(view.hidden == false){//Process background
-            makeTableAppear("")
+                    makeTableAppear("")
                 }
             }
         }
@@ -2323,13 +2346,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         for view in self.view.subviews{
             if(view.tag==570){//Process background
                 if(view.hidden == false){//Process background
-            makeTableDisappear()
+                    makeTableDisappear()
                 }
             }
         }
     }
     
-
+    
     func makeTableAppear(search: String){
         allFilesTableView.frame = CGRectMake(0, 74, 211, 130)
         allFilesTableView.backgroundColor = UIColor.clearColor()
@@ -2366,7 +2389,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 }
             }
         }
-    
+        
         if(!search.isEmpty){
             let predicate = NSPredicate(format: "fileName contains %@", search)
             let retrievedFiles = try! Realm().objects(StickerFile).filter(predicate)
@@ -2376,7 +2399,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if(retrievedFiles.count != 0){
                 for file in retrievedFiles{
                     retrievedFileNames.append(file.fileName)
-            }
+                }
                 
                 allFilesTableView.delegate = self
                 allFilesTableView.dataSource = self
@@ -2402,8 +2425,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         allFilesTableView.setNeedsDisplay()
     }
-
-
+    
+    
     func makeTableDisappear(){
         allFilesTableView.hidden = true
         for view in self.view.subviews{
@@ -3117,19 +3140,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             sticker.frame.origin.x = CGFloat(Double(index)*75)
             scrollViewIcon.addSubview(sticker)
         }
-
+        
         //Transform the tapped icon to zoomed scale
         gesture.view!.superview!.transform = CGAffineTransformMakeScale(1.4, 1.4)
         
         //Set all the sickers to normal size
         for view in stickerDictionary{
-                    view.transform = CGAffineTransformMakeScale(1, 1)
+            view.transform = CGAffineTransformMakeScale(1, 1)
         }
         //Calculate offset to get sticker to be zoomed
         let lengthOriginToTap = Float((gesture.view?.superview!.tag)!)*242.6
         scrollView.setContentOffset(CGPoint(x: CGFloat(lengthOriginToTap-296.6), y: CGFloat(0)), animated: false)
         
-         //Zoom the correct sticker
+        //Zoom the correct sticker
         for view in stickerDictionary{
             if (view.tag == gesture.view?.superview!.tag){
                 view.transform = CGAffineTransformMakeScale(1.6, 1.6)
@@ -3155,7 +3178,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
     }
-
+    
     
     
     
@@ -3172,7 +3195,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             gesture.setTranslation(CGPointZero, inView: gesturedView)
             
         }
-       
+        
         if(gesture.state == UIGestureRecognizerState.Ended){
             for view in stickerDictionary{
                 if(gesture.view!.frame.intersects(view.frame)){
@@ -3182,7 +3205,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                     var destinationViewId = -1
                     
                     //Text field tagged 9 stores a secret id for the related view
-                    //Because you cannot guarantee that the index you give the view 
+                    //Because you cannot guarantee that the index you give the view
                     //When putting it on the stack view will actually be preserved throught out
                     //The lifecycle of the app
                     //So we always check against the dictionary of our views in the array
@@ -3211,12 +3234,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                         }
                     }
                     
-                        stickerDictionary.removeAtIndex(gesturedViewId)
-                        destinationView.tag = gesturedViewId
-                        stickerDictionary.insert(destinationView, atIndex: gesturedViewId)
-                        stickerDictionary.removeAtIndex(destinationViewId)
-                        gesturedView!.tag = destinationViewId
-                        stickerDictionary.insert(gesturedView!, atIndex: destinationViewId)
+                    stickerDictionary.removeAtIndex(gesturedViewId)
+                    destinationView.tag = gesturedViewId
+                    stickerDictionary.insert(destinationView, atIndex: gesturedViewId)
+                    stickerDictionary.removeAtIndex(destinationViewId)
+                    gesturedView!.tag = destinationViewId
+                    stickerDictionary.insert(gesturedView!, atIndex: destinationViewId)
                     
                     
                     //Add Stickers to timeline
@@ -3228,10 +3251,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                             
                             if (textField.tag == 9){
                                 textField.text = String(index+1)
-                            }
-                            
-                            if (textField.tag == 8){
-                                textField.text = "Sticker Number "+String(index+1)
                             }
                             
                         }
@@ -3250,43 +3269,31 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
             if((gesture.view!.frame.intersects(trashView.frame))){
                 print("Intersect Delete Occurred")
-                    deleteSticker(gesture.view!)
-                trashView.removeFromSuperview()
-                archiveView.removeFromSuperview()
-                
-                }
-            
-            
-            if((gesture.view!.frame.intersects(archiveView.frame))){
-                print("Intersect Archive Occurred")
-                
-                for view in stickerDictionaryArchive{
-                    if(gesture.view!.tag == view.tag){
-                        gesture.view?.removeFromSuperview()
-                        return
-                    }
-                }
-                
-                for view in stickerDictionary{
-                    if(gesture.view!.tag == view.tag){
-                        for case let textField as UITextField in view.subviews{
-                            if(textField.tag == 20){
-                                textField.text = "archived"
-                            }
-                        }
-                    }
-                }
-                
-                stickerDictionaryArchive.append(gesture.view!)
                 deleteSticker(gesture.view!)
-                
                 trashView.removeFromSuperview()
                 archiveView.removeFromSuperview()
                 
             }
             
             
-             }
+            if((gesture.view!.frame.intersects(archiveView.frame))){
+                let sentView = gesture.view!
+                for case let textField as UITextField in sentView.subviews{
+                    if(textField.tag == 20){
+                        textField.text = "archived"
+                    }
+                }
+                stickerDictionaryArchive.append(sentView)
+                deleteSticker(sentView)
+                
+                trashView.removeFromSuperview()
+                archiveView.removeFromSuperview()
+                print("Intersect Archive Occurred")
+                
+                
+            }
+            
+        }
         
     }
     
@@ -3346,5 +3353,5 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         
     }
-
+    
 }

@@ -715,8 +715,23 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     //Button action method
-    func buttonFileAsPdfSavePressed(sender: UIButton!){
+    func buttonFileAsPdfSendPressed(sender: UIButton!){
         makeTableDisappear()
+        let mailVc = createMailViewController()
+        if MFMailComposeViewController.canSendMail(){
+            presentViewController(mailVc, animated:true, completion:nil)
+        }
+            
+        else{
+            createAlertView("Sending Email", message: "Device could not send Pdf As Attachment")
+        }
+    }
+    
+    func createMailViewController()-> MFMailComposeViewController{
+        let pdfMail = MFMailComposeViewController()
+        pdfMail.mailComposeDelegate = self
+        pdfMail.setToRecipients(["kawalyadavis@yahoo.co.uk"])
+        pdfMail.setMessageBody("Pdf Process", isHTML: true)
         for view in stickerDictionaryPdfPages{
             let pdfStickers = NSMutableData()
             UIGraphicsBeginPDFContextToData(pdfStickers, view.bounds, nil)
@@ -731,17 +746,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             let filePath = docDirectory.stringByAppendingString(fileName)
             pdfStickers.writeToFile(filePath, atomically: true)
             count+=1
+            pdfMail.addAttachmentData(pdfStickers, mimeType: "application/pdf", fileName: fileName)
         }
-        for case let webView as UIWebView in sender.superview!.subviews{
-            if (webView.tag == 72){
-                webView.removeFromSuperview()
-            }
-            
-        }
-        sender.superview?.superview!.hidden = true//hide scrollview container
-        createAlertView("Save Pdf" , message: "Pdf Files Saved Succesfully")
-        
+        return pdfMail
     }
+    
+    
+    func mailComposeController(controller: MFMailComposeViewController, didFinishWithResult result: MFMailComposeResult, error: NSError?) {
+        controller.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
     
     
     //Button action method
@@ -822,9 +837,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         buttonSavePdf.titleLabel?.numberOfLines = 0
         buttonSavePdf.titleLabel?.lineBreakMode = NSLineBreakMode.ByWordWrapping
         buttonSavePdf.backgroundColor = UIColor.lightGrayColor()
-        buttonSavePdf.setTitle("Save", forState: UIControlState.Normal)
+        buttonSavePdf.setTitle("Send", forState: UIControlState.Normal)
         buttonSavePdf.setTitleColor(UIColor.blackColor(), forState: UIControlState.Normal)
-        buttonSavePdf.addTarget(self, action: "buttonFileAsPdfSavePressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        buttonSavePdf.addTarget(self, action: "buttonFileAsPdfSendPressed:", forControlEvents: UIControlEvents.TouchUpInside)
         buttonSavePdf.userInteractionEnabled = true
         buttonSavePdf.tag = 46
         

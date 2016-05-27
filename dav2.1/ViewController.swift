@@ -24,9 +24,7 @@ class Sticker: Object {
     dynamic var dateCreated: NSDate? = nil
     dynamic var dateUpdated: NSDate? = nil
     dynamic var fileName: StickerFile?
-    var owningFile: [StickerFile]{
-        return linkingObjects(StickerFile.self, forProperty: "stickers")
-    }
+    let owningFile = LinkingObjects(fromType: StickerFile.self, property: "stickers")
     
 }
 
